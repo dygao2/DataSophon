@@ -1,0 +1,117 @@
+<!--
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+
+ * @Date: 2022-06-08 11:38:30
+ * @LastEditTime: 2023-03-15 17:10:01
+ * @FilePath: \ddh-ui\src\pages\securityCenter\commponents\addUser.vue
+-->
+<template>
+  <div style="padding-top: 10px">
+    <a-form :label-col="labelCol" :wrapper-col="wrapperCol" :form="form" class="p0-32-10-32 form-content">
+      <a-form-item label="机架名称">
+        <a-input v-decorator="[
+            'rack',
+            { rules: [{ required: true, message: '机架名称不能为空!' }] },
+          ]" placeholder="请输入机架名称" />
+      </a-form-item>
+    </a-form>
+    <div class="ant-modal-confirm-btns-new">
+      <a-button style="margin-right: 10px" type="primary" @click.stop="handleSubmit" :loading="loading">确认</a-button>
+      <a-button @click.stop="formCancel">取消</a-button>
+    </div>
+  </div>
+</template>
+<script>
+export default {
+  props: {
+    detail: {
+      type: Object,
+      default: function () {
+        return {};
+      },
+    },
+    callBack: Function,
+  },
+  data() {
+    return {
+      clusterId: Number(localStorage.getItem("clusterId") || -1),
+      editFlag: false,
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 6 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 18 },
+      },
+      form: this.$form.createForm(this),
+      loading: false,
+      groupList:[],
+    };
+  },
+  watch: {},
+  methods: {
+    checkName(rule, value, callback) {
+      var reg = /[\u4E00-\u9FA5]|[\uFE30-\uFFA0]/g;
+      if (reg.test(value)) {
+        callback(new Error("名称中不能包含中文"));
+      }
+      if (/\s/g.test(value)) {
+        callback(new Error("名称中不能包含空格"));
+      }
+      callback();
+    },
+    formCancel() {
+      this.$destroyAll();
+    },
+    handleSubmit(e) {
+      const _this = this;
+      e.preventDefault();
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          const params = {
+          rack: values.rack,
+          clusterId: this.clusterId,
+        };
+        this.loading = true;
+        const ajaxApi = global.API.saveRack;
+        this.$axiosPost(ajaxApi, params)
+          .then((res) => {
+            this.loading = false;
+            if (res.code === 200) {
+              this.$message.success("保存成功", 2);
+              this.$destroyAll();
+              _this.callBack();
+            }
+          })
+        .catch((err) => {});
+          }
+      });
+    },
+  },
+  mounted() {
+  },
+  created(){
+  }
+};
+</script>
+<style lang="less" scoped>
+</style>

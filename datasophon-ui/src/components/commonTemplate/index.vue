@@ -1,4 +1,6 @@
 <!--
+/*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -13,12 +15,12 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- -->
+ *
+ */
 
-<!--
- * @Author: mjzhu
+
  * @Date: 2022-06-13 14:04:05
- * @LastEditTime: 2022-09-07 15:02:37
+ * @LastEditTime: 2023-04-13 15:15:13
  * @FilePath: \ddh-ui\src\components\commonTemplate\index.vue
 -->
 <template>
@@ -166,17 +168,17 @@ export default {
       testData: this.templateData,
       labelCol: {
         xs: { span: 24 },
-        sm: { span: 5 },
+        sm: { span: 7 },
       },
       wrapperCol: {
         xs: { span: 24 },
-        sm: { span: 19 },
+        sm: { span: 17 },
       },
       initFormFiledFlag: false,
       formItemLayoutWithOutLabel: {
         wrapperCol: {
           xs: { span: 24, offset: 0 },
-          sm: { span: 19, offset: 5 },
+          sm: { span: 17, offset: 7 },
         },
       },
       form: this.$form.createForm(this, {

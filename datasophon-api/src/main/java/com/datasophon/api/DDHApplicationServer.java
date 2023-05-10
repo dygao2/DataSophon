@@ -20,18 +20,17 @@ package com.datasophon.api;
 import com.datasophon.api.master.ActorUtils;
 import com.datasophon.common.Constants;
 import com.datasophon.common.cache.CacheUtils;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
-import javax.annotation.PostConstruct;
-
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
+
+import javax.annotation.PostConstruct;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.security.NoSuchAlgorithmException;
 
 @SpringBootApplication
 @ServletComponentScan
@@ -44,7 +43,7 @@ public class DDHApplicationServer extends SpringBootServletInitializer {
     }
 
     @PostConstruct
-    public void run() throws UnknownHostException {
+    public void run() throws UnknownHostException, NoSuchAlgorithmException {
         String hostName = InetAddress.getLocalHost().getHostName();
         CacheUtils.put(Constants.HOSTNAME, hostName);
         ActorUtils.init();

@@ -1,4 +1,6 @@
 <!--
+/*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -13,12 +15,12 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- -->
+ *
+ */
 
-<!--
- * @Author: mjzhu
+
  * @Date: 2022-06-08 11:38:30
- * @LastEditTime: 2022-11-25 17:00:30
+ * @LastEditTime: 2023-03-15 17:18:03
  * @FilePath: \ddh-ui\src\pages\hostManage\addRack.vue
 -->
 <template>
@@ -32,7 +34,7 @@
       </a-form-item>
       <a-form-item v-if="type !== 'add'" label="机架">
         <a-select v-decorator="['rack', { rules: [{ required: true, message: '机架不能为空!' }]}]" placeholder="请选择机架">
-          <a-select-option :value="item.rack" v-for="(item,index) in cateList" :key="index">{{item.rack}}</a-select-option>
+          <a-select-option :value="item.id" v-for="(item,index) in cateList" :key="index">{{item.rack}}</a-select-option>
         </a-select>
       </a-form-item>
     </a-form>
@@ -128,7 +130,7 @@ export default {
         rackId: values.rack,
       };
       this.loading = true;
-      const ajaxApi = global.API.deleteRack;
+      const ajaxApi = global.API.deleteClusterRack;
       this.$axiosPost(ajaxApi, params)
         .then((res) => {
           this.loading = false;

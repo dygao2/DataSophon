@@ -1,4 +1,6 @@
 /*
+/*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -13,14 +15,10 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
+ *
  */
 
-/*
- * @Author: mjzhu
- * @Date: 2022-05-24 10:22:10
- * @LastEditTime: 2022-11-25 16:51:51
- * @FilePath: \ddh-ui\src\api\httpApi\cluster.js
- */
+
 import paths from '@/api/baseUrl'// 后台服务地址
 
 let path = paths.path() + '/ddh'
@@ -42,5 +40,6 @@ export default {
   saveRack: path + '/cluster/rack/save',
   assginRack: path + '/api/cluster/host/assignRack',
   deleteRack: path + '/cluster/rack/delete',
+  deleteClusterRack: path + '/cluster/rack/delete',
   getRackList: path + '/cluster/rack/list',
 }

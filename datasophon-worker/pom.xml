@@ -97,7 +97,7 @@
         <dependency>
             <groupId>com.datasophon</groupId>
             <artifactId>datasophon-common</artifactId>
-            <version>1.1.1</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.freemarker</groupId>
@@ -120,7 +120,30 @@
         </dependency>
     </dependencies>
     <build>
+        <testSourceDirectory>${project.basedir}/src/main/test</testSourceDirectory>
         <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>false</addClasspath>
+                        </manifest>
+                    </archive>
+                    <excludes>
+                        <exclude>*.properties</exclude>
+                        <exclude>*.xml</exclude>
+                        <exclude>*.sh</exclude>
+                        <exclude>templates/**</exclude>
+                        <exclude>script/**</exclude>
+                        <exclude>jmx/**</exclude>
+                        <exclude>node/**</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

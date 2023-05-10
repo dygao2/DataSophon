@@ -21,7 +21,7 @@
     "required": true,
     "type": "input",
     "configurableInWizard": true,
-    "defaultValue": "/data/tmp/hadoop",
+    "defaultValue": "//data/tmp/hadoop",
     "minValue": null,
     "maxValue": null,
     "unit": null,
@@ -90,7 +90,7 @@
     "configType": null
 }, {
     "name": "dfs.namenode.name.dir",
-    "value": ["/data/dfs/nn"],
+    "value": ["//data/dfs/nn"],
     "label": "NameNode数据存储目录",
     "description": "用于配置NameNode数据存储目录",
     "required": true,
@@ -105,13 +105,13 @@
     "configType": "path"
 }, {
     "name": "dfs.namenode.checkpoint.dir",
-    "value": "/data/dfs/snn",
+    "value": "//data/dfs/snn",
     "label": "元数据checkpoint目录",
     "description": "配置元数据checkpoint目录，当namenode故障退出需要重新恢复时，可以从secondary namenode的工作目录中将fsimage拷贝到namenode的工作目录，以恢复namenode的元数据",
     "required": true,
     "type": "input",
     "configurableInWizard": true,
-    "defaultValue": "/data/dfs/snn",
+    "defaultValue": "//data/dfs/snn",
     "minValue": null,
     "maxValue": null,
     "unit": null,
@@ -150,7 +150,7 @@
     "configType": null
 }, {
     "name": "dfs.datanode.data.dir",
-    "value": ["/data/dfs/dn"],
+    "value": ["//data/dfs/dn"],
     "label": "DataNode数据存储目录",
     "description": "DataNode数据存储目录，可配置多个，按逗号分隔",
     "required": true,

@@ -1,4 +1,6 @@
 <!--
+/*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -13,10 +15,10 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- -->
+ *
+ */
 
-<!--
- * @Author: mjzhu
+
  * @Date: 2022-05-24 10:28:22
  * @LastEditTime: 2022-07-27 15:54:37
  * @FilePath: \ddh-ui\src\pages\colonyManage\frame.vue
@@ -43,7 +45,7 @@ export default {
       frameList: [],
       tableColumns: [
         { title: "序号", key: "index" },
-        { title: "服务", key: "serviceName" },
+        { title: "服务", key: "label" },
         { title: "版本", key: "serviceVersion" },
         { title: "描述", key: "serviceDesc", ellipsis: true },
       ],

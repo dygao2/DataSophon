@@ -1,4 +1,6 @@
 <!--
+/*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -13,10 +15,10 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- -->
+ *
+ */
 
-<!--
- * @Author: mjzhu
+
  * @describe: step4-选择服务 
  * @Date: 2022-06-13 16:35:02
  * @LastEditTime: 2022-06-28 15:34:21
@@ -71,7 +73,7 @@ export default {
             );
           },
         },
-        { title: "服务", key: "serviceName", dataIndex: "serviceName" },
+        { title: "服务", key: "label", dataIndex: "label" },
         {
           title: "描述",
           key: "serviceDesc",

@@ -1,4 +1,6 @@
 /*
+/*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -13,14 +15,10 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
+ *
  */
 
-/*
- * @Author: mjzhu
- * @Date: 2022-05-24 10:28:22
- * @LastEditTime: 2022-06-08 15:03:48
- * @FilePath: \ddh-ui\src\api\services\api.js
- */
+
 //跨域代理前缀
 // const API_PROXY_PREFIX='/api'
 // const BASE_URL = process.env.NODE_ENV === 'production' ? process.env.VUE_APP_API_BASE_URL : API_PROXY_PREFIX

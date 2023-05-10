@@ -1,4 +1,6 @@
 <!--
+/*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -13,13 +15,13 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- -->
+ *
+ */
 
-<!--
- * @Author: mjzhu
+
  * @describe: step8-安装并启动服务 
  * @Date: 2022-06-13 16:35:02
- * @LastEditTime: 2022-10-31 16:01:51
+ * @LastEditTime: 2023-03-15 10:37:53
  * @FilePath: \ddh-ui\src\components\steps\step8.vue
 -->
 <template>
@@ -57,8 +59,8 @@
       <!-- </div> -->
     </div>
     <div class="table-info mgt16 steps-body" style="overflow-y: visible;max-height: 700px;">
-      <a-table v-if="currentPage === 1" @change="tableChange" :columns="columns" :loading="loading" :dataSource="dataSource" :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" rowKey="commandId" :pagination="pagination"></a-table>
-      <a-table v-if="[2,3].includes(currentPage)" @change="tableChange" :columns="columns" :loading="loading" :dataSource="dataSource" rowKey="hostCommandId" :pagination="pagination"></a-table>
+      <a-table v-if="currentPage === 1" @change="tableChange" :columns="columns" :loading="loading" :dataSource="dataSource" :scroll="{y: 500}" :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" rowKey="commandId" :pagination="pagination"></a-table>
+      <a-table v-if="[2,3].includes(currentPage)" @change="tableChange" :columns="columns" :loading="loading" :dataSource="dataSource" :scroll="{y: 500}" rowKey="hostCommandId" :pagination="pagination"></a-table>
       <LOGS v-if="currentPage === 4" :logData="logData" :hideCancel="true" />
     </div>
     <!-- <div class="cluster-setting-footer pdr30" v-if="stepsType === 'cluster-setting'">

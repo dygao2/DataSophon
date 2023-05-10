@@ -17,13 +17,12 @@
 
 package com.datasophon.api.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
 import com.datasophon.dao.enums.ServiceRoleState;
 
 import java.util.List;
-
-import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * 集群服务角色实例表
@@ -76,4 +75,6 @@ public interface ClusterServiceRoleInstanceService extends IService<ClusterServi
     List<ClusterServiceRoleInstanceEntity> listServiceRoleByName(String alertManager);
 
     ClusterServiceRoleInstanceEntity getServiceRoleInsByHostAndName(String hostName, String serviceRoleName);
+
+    List<ClusterServiceRoleInstanceEntity> listRoleIns(String hostname, String serviceName);
 }

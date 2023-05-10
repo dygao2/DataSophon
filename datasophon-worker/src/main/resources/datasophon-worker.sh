@@ -30,14 +30,36 @@ command=$1
 
 
 echo "Begin $startStop $command......"
-
-BIN_DIR=`dirname $0`
-BIN_DIR=`cd "$BIN_DIR"; pwd`
-DDH_HOME=$BIN_DIR/..
-
 source /etc/profile
 
-export JAVA_HOME=$JAVA_HOME
+SCRIPT="$0"
+# SCRIPT may be an arbitrarily deep series of symlinks. Loop until we have the concrete path.
+while [ -h "$SCRIPT" ] ; do
+  ls=`ls -ld "$SCRIPT"`
+  # Drop everything prior to ->
+  link=`expr "$ls" : '.*-> \(.*\)$'`
+  if expr "$link" : '/.*' > /dev/null; then
+    SCRIPT="$link"
+  else
+    SCRIPT=`dirname "$SCRIPT"`/"$link"
+  fi
+done
+
+# some Java parameters
+JAVA=`which java 2>/dev/null`
+if [[ $JAVA_HOME != "" ]]; then
+    JAVA=$JAVA_HOME/bin/java
+fi
+if test -z "$JAVA"; then
+    echo "No java found in the PATH. Please set JAVA_HOME."
+    exit 1
+fi
+
+BIN_DIR=`dirname "$SCRIPT"`/..
+BIN_DIR=`cd "$BIN_DIR"; pwd`
+export DDH_HOME=$BIN_DIR
+
+# export JAVA_HOME=$JAVA_HOME
 #export JAVA_HOME=/opt/soft/jdk
 export HOSTNAME=`hostname`
 
@@ -46,11 +68,11 @@ export DDH_LOG_DIR=$DDH_HOME/logs
 export DDH_CONF_DIR=$DDH_HOME/conf
 export DDH_LIB_JARS=$DDH_HOME/lib/*
 
-export DDH_OPTS="-server -Xmx200m -Xms100m"
+export DDH_OPTS="-server -Xms512m -Xmx512m -Dddh.home=$DDH_HOME"
 export STOP_TIMEOUT=5
 
 if [ ! -d "$DDH_LOG_DIR" ]; then
-  mkdir $DDH_LOG_DIR
+  mkdir -p $DDH_LOG_DIR
 fi
 
 log=$DDH_LOG_DIR/$command-$HOSTNAME.out
@@ -59,11 +81,10 @@ pid=$DDH_PID_DIR/$command.pid
 cd $DDH_HOME
 
 if [ "$command" = "worker" ]; then
-   LOG_FILE="-Dlogging.config=classpath:logback-worker.xml -Dspring.profiles.active=worker"
-   JMX="-javaagent:$DDH_HOME/jmx/jmx_prometheus_javaagent-0.16.1.jar=8585:$DDH_HOME/jmx/jmx_exporter_config.yaml"
+  LOG_FILE="-Dlogging.config=classpath:logback.xml -Dspring.profiles.active=worker"
+  JMX="-javaagent:$DDH_HOME/jmx/jmx_prometheus_javaagent-0.16.1.jar=8585:$DDH_HOME/jmx/jmx_exporter_config.yaml"
   CLASS=com.datasophon.worker.WorkerApplicationServer
-  HEAP_OPTS="-Xms100m -Xmx200m"
-  export DDH_OPTS="$HEAP_OPTS $DDH_OPTS $API_SERVER_OPTS"
+  export DDH_OPTS="$HEAP_OPTS $DDH_OPTS $JAVA_OPTS"
 else
   echo "Error: No command named \`$command' was found."
   exit 1
@@ -82,7 +103,7 @@ case $startStop in
 
     echo starting $command, logging to $log
 
-    exec_command="$LOG_FILE $JMX -classpath $DDH_CONF_DIR:$DDH_LIB_JARS $CLASS"
+    exec_command="$DDH_OPTS $LOG_FILE $JMX -classpath $DDH_CONF_DIR:$DDH_LIB_JARS $CLASS"
 
     echo "nohup $JAVA_HOME/bin/java $exec_command > $log 2>&1 &"
     nohup $JAVA_HOME/bin/java $exec_command > $log 2>&1 &
@@ -148,7 +169,7 @@ case $startStop in
       fi
       echo starting $command, logging to $log
 
-      exec_command="$LOG_FILE $JMX -classpath $DDH_CONF_DIR:$DDH_LIB_JARS $CLASS"
+      exec_command="$DDH_OPTS $LOG_FILE $JMX -classpath $DDH_CONF_DIR:$DDH_LIB_JARS $CLASS"
 
       echo "nohup $JAVA_HOME/bin/java $exec_command > $log 2>&1 &"
       nohup $JAVA_HOME/bin/java $exec_command > $log 2>&1 &

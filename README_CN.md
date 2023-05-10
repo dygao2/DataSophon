@@ -1,5 +1,5 @@
 <div align="center">
-         <a href="https://github.com/gaodayu168/datasophon" target="_blank" rel="noopener noreferrer">
+         <a href="https://github.com/datasophon/datasophon" target="_blank" rel="noopener noreferrer">
            <img src="website/static/img/logo.png" width="20%" height="20%" alt="DataSophon Logo" />
         </a>
  <h1>DataSophon</h1>
@@ -7,13 +7,13 @@
 </div>
 
 <p align="center">
-  <img src="https://img.shields.io/github/release/gaodayu168/datasophon.svg">
-  <img src="https://img.shields.io/github/stars/gaodayu168/datasophon">
-  <img src="https://img.shields.io/github/forks/gaodayu168/datasophon">
+  <img src="https://img.shields.io/github/release/datasophon/datasophon.svg">
+  <img src="https://img.shields.io/github/stars/datasophon/datasophon">
+  <img src="https://img.shields.io/github/forks/datasophon/datasophon">
   <a href="https://www.apache.org/licenses/LICENSE-2.0.html"><img src="https://img.shields.io/badge/license-Apache%202-4EB1BA.svg"></a>
   <p align="center">
     <a href="https://datasophon.github.io/datasophon-website/">官网</a> |
-    <a href="https://github.com/gaodayu168/datasophon/blob/main/README.md">English</a>
+    <a href="https://github.com/datasophon/datasophon/blob/main/README.md">English</a>
   </p>
 </p>
 <h3>觉得不错的话，star fork下，欢迎社区开发者共建DataSophon</h3>
@@ -51,5 +51,5 @@ DataSophon也是个类似的管理平台，只不过与智子不同的是，智�
 
 
 # 提问
-如果您有任何的疑问或需要支持、报告漏洞，请点击 [issue](https://github.com/gaodayu168/datasophon/issues/new/choose) 并提交您的问题, 我们将及时回复您。
+如果您有任何的疑问或需要支持、报告漏洞，请点击 [issue](https://github.com/datasophon/datasophon/issues/new/choose) 并提交您的问题, 我们将及时回复您。
 

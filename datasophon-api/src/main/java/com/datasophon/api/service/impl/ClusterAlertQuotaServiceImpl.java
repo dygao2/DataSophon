@@ -34,7 +34,17 @@ import com.datasophon.dao.mapper.ClusterAlertQuotaMapper;
 
 import org.apache.commons.lang.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -42,11 +52,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import akka.actor.ActorRef;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.additional.query.impl.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import akka.actor.ActorRef;
 
 @Service("clusterAlertQuotaService")
 public class ClusterAlertQuotaServiceImpl extends ServiceImpl<ClusterAlertQuotaMapper, ClusterAlertQuota>
@@ -65,7 +75,7 @@ public class ClusterAlertQuotaServiceImpl extends ServiceImpl<ClusterAlertQuotaM
         LambdaQueryChainWrapper<ClusterAlertQuota> wrapper = this.lambdaQuery()
                 .eq(alertGroupId != null, ClusterAlertQuota::getAlertGroupId, alertGroupId)
                 .like(StringUtils.isNotBlank(quotaName), ClusterAlertQuota::getAlertQuotaName, quotaName);
-
+        int count = wrapper.count() == null ? 0 : wrapper.count();
         List<ClusterAlertQuota> alertQuotaList = wrapper.last("limit " + offset + "," + pageSize).list();
         if (CollectionUtils.isEmpty(alertQuotaList)) {
             return Result.successEmptyCount();
@@ -85,8 +95,6 @@ public class ClusterAlertQuotaServiceImpl extends ServiceImpl<ClusterAlertQuotaM
                 a.setQuotaStateCode(a.getQuotaState().getValue());
             });
         }
-
-        int count = wrapper.count() == null ? 0 : wrapper.count();
         return Result.success(alertQuotaList).put(Constants.TOTAL, count);
     }
 
@@ -97,7 +105,11 @@ public class ClusterAlertQuotaServiceImpl extends ServiceImpl<ClusterAlertQuotaM
         List<ClusterAlertQuota> alertQuotaList = this.lambdaQuery().in(ClusterAlertQuota::getId, ids).list();
         for (ClusterAlertQuota alertQuota : alertQuotaList) {
             if (!map.containsKey(alertQuota.getServiceCategory())) {
-                ArrayList<ClusterAlertQuota> quotaList = new ArrayList<>();
+                // list all started alert quota
+                List<ClusterAlertQuota> quotaList = this.lambdaQuery()
+                        .eq(ClusterAlertQuota::getServiceCategory, alertQuota.getServiceCategory())
+                        .eq(ClusterAlertQuota::getQuotaState, QuotaState.RUNNING)
+                        .list();
                 quotaList.add(alertQuota);
                 map.put(alertQuota.getServiceCategory(), quotaList);
             } else {
@@ -107,6 +119,7 @@ public class ClusterAlertQuotaServiceImpl extends ServiceImpl<ClusterAlertQuotaM
             }
             alertQuota.setQuotaState(QuotaState.RUNNING);
         }
+
         if (alertQuotaList.size() > 0) {
             logger.info("start alert size is {}", alertQuotaList.size());
             this.updateBatchById(alertQuotaList);
@@ -115,12 +128,18 @@ public class ClusterAlertQuotaServiceImpl extends ServiceImpl<ClusterAlertQuotaM
         for (Map.Entry<String, List<ClusterAlertQuota>> entry : map.entrySet()) {
             String category = entry.getKey();
             List<ClusterAlertQuota> alerts = entry.getValue();
+            // alerts duplicate removal
+            List<ClusterAlertQuota> alertList = alerts.stream()
+                    .collect(Collectors.collectingAndThen(Collectors.toCollection(
+                            () -> new TreeSet<>(Comparator.comparing(ClusterAlertQuota::getAlertQuotaName))),
+                            ArrayList::new));
+
             Generators generators = new Generators();
             generators.setFilename(category.toLowerCase() + ".yml");
             generators.setConfigFormat("prometheus");
             generators.setOutputDirectory("alert_rules");
             ArrayList<AlertItem> alertItems = new ArrayList<>();
-            for (ClusterAlertQuota clusterAlertQuota : alerts) {
+            for (ClusterAlertQuota clusterAlertQuota : alertList) {
                 AlertItem alertItem = new AlertItem();
                 alertItem.setAlertName(clusterAlertQuota.getAlertQuotaName());
                 alertItem.setAlertExpr(clusterAlertQuota.getAlertExpr() + " " + clusterAlertQuota.getCompareMethod()

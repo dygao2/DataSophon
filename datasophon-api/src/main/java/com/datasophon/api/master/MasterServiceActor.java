@@ -49,10 +49,10 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import akka.actor.UntypedActor;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+
+import akka.actor.UntypedActor;
 
 public class MasterServiceActor extends UntypedActor {
 

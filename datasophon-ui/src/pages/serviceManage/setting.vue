@@ -1,4 +1,6 @@
 <!--
+/*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -13,10 +15,10 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- -->
+ *
+ */
 
-<!--
- * @Author: mjzhu
+
  * @describe: 服务配置
  * @Date: 2022-06-13 16:35:02
  * @LastEditTime: 2022-10-27 11:01:48
@@ -55,7 +57,7 @@
         <a-button class="mgr10" type="primary" @click="handleSubmit">保存</a-button>
       </div>
      </a-spin>
-
+  
     </div>
 
   </div>
@@ -210,13 +212,13 @@ export default {
     },
     handlerClick(item,childIndex){
       console.log(item);
-      this.currentId = item.id
+      this.currentId = item.id  
       this.getConfigVersion()
     },
     handlearrayWithData(a) {
       let obj = {};
       let arr = [];
-      for (let k in a) {
+      for (var k in a) {
         if (k.includes("arrayWith")) {
           let key = "";
           if (k.includes("arrayWithKey")) {
@@ -233,10 +235,10 @@ export default {
       arr.map((item) => {
         obj[item] = [];
       });
-      for (let f in obj) {
+      for (var f in obj) {
         let keys = [];
         let vals = [];
-        for (let i in a) {
+        for (var i in a) {
           if (i.includes(f)) {
             if (i.includes("arrayWithKey")) {
               keys.push(i);
@@ -257,7 +259,7 @@ export default {
     handleMultipleData(a) {
       let obj = {};
       let arr = [];
-      for (let k in a) {
+      for (var k in a) {
         if (k.includes("multiple")) {
           let key = k.split("multiple")[0];
           arr.push(key);
@@ -268,9 +270,9 @@ export default {
         obj[item] = [];
       });
       // obj{ a: , b: }
-      for (let f in obj) {
+      for (var f in obj) {
         let vals = [];
-        for (let i in a) {
+        for (var i in a) {
           if (i.includes(f)) {
             if (i.includes("multiple")) {
               vals.push(i);
@@ -294,7 +296,7 @@ export default {
             const multipleData = this.handleMultipleData(values);
             const formData = { ...values, ...arrayWithData, ...multipleData };
             console.log(formData, "formDataformData");
-            for (let name in formData) {
+            for (var name in formData) {
               param.forEach((item) => {
                 if (item.name === name) {
                   item.value = formData[name];
@@ -331,7 +333,7 @@ export default {
             );
             if (res.code === 200) {
               this.$message.success("保存成功");
-              // this.getConfigVersion()
+              this.getConfigVersion()
               // this.getServiceRoleType()
             } else {
               // this.$message.error(res.msg || "保存失败");
@@ -349,7 +351,7 @@ export default {
       this.currentId = val.target.value
       this.getConfigVersion()
     },
-
+  
     //获取角色组
     getServiceRoleType() {
       this.loading = true;
@@ -492,4 +494,4 @@ export default {
     }
   }
 }
-</style>
+</style> 

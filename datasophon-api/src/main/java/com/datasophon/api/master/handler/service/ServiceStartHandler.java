@@ -19,6 +19,8 @@ package com.datasophon.api.master.handler.service;
 
 import com.datasophon.api.load.GlobalVariables;
 import com.datasophon.api.master.ActorUtils;
+import com.datasophon.common.Constants;
+import com.datasophon.common.cache.CacheUtils;
 import com.datasophon.common.command.ServiceRoleOperateCommand;
 import com.datasophon.common.enums.ServiceRoleType;
 import com.datasophon.common.model.ServiceRoleInfo;
@@ -56,6 +58,7 @@ public class ServiceStartHandler extends ServiceHandler {
         serviceRoleOperateCommand.setSlave(serviceRoleInfo.isSlave());
         serviceRoleOperateCommand.setCommandType(serviceRoleInfo.getCommandType());
         serviceRoleOperateCommand.setMasterHost(serviceRoleInfo.getMasterHost());
+        serviceRoleOperateCommand.setManagerHost(CacheUtils.getString(Constants.HOSTNAME));
 
         logger.info("service master host is {}", serviceRoleInfo.getMasterHost());
 

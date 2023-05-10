@@ -52,7 +52,7 @@ public class ClusterServiceCommandHostServiceImpl
 
         LambdaQueryChainWrapper<ClusterServiceCommandHostEntity> wrapper = this.lambdaQuery()
                 .eq(ClusterServiceCommandHostEntity::getCommandId, commandId);
-
+        int total = wrapper.count();
         List<ClusterServiceCommandHostEntity> list = wrapper
                 .orderByDesc(ClusterServiceCommandHostEntity::getCreateTime)
                 .last("limit " + offset + "," + pageSize)
@@ -61,7 +61,6 @@ public class ClusterServiceCommandHostServiceImpl
             commandHostEntity.setCommandStateCode(commandHostEntity.getCommandState().getValue());
         }
 
-        int total = wrapper.count();
         return Result.success(list).put(Constants.TOTAL, total);
     }
 

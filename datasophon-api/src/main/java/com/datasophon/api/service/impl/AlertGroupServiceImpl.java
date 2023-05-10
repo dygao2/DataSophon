@@ -68,7 +68,7 @@ public class AlertGroupServiceImpl extends ServiceImpl<AlertGroupMapper, AlertGr
         LambdaQueryChainWrapper<AlertGroupEntity> wrapper = this.lambdaQuery()
                 .in(AlertGroupEntity::getId, groupIds)
                 .like(StringUtils.isNotBlank(alertGroupName), AlertGroupEntity::getAlertGroupName, alertGroupName);
-
+        int count = wrapper.count() == null ? 0 : wrapper.count();
         List<AlertGroupEntity> alertGroupList = wrapper.last("limit " + offset + "," + pageSize).list();
         if (CollectionUtils.isEmpty(alertGroupList)) {
             return Result.successEmptyCount();
@@ -89,7 +89,6 @@ public class AlertGroupServiceImpl extends ServiceImpl<AlertGroupMapper, AlertGr
             });
         }
 
-        int count = wrapper.count() == null ? 0 : wrapper.count();
         return Result.success(alertGroupList).put(Constants.TOTAL, count);
     }
 

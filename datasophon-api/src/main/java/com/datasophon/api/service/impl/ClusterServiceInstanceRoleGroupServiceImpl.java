@@ -19,6 +19,8 @@
 
 package com.datasophon.api.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.enums.Status;
 import com.datasophon.api.service.ClusterServiceInstanceRoleGroupService;
 import com.datasophon.api.service.ClusterServiceInstanceService;
@@ -32,16 +34,14 @@ import com.datasophon.dao.entity.ClusterServiceRoleGroupConfig;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
 import com.datasophon.dao.enums.NeedRestart;
 import com.datasophon.dao.mapper.ClusterServiceInstanceRoleGroupMapper;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service("clusterServiceInstanceRoleGroupService")
 public class ClusterServiceInstanceRoleGroupServiceImpl
@@ -111,11 +111,14 @@ public class ClusterServiceInstanceRoleGroupServiceImpl
     }
 
     @Override
-    public void bind(String roleInstanceIds, Integer roleGroupId) {
+    public Result bind(String roleInstanceIds, Integer roleGroupId) {
         String[] ids = roleInstanceIds.split(",");
         ArrayList<ClusterServiceRoleInstanceEntity> list = new ArrayList<>();
         for (String id : ids) {
             ClusterServiceRoleInstanceEntity roleInstanceEntity = roleInstanceService.getById(id);
+            if (!isSameRoleGroup(roleInstanceEntity, Arrays.asList(ids))) {
+                return Result.error(Status.NEED_SAME_ROLE_GROUP.getMsg());
+            }
             // 判断新角色组与原角色组配置是否相同，不相同则需标识该角色实例需要重启
             if (!isSameConfig(roleInstanceEntity.getRoleGroupId(), roleGroupId)) {
                 roleInstanceEntity.setNeedRestart(NeedRestart.YES);
@@ -124,6 +127,19 @@ public class ClusterServiceInstanceRoleGroupServiceImpl
             list.add(roleInstanceEntity);
         }
         roleInstanceService.updateBatchById(list);
+        return Result.success();
+    }
+
+    private boolean isSameRoleGroup(ClusterServiceRoleInstanceEntity roleInstanceEntity, List<String> ids) {
+
+        // query role instance by hostname and servicename
+        List<ClusterServiceRoleInstanceEntity> roleList =
+                roleInstanceService.listRoleIns(roleInstanceEntity.getHostname(), roleInstanceEntity.getServiceName());
+        List<String> listIds = roleList.stream().map(e -> e.getId().toString()).collect(Collectors.toList());
+        if (ids.containsAll(listIds)) {
+            return true;
+        }
+        return false;
     }
 
     private boolean isSameConfig(Integer oldRoleGroupId, Integer newRoleGroupId) {

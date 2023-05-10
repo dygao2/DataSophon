@@ -17,20 +17,18 @@
 
 package com.datasophon.worker.actor;
 
+import akka.actor.ActorRef;
+import akka.actor.Props;
+import akka.actor.Terminated;
+import akka.actor.UntypedActor;
+import com.alibaba.fastjson.JSONObject;
 import com.datasophon.common.model.StartWorkerMessage;
-
 import org.apache.commons.lang.StringUtils;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import scala.Option;
 
 import java.io.IOException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import akka.actor.*;
-
-import com.alibaba.fastjson.JSONObject;
 
 public class WorkerActor extends UntypedActor {
 

@@ -52,13 +52,13 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
 import akka.actor.ActorSelection;
 import akka.actor.UntypedActor;
 import akka.pattern.Patterns;
 import akka.util.Timeout;
 import cn.hutool.http.HttpUtil;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 public class PrometheusActor extends UntypedActor {
 
@@ -218,6 +218,7 @@ public class PrometheusActor extends UntypedActor {
                 ExecResult configResult =
                         (ExecResult) Await.result(configureFuture, timeout.duration());
                 if (configResult.getExecResult()) {
+                    logger.info("Generate prometheus alert config success , now start to reload prometheus");
                     // reload prometheus config
                     HttpUtil.post(
                             "http://" + prometheusInstance.getHostname() + ":9090/-/reload", "");

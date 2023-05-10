@@ -22,16 +22,15 @@ import com.datasophon.api.utils.ProcessUtils;
 import com.datasophon.common.model.ProcInfo;
 import com.datasophon.common.model.ServiceConfig;
 import com.datasophon.common.model.ServiceRoleInfo;
-import com.datasophon.common.utils.StarRocksUtils;
+import com.datasophon.common.utils.OlapUtils;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
 import com.datasophon.dao.enums.AlertLevel;
 import com.datasophon.dao.enums.ServiceRoleState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class FEHandlerStartegy implements ServiceRoleStrategy {
 
@@ -79,17 +78,12 @@ public class FEHandlerStartegy implements ServiceRoleStrategy {
         if (roleInstanceEntity.getHostname().equals(feMaster)
                 && roleInstanceEntity.getServiceRoleState() == ServiceRoleState.RUNNING) {
             try {
-                List<ProcInfo> frontends = StarRocksUtils.showFrontends(feMaster);
-                resolveProcInfoAlert("SRFE", frontends, map);
+                List<ProcInfo> frontends = OlapUtils.showFrontends(feMaster);
+                resolveProcInfoAlert(roleInstanceEntity.getServiceRoleName(), frontends, map);
             } catch (Exception e) {
 
             }
-            try {
-                List<ProcInfo> backends = StarRocksUtils.showBackends(feMaster);
-                resolveProcInfoAlert("SRBE", backends, map);
-            } catch (Exception e) {
 
-            }
 
         }
     }
@@ -98,9 +92,9 @@ public class FEHandlerStartegy implements ServiceRoleStrategy {
         for (ProcInfo frontend : frontends) {
             ClusterServiceRoleInstanceEntity roleInstanceEntity = map.get(frontend.getHostName() + serviceRoleName);
             if (!frontend.getAlive()) {
-                String alertTargetName = serviceRoleName + " Alive";
-                logger.info("{} at host {} is not alive", serviceRoleName, frontend.getHostName());
-                String alertAdvice = "the errmsg is " + frontend.getErrMsg();
+                String alertTargetName = serviceRoleName + " Not Add To Cluster";
+                logger.info("{} at host {} is not add to cluster", serviceRoleName, frontend.getHostName());
+                String alertAdvice = "The errmsg is " + frontend.getErrMsg();
                 ProcessUtils.saveAlert(roleInstanceEntity, alertTargetName, AlertLevel.WARN, alertAdvice);
             } else {
                 ProcessUtils.recoverAlert(roleInstanceEntity);

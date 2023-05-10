@@ -1,4 +1,6 @@
 <!--
+/*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -13,13 +15,13 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- -->
+ *
+ */
 
-<!--
- * @Author: mjzhu
+
  * @describe: 
  * @Date: 2022-06-20 20:34:13
- * @LastEditTime: 2022-10-25 20:20:25
+ * @LastEditTime: 2023-03-17 17:19:31
  * @FilePath: \ddh-ui\src\components\menu\clusterMenu.vue
 -->
 <template>
@@ -88,6 +90,8 @@ import _ from 'lodash';
 import alarmModal from '@/components/alarmModal'
 import TextCompare from './commponents/textCompare.vue'
 import { mapMutations ,mapState} from 'vuex'
+import { changeRouter } from '@/utils/changeRouter'
+
 const toRoutesMap = (routes) => {
   const map = {};
   routes.forEach((route) => {
@@ -308,8 +312,16 @@ export default {
         if (res.code === 200) {
           this.$message.success("操作成功");
           this.$destroyAll();
-          this.$router.push({path: '/overview'})
+          this.getInto()
         }
+      });
+    },
+    getInto() {
+      this.$axiosPost(global.API.getServiceListByCluster, {
+        clusterId: this.clusterId,
+      }).then((res) => {
+        changeRouter(res.data, this.clusterId)
+        this.$router.push("/overview");
       });
     },
     optServices(item, props) {

@@ -1,4 +1,6 @@
 <!--
+/*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -13,12 +15,12 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- -->
+ *
+ */
 
-<!--
- * @Author: mjzhu
+
  * @Date: 2022-06-09 10:11:22
- * @LastEditTime: 2022-11-25 16:56:39
+ * @LastEditTime: 2023-04-13 15:19:15
  * @FilePath: \ddh-ui\src\pages\hostManage\index.vue
 -->
 
@@ -27,6 +29,7 @@
     <a-card class="mgb16 card-shadow">
       <a-row type="flex" align="middle">
         <a-col :span="16">
+          <a-input placeholder="请输入IP" class="w180 mgr12" @change="(value) => getVal(value, 'ip')" allowClear />
           <a-input placeholder="请输入主机名" class="w180 mgr12" @change="(value) => getVal(value, 'hostname')" allowClear />
           <a-select placeholder="请选择Cpu架构" class="w180 mgr12" :allowClear="true" @change="(value) => getVal(value, 'cpuArchitecture')">
             <a-select-option :value="item.id" v-for="(item,index) in cpuArchitecture" :key="index">{{item.key}}</a-select-option>
@@ -51,7 +54,7 @@
             </a-button>
           </a-dropdown>
           <a-button type="primary" @click="createUser({})">添加新主机</a-button>
-          <a-dropdown>
+          <!-- <a-dropdown>
             <a-menu slot="overlay" @click="handleLabelClick">
               <a-menu-item key="add">添加标签</a-menu-item>
               <a-menu-item key="del">删除标签</a-menu-item>
@@ -70,7 +73,7 @@
               机架管理
               <a-icon type="down" />
             </a-button>
-          </a-dropdown>
+          </a-dropdown> -->
         </a-col>
       </a-row>
     </a-card>
@@ -398,6 +401,7 @@ export default {
         cpuArchitecture: this.changeCpuArchitecture
           ? this.params.cpuArchitecture || ""
           : "",
+        ip: this.params.ip || '',
         hostState: this.changeUsername ? this.params.hostState || "" : "",
       };
       this.$axiosPost(global.API.getHostListByPage, params).then((res) => {

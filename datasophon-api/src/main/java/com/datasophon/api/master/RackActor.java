@@ -40,9 +40,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import akka.actor.UntypedActor;
-
 import com.baomidou.mybatisplus.core.toolkit.Constants;
+
+import akka.actor.UntypedActor;
 
 public class RackActor extends UntypedActor {
 

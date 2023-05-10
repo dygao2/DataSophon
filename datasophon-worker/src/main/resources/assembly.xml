@@ -43,7 +43,7 @@
             <directory>${basedir}/../datasophon-worker/src/main/resources</directory>
             <includes>
                 <include>**/*.yml</include>
-                <include>**/logback-worker.xml</include>
+                <include>**/logback.xml</include>
                 <include>**/*.conf</include>
                 <include>**/*.properties</include>
             </includes>

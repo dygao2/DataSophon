@@ -17,7 +17,7 @@
       "jmxPort": 12356,
       "startRunner": {
         "timeout": "60",
-        "program": "bin/dolphinscheduler-daemon.sh",
+        "program": "control_ds.sh",
         "args": [
           "start",
           "api-server"
@@ -25,7 +25,7 @@
       },
       "stopRunner": {
         "timeout": "600",
-        "program": "bin/dolphinscheduler-daemon.sh",
+        "program": "control_ds.sh",
         "args": [
           "stop",
           "api-server"
@@ -33,7 +33,7 @@
       },
       "statusRunner": {
         "timeout": "60",
-        "program": "bin/dolphinscheduler-daemon.sh",
+        "program": "control_ds.sh",
         "args": [
           "status",
           "api-server"
@@ -41,7 +41,7 @@
       },
       "restartRunner": {
         "timeout": "60",
-        "program": "control.sh",
+        "program": "control_ds.sh",
         "args": [
           "restart",
           "api-server"
@@ -49,7 +49,7 @@
       },
       "externalLink": {
         "name": "DolphinScheduler Ui",
-        "label": "NameNode Ui",
+        "label": "DolphinScheduler Ui",
         "url": "http://${host}:12345/dolphinscheduler/ui"
       }
     },
@@ -62,7 +62,7 @@
       "jmxPort": 12357,
       "startRunner": {
         "timeout": "60",
-        "program": "bin/dolphinscheduler-daemon.sh",
+        "program": "control_ds.sh",
         "args": [
           "start",
           "master-server"
@@ -70,7 +70,7 @@
       },
       "stopRunner": {
         "timeout": "600",
-        "program": "bin/dolphinscheduler-daemon.sh",
+        "program": "control_ds.sh",
         "args": [
           "stop",
           "master-server"
@@ -78,7 +78,7 @@
       },
       "statusRunner": {
         "timeout": "60",
-        "program": "bin/dolphinscheduler-daemon.sh",
+        "program": "control_ds.sh",
         "args": [
           "status",
           "master-server"
@@ -86,7 +86,7 @@
       },
       "restartRunner": {
         "timeout": "60",
-        "program": "control.sh",
+        "program": "control_ds.sh",
         "args": [
           "restart",
           "master-server"
@@ -102,7 +102,7 @@
       "jmxPort": 12358,
       "startRunner": {
         "timeout": "60",
-        "program": "bin/dolphinscheduler-daemon.sh",
+        "program": "control_ds.sh",
         "args": [
           "start",
           "worker-server"
@@ -110,7 +110,7 @@
       },
       "stopRunner": {
         "timeout": "600",
-        "program": "bin/dolphinscheduler-daemon.sh",
+        "program": "control_ds.sh",
         "args": [
           "stop",
           "worker-server"
@@ -118,7 +118,7 @@
       },
       "statusRunner": {
         "timeout": "60",
-        "program": "bin/dolphinscheduler-daemon.sh",
+        "program": "control_ds.sh",
         "args": [
           "status",
           "worker-server"
@@ -126,7 +126,7 @@
       },
       "restartRunner": {
         "timeout": "60",
-        "program": "control.sh",
+        "program": "control_ds.sh",
         "args": [
           "restart",
           "worker-server"
@@ -142,7 +142,7 @@
       "jmxPort": 12359,
       "startRunner": {
         "timeout": "60",
-        "program": "bin/dolphinscheduler-daemon.sh",
+        "program": "control_ds.sh",
         "args": [
           "start",
           "alert-server"
@@ -150,7 +150,7 @@
       },
       "stopRunner": {
         "timeout": "600",
-        "program": "bin/dolphinscheduler-daemon.sh",
+        "program": "control_ds.sh",
         "args": [
           "stop",
           "alert-server"
@@ -158,7 +158,7 @@
       },
       "statusRunner": {
         "timeout": "60",
-        "program": "bin/dolphinscheduler-daemon.sh",
+        "program": "control_ds.sh",
         "args": [
           "status",
           "alert-server"
@@ -166,7 +166,7 @@
       },
       "restartRunner": {
         "timeout": "60",
-        "program": "control.sh",
+        "program": "control_ds.sh",
         "args": [
           "restart",
           "alert-server"

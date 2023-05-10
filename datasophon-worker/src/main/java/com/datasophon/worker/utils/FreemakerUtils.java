@@ -22,11 +22,18 @@ import com.datasophon.common.model.AlertItem;
 import com.datasophon.common.model.Generators;
 import com.datasophon.common.model.ServiceConfig;
 
+import freemarker.cache.ClassTemplateLoader;
+import freemarker.cache.FileTemplateLoader;
+import freemarker.cache.MultiTemplateLoader;
+import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,14 +49,44 @@ public class FreemakerUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(FreemakerUtils.class);
 
-    public static void generateConfigFile(Generators generators, List<ServiceConfig> configs,
+    public static void generateConfigFile(Generators generators,
+                                          List<ServiceConfig> configs,
                                           String decompressPackageName) throws IOException, TemplateException {
+        generateConfigFile(generators, configs, decompressPackageName, null);
+    }
+
+    /**
+     *
+     * 支持 从附加的目录加载 模版
+     *
+     * @param generators
+     * @param configs
+     * @param decompressPackageName
+     * @param extPath
+     * @throws IOException
+     * @throws TemplateException
+     */
+    public static void generateConfigFile(Generators generators,
+                                          List<ServiceConfig> configs,
+                                          String decompressPackageName,
+                                          String extPath) throws IOException, TemplateException {
         // 1.加载模板
         // 创建核心配置对象
         Configuration config = new Configuration(Configuration.getVersion());
         // 设置加载的目录
         // ""代表当前包
-        config.setClassForTemplateLoading(FreemakerUtils.class, "/templates");
+        // config.setClassForTemplateLoading(FreemakerUtils.class, "/templates");
+
+        /*
+         * 第三方的程序包，pacakge 下应包含：META/template 和其他应用必须的文件
+         */
+        List<TemplateLoader> loaderList = new ArrayList<>();
+        loaderList.add(new ClassTemplateLoader(FreemakerUtils.class, "/templates"));
+        if (StringUtils.isNotBlank(extPath) && new File(extPath).exists()) {
+            // 如果 三方的 package 中存在 templates 模版，则直接加载
+            loaderList.add(new FileTemplateLoader(new File(extPath)));
+        }
+        config.setTemplateLoader(new MultiTemplateLoader(loaderList.toArray(new TemplateLoader[0])));
 
         Map<String, Object> data = new HashMap<>();
         // 得到模板对象
@@ -76,6 +113,7 @@ public class FreemakerUtils {
                     .collect(Collectors.toMap(key -> key.getName(), value -> value.getValue()));
             configs = configs.stream().filter(e -> !"map".equals(e.getConfigType())).collect(Collectors.toList());
         }
+        logger.info("load template: {} success.", template.getSourceName());
         data.put("itemList", configs);
         // 3.产生输出
         processOut(generators, template, data, decompressPackageName);

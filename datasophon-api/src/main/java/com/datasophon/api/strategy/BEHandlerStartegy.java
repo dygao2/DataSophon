@@ -18,15 +18,19 @@
 package com.datasophon.api.strategy;
 
 import com.datasophon.api.load.GlobalVariables;
+import com.datasophon.api.utils.ProcessUtils;
+import com.datasophon.common.model.ProcInfo;
 import com.datasophon.common.model.ServiceConfig;
 import com.datasophon.common.model.ServiceRoleInfo;
+import com.datasophon.common.utils.OlapUtils;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
+import com.datasophon.dao.enums.AlertLevel;
+import com.datasophon.dao.enums.ServiceRoleState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class BEHandlerStartegy implements ServiceRoleStrategy {
 
@@ -58,6 +62,33 @@ public class BEHandlerStartegy implements ServiceRoleStrategy {
     @Override
     public void handlerServiceRoleCheck(ClusterServiceRoleInstanceEntity roleInstanceEntity,
                                         Map<String, ClusterServiceRoleInstanceEntity> map) {
+        Map<String, String> globalVariables = GlobalVariables.get(roleInstanceEntity.getClusterId());
+        String feMaster = globalVariables.get("${feMaster}");
+        if (roleInstanceEntity.getHostname().equals(feMaster)
+                && roleInstanceEntity.getServiceRoleState() == ServiceRoleState.RUNNING) {
+            try {
+                List<ProcInfo> backends = OlapUtils.showBackends(feMaster);
+                resolveProcInfoAlert(roleInstanceEntity.getServiceRoleName(), backends, map);
+            } catch (Exception e) {
 
+            }
+
+        }
+
+    }
+
+    private void resolveProcInfoAlert(String serviceRoleName, List<ProcInfo> frontends,
+                                      Map<String, ClusterServiceRoleInstanceEntity> map) {
+        for (ProcInfo frontend : frontends) {
+            ClusterServiceRoleInstanceEntity roleInstanceEntity = map.get(frontend.getHostName() + serviceRoleName);
+            if (!frontend.getAlive()) {
+                String alertTargetName = serviceRoleName + " Not Add To Cluster";
+                logger.info("{} at host {} is not add to cluster", serviceRoleName, frontend.getHostName());
+                String alertAdvice = "The errmsg is " + frontend.getErrMsg();
+                ProcessUtils.saveAlert(roleInstanceEntity, alertTargetName, AlertLevel.WARN, alertAdvice);
+            } else {
+                ProcessUtils.recoverAlert(roleInstanceEntity);
+            }
+        }
     }
 }

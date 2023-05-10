@@ -74,8 +74,7 @@ public class ClusterServiceInstanceRoleGroupController {
      */
     @RequestMapping("/bind")
     public Result bind(String roleInstanceIds, Integer roleGroupId) {
-        clusterServiceInstanceRoleGroupService.bind(roleInstanceIds, roleGroupId);
-        return Result.success();
+        return clusterServiceInstanceRoleGroupService.bind(roleInstanceIds, roleGroupId);
     }
 
     /**

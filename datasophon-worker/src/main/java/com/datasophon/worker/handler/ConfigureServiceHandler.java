@@ -28,17 +28,18 @@ import com.datasophon.worker.utils.FreemakerUtils;
 
 import org.apache.commons.lang.StringUtils;
 
+import java.io.File;
 import java.net.InetAddress;
 import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.IdUtil;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.IdUtil;
 
 public class ConfigureServiceHandler {
 
@@ -126,7 +127,17 @@ public class ConfigureServiceHandler {
                 }
                 configs.addAll(customConfList);
                 if (configs.size() > 0) {
-                    FreemakerUtils.generateConfigFile(generators, configs, decompressPackageName);
+                    // extra app, package: META, templates
+                    File extTemplateDir =
+                            new File(Constants.INSTALL_PATH + File.separator + decompressPackageName, "templates");
+                    if (extTemplateDir.exists() && extTemplateDir.isDirectory()) {
+                        // 3rd app, load ext templates
+                        logger.info("add ext app template path: {} to loader path.", extTemplateDir.getAbsolutePath());
+                        FreemakerUtils.generateConfigFile(generators, configs, decompressPackageName,
+                                extTemplateDir.getAbsolutePath());
+                    } else {
+                        FreemakerUtils.generateConfigFile(generators, configs, decompressPackageName);
+                    }
                 }
                 execResult.setExecOut("configure success");
                 logger.info("configure success");
@@ -137,7 +148,7 @@ public class ConfigureServiceHandler {
             execResult.setExecResult(true);
         } catch (Exception e) {
             execResult.setExecErrOut(e.getMessage());
-            e.printStackTrace();
+            logger.error("load app config template error!", e);
         }
         return execResult;
     }

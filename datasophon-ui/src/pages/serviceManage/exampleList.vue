@@ -1,4 +1,6 @@
 <!--
+/*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -13,60 +15,160 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- -->
+ *
+ */
 
-<!--
- * @Author: mjzhu
+
  * @Date: 2022-05-24 10:28:22
- * @LastEditTime: 2022-07-07 20:55:16
+ * @LastEditTime: 2023-04-13 16:17:15
  * @FilePath: \ddh-ui\src\pages\serviceManage\exampleList.vue
 -->
 <template>
   <div class="example-page">
-     <a-card class="mgb16 card-shadow">
-      <a-row type="flex" align="middle">
+    <a-card class="mgb16 card-shadow">
+      <a-row
+        type="flex"
+        align="middle"
+      >
         <a-col :span="16">
-          <a-input placeholder="请输入主机名" class="w180 mgr12" @change="(value) => getVal(value, 'hostname')" :allowClear='true' />
-            <a-select placeholder="请选择角色类型"  class="w180 mgr12" allowClear @change="(value) => getVal(value, 'serviceRoleName')">
-            <a-select-option :value="item.serviceRoleName" v-for="(item,index) in cateList" :key="index">{{item.serviceRoleName}}</a-select-option>
+          <a-input
+            placeholder="请输入主机名"
+            class="w180 mgr12"
+            @change="(value) => getVal(value, 'hostname')"
+            :allowClear='true'
+          />
+          <a-select
+            placeholder="请选择角色类型"
+            class="w180 mgr12"
+            allowClear
+            @change="(value) => getVal(value, 'serviceRoleName')"
+          >
+            <a-select-option
+              :value="item.serviceRoleName"
+              v-for="(item,index) in cateList"
+              :key="index"
+            >{{item.serviceRoleName}}</a-select-option>
           </a-select>
-          <a-select placeholder="请选择角色组" class="w180 mgr12" :allowClear='true' @change="(value) => getVal(value, 'roleGroupId')">
-            <a-select-option :value="item.id" v-for="(item,index) in groupList" :key="index">{{item.roleGroupName}}</a-select-option>
+          <a-select
+            placeholder="请选择角色组"
+            class="w180 mgr12"
+            :allowClear='true'
+            @change="(value) => getVal(value, 'roleGroupId')"
+          >
+            <a-select-option
+              :value="item.id"
+              v-for="(item,index) in groupList"
+              :key="index"
+            >{{item.roleGroupName}}</a-select-option>
           </a-select>
-          <a-select placeholder="请选择状态" class="w180 mgr12" :allowClear='true' @change="(value) => getVal(value, 'serviceRoleState')">
-            <a-select-option :value="item.id" v-for="(item,index) in serviceRoleState" :key="index">{{item.key}}</a-select-option>
+          <a-select
+            placeholder="请选择状态"
+            class="w180 mgr12"
+            :allowClear='true'
+            @change="(value) => getVal(value, 'serviceRoleState')"
+          >
+            <a-select-option
+              :value="item.id"
+              v-for="(item,index) in serviceRoleState"
+              :key="index"
+            >{{item.key}}</a-select-option>
           </a-select>
-          <a-button class type="primary" icon="search" @click="onSearch"></a-button>
+          <a-button
+            class
+            type="primary"
+            icon="search"
+            @click="onSearch"
+          ></a-button>
         </a-col>
-        <a-col :span="8" style="text-align: right">
-         <a-dropdown>
-        <a-menu slot="overlay" @click="handleMenuClick">
-          <a-menu-item key="start">启动</a-menu-item>
-          <a-menu-item key="stop">停止</a-menu-item>
-          <a-menu-item key="reStart">重启</a-menu-item>
-          <a-menu-item key="decommission" v-show="serviceId==36||serviceId==37">退役</a-menu-item>
-          <a-menu-item key="roleGroup">分配角色组</a-menu-item>
-          <a-menu-item key="del">删除</a-menu-item>
-        </a-menu>
-        <a-button class="mgr12" type="primary">
-          选择操作
-          <a-icon type="down" />
-        </a-button>
-      </a-dropdown>
-      <a-button type="primary" @click="addExample" class="mgr12">添加新实例</a-button>
-      <a-button type="primary" @click="addCharacter({})">添加角色组</a-button>
+        <a-col
+          :span="8"
+          style="text-align: right"
+        >
+          <a-dropdown>
+            <a-menu
+              slot="overlay"
+              @click="handleMenuClick"
+            >
+              <a-menu-item key="start">启动</a-menu-item>
+              <a-menu-item key="stop">停止</a-menu-item>
+              <a-menu-item key="reStart">重启</a-menu-item>
+              <a-menu-item
+                key="decommission"
+                v-show="serviceId==36||serviceId==37"
+              >退役</a-menu-item>
+              <a-menu-item key="roleGroup">分配角色组</a-menu-item>
+              <a-menu-item key="del">删除</a-menu-item>
+            </a-menu>
+            <a-button
+              class="mgr12"
+              type="primary"
+            >
+              选择操作
+              <a-icon type="down" />
+            </a-button>
+          </a-dropdown>
+          <a-button
+            type="primary"
+            @click="addExample"
+            class="mgr12"
+          >添加新实例</a-button>
+          <a-button
+            type="primary"
+            @click="addCharacter({})"
+          >添加角色组</a-button>
         </a-col>
       </a-row>
     </a-card>
-    <a-table :columns="loadTable()" @change="tableChange" :loading="loading" class="release-table-custom" :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" :dataSource="dataSources" rowKey="id" :pagination="pagination"></a-table>
+    <a-table
+      :columns="loadTable()"
+      @change="tableChange"
+      :loading="loading"
+      class="release-table-custom"
+      :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+      :dataSource="dataSources"
+      rowKey="id"
+      :pagination="pagination"
+    ></a-table>
     <!-- 配置集群的modal -->
-    <a-modal v-if="visible" title :visible="visible" :maskClosable="false" :closable="false" :width="1576" :confirm-loading="confirmLoading" @cancel="handleCancel" :footer="null">
-      <Steps :clusterId="clusterId" stepsType="service-example" :steps4Data="steps4Data" />
+    <a-modal
+      v-if="visible"
+      title
+      :visible="visible"
+      :maskClosable="false"
+      :closable="false"
+      :width="1576"
+      :confirm-loading="confirmLoading"
+      @cancel="handleCancel"
+      :footer="null"
+    >
+      <Steps
+        :clusterId="clusterId"
+        stepsType="service-example"
+        :steps4Data="steps4Data"
+      />
     </a-modal>
     <!-- 查看日志的modal -->
-    <a-modal v-if="logsVisible" title="查看日志" :visible="logsVisible" :maskClosable="false" :closable="false" :width="1576" @cancel="handleLogCancel" :footer="null" >
-      <a-button @click="handleLogCancel" class="mgb16" style="height: 28px;position: absolute;right: 20px;top:15px;z-index:2" icon="close" />
-      <LOGS :logData="logData" @getLog="getLog" :logsVisible="logsVisible" />
+    <a-modal
+      v-if="logsVisible"
+      title="查看日志"
+      :visible="logsVisible"
+      :maskClosable="false"
+      :closable="false"
+      :width="1576"
+      @cancel="handleLogCancel"
+      :footer="null"
+    >
+      <a-button
+        @click="handleLogCancel"
+        class="mgb16"
+        style="height: 28px;position: absolute;right: 20px;top:15px;z-index:2"
+        icon="close"
+      />
+      <LOGS
+        :logData="logData"
+        @getLog="getLog"
+        :logsVisible="logsVisible"
+      />
     </a-modal>
   </div>
 </template>
@@ -74,7 +176,7 @@
 <script>
 import Steps from "@/components/steps";
 import LOGS from "@/components/logs";
-import { mapMutations ,mapState} from "vuex";
+import { mapMutations, mapState } from "vuex";
 import AddCharacter from "./addCharacter.vue";
 import AllotCharacter from "./allotCharacter.vue";
 export default {
@@ -83,13 +185,13 @@ export default {
   props: {
     serviceId: String,
   },
-  provide() {
+  provide () {
     return {
       handleCancel: this.handleCancel,
       onSearch: this.onSearch,
     };
   },
-  data() {
+  data () {
     return {
       params: {},
       logsVisible: false,
@@ -97,19 +199,19 @@ export default {
       confirmLoading: false,
       loading: false,
       dataSources: [],
-      groupList:[],
-      cateList:[],
+      groupList: [],
+      cateList: [],
       clusterId: Number(localStorage.getItem("clusterId") || -1),
       steps4Data: {
         serviceIds: [],
         serviceNames: [],
       },
-      serviceRoleState:[
-        {id: "1", key: "正在运行" },
-        {id: "2", key: "停止" },
-        {id: "3", key: "告警" },
-        {id: "4", key: "退役中" },
-        {id: "5", key: "已退役" },
+      serviceRoleState: [
+        { id: "1", key: "正在运行" },
+        { id: "2", key: "停止" },
+        { id: "3", key: "告警" },
+        { id: "4", key: "退役中" },
+        { id: "5", key: "已退役" },
       ],
       tableColumns: [
         { title: "序号", key: "index" },
@@ -123,7 +225,7 @@ export default {
         },
       ],
       timer: null,
-      refreshData:null,
+      refreshData: null,
       selectedRowKeys: [],
       pagination: {
         total: 0,
@@ -134,41 +236,41 @@ export default {
         showTotal: (total) => `共 ${total} 条`,
       },
       exampleId: "",
-      changeRoleState:false ,
-      changeRoleName:false ,
-      changeGroupName:false
+      changeRoleState: false,
+      changeRoleName: false,
+      changeGroupName: false
     };
   },
   methods: {
     ...mapMutations("setting", ["showClusterSetting"]),
-    ...mapState("setting",["menuData"]),
-    handleLogCancel() {
+    ...mapState("setting", ["menuData"]),
+    handleLogCancel () {
       this.logsVisible = false;
     },
-    getVal(val, filed) {
+    getVal (val, filed) {
       if (filed === "serviceRoleState") this.changeRoleState = true;
       if (filed === "roleGroupId") this.changeGroupName = true;
       if (filed === "serviceRoleName") this.changeRoleName = true;
       this.params[`${filed}`] =
-         filed === "serviceRoleState" ? val : filed === "roleGroupId"? val: filed === "serviceRoleName"? val :val.target.value
+        filed === "serviceRoleState" ? val : filed === "roleGroupId" ? val : filed === "serviceRoleName" ? val : val.target.value
     },
-    getServiceRoleType() {
-      const params={
-        serviceInstanceId :this.$route.params.serviceId || "",
+    getServiceRoleType () {
+      const params = {
+        serviceInstanceId: this.$route.params.serviceId || "",
       }
       //角色组类型
       this.$axiosPost(global.API.getServiceRoleType, params).then((res) => {
         if (res.code !== 200) return
         this.cateList = res.data
       }
-      ) 
+      )
       //角色组列表
       this.$axiosPost(global.API.getRoleGroupList, params).then((res) => {
         if (res.code !== 200) return  //this.$message.error('获取角色组列表失败')
-        this.groupList = res.data 
+        this.groupList = res.data
       })
     },
-    handleMenuClick(key) {
+    handleMenuClick (key) {
       if (key.key === "del") {
         this.delExample();
         return false;
@@ -179,7 +281,7 @@ export default {
       }
       this.optServices(key);
     },
-    delExample() {
+    delExample () {
       if (this.selectedRowKeys.length < 1) {
         this.$message.warning("请至少选择一个实例");
         return false;
@@ -225,7 +327,7 @@ export default {
         closable: true,
       });
     },
-    confirmDelExample() {
+    confirmDelExample () {
       let params = {
         serviceRoleInstancesIds: this.selectedRowKeys.join(","),
       };
@@ -238,7 +340,7 @@ export default {
         }
       });
     },
-    optServices(item) {
+    optServices (item) {
       if (this.selectedRowKeys.length < 1) {
         this.$message.warning("请至少选择一个实例");
         return false;
@@ -259,7 +361,7 @@ export default {
         content: (
           <div style="margin-top:20px">
             <div style="padding:0 65px;font-size: 16px;color: #555555;">
-              {'确认' + (item.key=='start'?'启动':item.key=='stop'?'停止':item.key=='reStart'?'重启':item.key=='decommission'?'退役':"") +'吗？'}
+              {'确认' + (item.key == 'start' ? '启动' : item.key == 'stop' ? '停止' : item.key == 'reStart' ? '重启' : item.key == 'decommission' ? '退役' : "") + '吗？'}
             </div>
             <div style="margin-top:20px;text-align:right;padding:0 30px 30px 30px">
               <a-button
@@ -283,10 +385,10 @@ export default {
         },
         closable: true,
       });
-    
+
     },
-    ensureServices(item){
-      if(item.key==="decommission"){
+    ensureServices (item) {
+      if (item.key === "decommission") {
         let params = {
           serviceRoleInstanceIds: this.selectedRowKeys.join(","),
         };
@@ -299,15 +401,15 @@ export default {
             }
           }
         );
-      }else{
+      } else {
         let params = {
           clusterId: this.clusterId,
           commandType:
-          item.key === "stop"
-            ? "STOP_SERVICE"
-            : item.key === "start"
-              ? "START_SERVICE"
-              : "RESTART_SERVICE",
+            item.key === "stop"
+              ? "STOP_SERVICE"
+              : item.key === "start"
+                ? "START_SERVICE"
+                : "RESTART_SERVICE",
           serviceInstanceId: this.$route.params.serviceId || "",
           serviceRoleInstancesIds: this.selectedRowKeys.join(","),
         };
@@ -324,18 +426,18 @@ export default {
       }
       this.$destroyAll()
     },
-    allotCharacter(){
+    allotCharacter () {
       if (this.selectedRowKeys.length < 1) {
         this.$message.warning("请至少选择一个实例");
         return false;
       }
       const self = this;
       let width = 520;
-      let title =  "分配角色组";
-      let serviceId = {id:this.$route.params.serviceId || ""}
-      let roleInstanceIds  =this.selectedRowKeys
+      let title = "分配角色组";
+      let serviceId = { id: this.$route.params.serviceId || "" }
+      let roleInstanceIds = this.selectedRowKeys
       let content = (
-        <AllotCharacter serviceId={serviceId} roleInstanceIds={roleInstanceIds} callBack={() => self.pollingSearch(),()=>{this.selectedRowKeys = []}} />
+        <AllotCharacter serviceId={serviceId} roleInstanceIds={roleInstanceIds} callBack={() => self.pollingSearch(), () => { this.selectedRowKeys = [] }} />
       );
       this.$confirm({
         width: width,
@@ -347,7 +449,7 @@ export default {
         },
       });
     },
-    addExample() {
+    addExample () {
       let serviceName = [];
       let frameServiceId = null;
       const serviceId = this.$route.params.serviceId || "";
@@ -372,13 +474,13 @@ export default {
       };
       this.visible = true;
     },
-    addCharacter() {
+    addCharacter () {
       const self = this;
       let width = 520;
-      let title =  "新建角色组";
-      let serviceId = {id:this.$route.params.serviceId || ""}
+      let title = "新建角色组";
+      let serviceId = { id: this.$route.params.serviceId || "" }
       let content = (
-        <AddCharacter serviceId={serviceId}  callBack={() => self.pollingSearch()} />
+        <AddCharacter serviceId={serviceId} callBack={() => self.pollingSearch()} />
       );
       this.$confirm({
         width: width,
@@ -390,10 +492,10 @@ export default {
         },
       });
     },
-    handleCancel(e) {
+    handleCancel (e) {
       this.visible = false;
     },
-    loadTable() {
+    loadTable () {
       let that = this;
       let columns = that.tableColumns;
       return columns.map((item, index) => {
@@ -408,19 +510,27 @@ export default {
               return `${index + 1}`;
             } else if (item.key === "serviceRoleName") {
               return (
-                <span class="flex-container">
-                  <span
-                    class={[
-                      "circle-point",
-                      record.serviceRoleStateCode === 1
-                        ? "success-point"
-                        : record.serviceRoleStateCode === 2
-                          ? "error-point"
-                          : "configured-point",
-                    ]}
-                  />
-                  {record[item.key]}
+                <span class="flex-container" style="width: 100%;justify-content: space-between;">
+                  <div class="flex-container">
+                    <span
+                      class={[
+                        "circle-point",
+                        record.serviceRoleStateCode === 1
+                          ? "success-point"
+                          : record.serviceRoleStateCode === 2
+                            ? "error-point"
+                            : "configured-point",
+                      ]}
+                    />
+                    {record[item.key]}
+                </div>
+                {record.needRestart && 
+                  <div>
+                    <a-icon type="sync" />
+                  </div>
+                }
                 </span>
+                
               );
             } else if (item.key === "serviceRoleState") {
               return (
@@ -461,26 +571,26 @@ export default {
       });
     },
     //表格选择
-    onSelectChange(selectedRowKeys, row) {
+    onSelectChange (selectedRowKeys, row) {
       this.selectedRowKeys = selectedRowKeys;
     },
-    tableChange(pagination) {
+    tableChange (pagination) {
       this.pagination.current = pagination.current;
       this.pagination.pageSize = pagination.pageSize
       this.pollingSearch();
     },
-    getLog(row) {
+    getLog (row) {
       if (row && row.id) this.exampleId = row.id;
-      let exampleId = this.exampleId ||row.id;
+      let exampleId = this.exampleId || row.id;
       this.$axiosPost(global.API.getLog, {
         serviceRoleInstanceId: exampleId,
       }).then((res) => {
-        if(!row) this.$message.success("刷新日志成功")
+        if (!row) this.$message.success("刷新日志成功")
         this.logsVisible = true;
         this.logData = res.data;
       });
     },
-    bindTime(){
+    bindTime () {
       let exampleId = this.exampleId
       this.$axiosPost(global.API.getLog, {
         serviceRoleInstanceId: exampleId,
@@ -489,20 +599,20 @@ export default {
       });
     },
     //   查询
-    onSearch() {
+    onSearch () {
       this.pagination.current = 1;
       this.getExampleList();
     },
-    getExampleList(flag) {
+    getExampleList (flag) {
       if (!flag) this.loading = true;
       const params = {
         pageSize: this.pagination.pageSize,
         page: this.pagination.current,
         serviceInstanceId: this.$route.params.serviceId,
-        hostname:this.params.hostname ||"",
-        serviceRoleState:this.changeRoleState ? this.params.serviceRoleState||"":"",
-        roleGroupId:this.changeGroupName ? this.params.roleGroupId||"":"",
-        serviceRoleName:this.changeRoleName ? this.params.serviceRoleName||"":""
+        hostname: this.params.hostname || "",
+        serviceRoleState: this.changeRoleState ? this.params.serviceRoleState || "" : "",
+        roleGroupId: this.changeGroupName ? this.params.roleGroupId || "" : "",
+        serviceRoleName: this.changeRoleName ? this.params.serviceRoleName || "" : ""
       };
       this.$axiosPost(global.API.instanceList, params).then((res) => {
         this.loading = false;
@@ -512,7 +622,7 @@ export default {
         }
       });
     },
-    pollingSearch() {
+    pollingSearch () {
       this.getExampleList(); // 先立马刷一次
       let self = this;
       if (self.timer) clearInterval(self.timer);
@@ -521,38 +631,38 @@ export default {
       }, global.intervalTime);
     },
   },
-  watch:{
+  watch: {
     logsVisible: {
-      handler(val) {
-        if(val){
-          this.refreshData=setInterval(()=>{
+      handler (val) {
+        if (val) {
+          this.refreshData = setInterval(() => {
             this.bindTime()
-          },10000);
-        }else{
+          }, 10000);
+        } else {
           clearInterval(this.refreshData);
-          this.refreshData=null;
+          this.refreshData = null;
         }
 
       },
       immediate: true,
-      deep:true 
+      deep: true
     },
   },
-  mounted() {
+  mounted () {
     this.pollingSearch();
     this.getServiceRoleType()
   },
-  activated() {
+  activated () {
     clearInterval(this.timer);
     this.pollingSearch();
   },
-  deactivated() {
+  deactivated () {
     clearInterval(this.timer);
   },
-  beforeDestroy() {
+  beforeDestroy () {
     clearInterval(this.timer);
     clearInterval(this.refreshData);
-    this.refreshData=null;
+    this.refreshData = null;
   },
 };
 </script>

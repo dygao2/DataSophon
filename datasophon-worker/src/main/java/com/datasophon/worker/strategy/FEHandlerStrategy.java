@@ -17,21 +17,22 @@
 
 package com.datasophon.worker.strategy;
 
+import akka.actor.ActorRef;
 import com.datasophon.common.Constants;
 import com.datasophon.common.cache.CacheUtils;
+import com.datasophon.common.command.OlapOpsType;
+import com.datasophon.common.command.OlapSqlExecCommand;
 import com.datasophon.common.command.ServiceRoleOperateCommand;
 import com.datasophon.common.enums.CommandType;
 import com.datasophon.common.model.ServiceRoleRunner;
 import com.datasophon.common.utils.ExecResult;
-import com.datasophon.common.utils.StarRocksUtils;
 import com.datasophon.common.utils.ThrowableUtils;
 import com.datasophon.worker.handler.ServiceHandler;
-
-import java.sql.SQLException;
-import java.util.ArrayList;
-
+import com.datasophon.worker.utils.ActorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
 
 public class FEHandlerStrategy implements ServiceRoleStrategy {
 
@@ -58,8 +59,13 @@ public class FEHandlerStrategy implements ServiceRoleStrategy {
                 if (startResult.getExecResult()) {
                     // add follower
                     try {
-                        StarRocksUtils.addFollower(command.getMasterHost(), CacheUtils.getString(Constants.HOSTNAME));
-                    } catch (SQLException | ClassNotFoundException e) {
+                        OlapSqlExecCommand sqlExecCommand = new OlapSqlExecCommand();
+                        sqlExecCommand.setFeMaster(command.getMasterHost());
+                        sqlExecCommand.setHostName(CacheUtils.getString(Constants.HOSTNAME));
+                        sqlExecCommand.setOpsType(OlapOpsType.ADD_FE);
+                        ActorUtils.getRemoteActor(command.getManagerHost(), "masterNodeProcessingActor")
+                                .tell(sqlExecCommand, ActorRef.noSender());
+                    } catch (Exception e) {
                         logger.info("add slave fe failed {}", ThrowableUtils.getStackTrace(e));
                     }
                     logger.info("slave fe start success");

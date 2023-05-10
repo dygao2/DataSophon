@@ -21,10 +21,12 @@ import com.datasophon.api.service.ClusterAlertQuotaService;
 import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.ClusterAlertQuota;
 
-import java.util.*;
+import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("cluster/alert/quota")
@@ -34,7 +36,7 @@ public class ClusterAlertQuotaController {
     private ClusterAlertQuotaService clusterAlertQuotaService;
 
     /**
-     * 信息
+     * list alert quota
      */
     @RequestMapping("/list")
     public Result info(Integer clusterId, Integer alertGroupId, String quotaName, Integer page, Integer pageSize) {
@@ -42,7 +44,7 @@ public class ClusterAlertQuotaController {
     }
 
     /**
-     * 启用
+     * enable alert quota
      */
     @RequestMapping("/start")
     public Result start(Integer clusterId, String alertQuotaIds) {
@@ -50,7 +52,7 @@ public class ClusterAlertQuotaController {
     }
 
     /**
-     * 停用
+     * disable alert quota
      */
     @RequestMapping("/stop")
     public Result stop(Integer clusterId, String alertQuotaIds) {
@@ -58,7 +60,7 @@ public class ClusterAlertQuotaController {
     }
 
     /**
-     * 保存
+     * save alert quota
      */
     @RequestMapping("/save")
     public Result save(@RequestBody ClusterAlertQuota clusterAlertQuota) {
@@ -68,7 +70,7 @@ public class ClusterAlertQuotaController {
     }
 
     /**
-     * 修改
+     * update alert quota
      */
     @RequestMapping("/update")
     public Result update(@RequestBody ClusterAlertQuota clusterAlertQuota) {
@@ -79,7 +81,7 @@ public class ClusterAlertQuotaController {
     }
 
     /**
-     * 删除
+     * delete alert quota
      */
     @RequestMapping("/delete")
     public Result delete(@RequestBody Integer[] ids) {

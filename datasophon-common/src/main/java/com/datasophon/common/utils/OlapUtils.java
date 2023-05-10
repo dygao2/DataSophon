@@ -18,18 +18,21 @@
 package com.datasophon.common.utils;
 
 import com.datasophon.common.model.ProcInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public class OlapUtils {
 
-public class StarRocksUtils {
-
-    private static final Logger logger = LoggerFactory.getLogger(StarRocksUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(OlapUtils.class);
 
     public static void addFollower(String feMaster, String hostname) throws SQLException, ClassNotFoundException {
         String sql = "ALTER SYSTEM add FOLLOWER \"" + hostname + ":9010\";";
@@ -54,6 +57,32 @@ public class StarRocksUtils {
         close(connection, statement);
     }
 
+    public static ExecResult addFollowerBySqlClient(String feMaster,
+                                                    String hostname) {
+        String sqlCommand =
+                "mysql -h"
+                        + feMaster
+                        + " -uroot -P9030 -e"
+                        + " 'ALTER SYSTEM add FOLLOWER  \""
+                        + hostname
+                        + ":9010\"';";
+        // logger.info("sqlCommand is {}", sqlCommand);
+        return ShellUtils.exceShell(sqlCommand);
+    }
+
+    public static ExecResult addBackendBySqlClient(String feMaster,
+                                                   String hostname) {
+        String sqlCommand =
+                "mysql -h"
+                        + feMaster
+                        + " -uroot -P9030 -e"
+                        + " 'ALTER SYSTEM add BACKEND  \""
+                        + hostname
+                        + ":9050\"';";
+        // logger.info("sqlCommand is {}", sqlCommand);
+        return ShellUtils.exceShell(sqlCommand);
+    }
+
     private static Connection getConnection(String feMaster) throws ClassNotFoundException, SQLException {
         String username = "root";
         String password = "";
@@ -72,13 +101,13 @@ public class StarRocksUtils {
 
     public static List<ProcInfo> showFrontends(String feMaster) throws SQLException, ClassNotFoundException {
         String sql = "SHOW PROC '/frontends';";
-        logger.info("sql is {}", sql);
+        // logger.info("sql is {}", sql);
         return executeQueryProcInfo(feMaster, sql);
     }
 
     public static List<ProcInfo> listDeadFrontends(String feMaster) throws SQLException, ClassNotFoundException {
         String sql = "SHOW PROC '/frontends';";
-        logger.info("sql is {}", sql);
+        // logger.info("sql is {}", sql);
         return getDeadProcInfos(feMaster, sql);
     }
 

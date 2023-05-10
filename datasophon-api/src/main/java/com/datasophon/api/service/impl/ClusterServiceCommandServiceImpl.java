@@ -17,34 +17,53 @@
 
 package com.datasophon.api.service.impl;
 
+import akka.actor.ActorRef;
+import cn.hutool.core.date.BetweenFormatter;
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.EnumUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.master.ActorUtils;
 import com.datasophon.api.master.DAGBuildActor;
-import com.datasophon.api.service.*;
+import com.datasophon.api.service.ClusterHostService;
+import com.datasophon.api.service.ClusterInfoService;
+import com.datasophon.api.service.ClusterServiceCommandHostCommandService;
+import com.datasophon.api.service.ClusterServiceCommandHostService;
+import com.datasophon.api.service.ClusterServiceCommandService;
+import com.datasophon.api.service.ClusterServiceInstanceConfigService;
+import com.datasophon.api.service.ClusterServiceInstanceService;
+import com.datasophon.api.service.ClusterServiceRoleInstanceService;
+import com.datasophon.api.service.FrameServiceRoleService;
+import com.datasophon.api.service.FrameServiceService;
 import com.datasophon.api.utils.ProcessUtils;
 import com.datasophon.common.Constants;
 import com.datasophon.common.cache.CacheUtils;
 import com.datasophon.common.command.StartExecuteCommandCommand;
 import com.datasophon.common.enums.CommandType;
 import com.datasophon.common.utils.Result;
-import com.datasophon.dao.entity.*;
+import com.datasophon.dao.entity.ClusterInfoEntity;
+import com.datasophon.dao.entity.ClusterServiceCommandEntity;
+import com.datasophon.dao.entity.ClusterServiceCommandHostCommandEntity;
+import com.datasophon.dao.entity.ClusterServiceCommandHostEntity;
+import com.datasophon.dao.entity.ClusterServiceInstanceEntity;
+import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
+import com.datasophon.dao.entity.FrameServiceEntity;
+import com.datasophon.dao.entity.FrameServiceRoleEntity;
 import com.datasophon.dao.mapper.ClusterServiceCommandMapper;
-
-import java.util.*;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import akka.actor.ActorRef;
-import cn.hutool.core.date.BetweenFormatter;
-import cn.hutool.core.date.DateUnit;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.EnumUtil;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Service("clusterServiceCommandService")
 public class ClusterServiceCommandServiceImpl
@@ -163,8 +182,10 @@ public class ClusterServiceCommandServiceImpl
     public Result getServiceCommandlist(Integer clusterId, Integer page, Integer pageSize) {
         Integer offset = (page - 1) * pageSize;
         List<ClusterServiceCommandEntity> list = this.list(new QueryWrapper<ClusterServiceCommandEntity>()
+                .eq(Constants.CLUSTER_ID,clusterId)
                 .orderByDesc(Constants.CREATE_TIME).last("limit " + offset + "," + pageSize));
-        Integer total = this.count();
+        Integer total = this.count(new QueryWrapper<ClusterServiceCommandEntity>()
+                .eq(Constants.CLUSTER_ID,clusterId));
         for (ClusterServiceCommandEntity commandEntity : list) {
             commandEntity.setCommandStateCode(commandEntity.getCommandState().getValue());
             Date createTime = commandEntity.getCreateTime();

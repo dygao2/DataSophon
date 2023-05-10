@@ -1,4 +1,6 @@
 <!--
+/*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -13,24 +15,24 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- -->
+ *
+ */
 
-<!--
- * @Author: mjzhu
+
  * @Date: 2022-05-24 10:28:22
- * @LastEditTime: 2022-10-25 19:14:40
+ * @LastEditTime: 2023-03-15 11:06:57
  * @FilePath: \ddh-ui\src\layouts\header\AdminHeader.vue
 -->
 <template>
   <a-layout-header :class="[headerTheme, 'admin-header']">
     <div :class="['admin-header-wide', layout, pageWidth]">
       <div v-if="isMobile || layout === 'head'" :class="['logo', isMobile ? null : 'pc', headerTheme]">
-        <img width="32" src="@/assets/img/brand.png" />
+        <img width="32" src="@/assets/img/logo.png" />
         <h1 v-if="!isMobile">{{systemName}}</h1>
       </div>
       <div :class="['logo', theme]">
         <div class="flex-container">
-          <img src="@/assets/img/brand.png" alt />
+          <img src="@/assets/img/logo.png" alt />
           <h1>{{systemName}}</h1>
         </div>
       </div>
@@ -47,9 +49,6 @@
             <span class="system-name">{{currentCluster.name}}</span>
             <a-icon type="caret-down" style="font-size: 18px;color:#fff" />
           </div>
-          <!-- <a-menu @click="val => setLang(val.key)" :selected-keys="[lang]" slot="overlay">
-            <a-menu-item v-for=" lang in langList" :key="lang.key">{{lang.key.toLowerCase() + ' ' + lang.name}}</a-menu-item>
-          </a-menu> -->
           <a-menu @click="val => changeCluster(val)" :selectedKeys="[currentCluster.clusterId]" slot="overlay">
             <a-menu-item v-for=" lang in runningCluster" :key="lang.value">{{lang.label}}</a-menu-item>
           </a-menu>

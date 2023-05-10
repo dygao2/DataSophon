@@ -65,7 +65,7 @@
       "value": [],
       "configurableInWizard": true,
       "isHidden": false,
-      "defaultValue": "/data/dfs/nn"
+      "defaultValue": "//data/dfs/nn"
     },
     {
       "name": "dfs.namenode.checkpoint.dir",
@@ -77,7 +77,7 @@
       "value": "",
       "configurableInWizard": true,
       "isHidden": false,
-      "defaultValue": "/data/dfs/snn"
+      "defaultValue": "//data/dfs/snn"
     },
     {
       "name": "dfs.blocksize",
@@ -112,10 +112,10 @@
       "configName": "dfs.datanode.data.dir",
       "required": true,
       "type": "multiple",
-      "value":["/data/dfs/dn","/data/dfs/dn2"],
+      "value":["//data/dfs/dn","//data/dfs/dn2"],
       "configurableInWizard": true,
       "isHidden": false,
-      "defaultValue": "/data/dfs/dn"
+      "defaultValue": "//data/dfs/dn"
     },
     {
       "name": "hadoop.security.authentication",

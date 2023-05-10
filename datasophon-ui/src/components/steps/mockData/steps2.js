@@ -1,4 +1,6 @@
 /*
+/*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -13,15 +15,9 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
+ *
  */
 
-/*
- * @Author: mjzhu
- * @describe: 
- * @Date: 2022-06-15 10:00:47
- * @LastEditTime: 2022-06-15 10:03:42
- * @FilePath: \ddh-ui\src\components\steps\mockData\steps2.js
- */
 export const data = {
     "msg": "success",
 
@@ -30,7 +26,7 @@ export const data = {
     "code": 200,
 
     "data": [{
-            "hostname": "ddp016",
+            "hostname": "016",
 
             "ip": "172.31.96.16",
 
@@ -55,7 +51,7 @@ export const data = {
 
         },
         {
-            "hostname": "ddp017",
+            "hostname": "017",
 
             "ip": "172.31.96.17",
 

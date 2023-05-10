@@ -1,4 +1,6 @@
 <!--
+/*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -13,10 +15,10 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- -->
+ *
+ */
 
-<!--
- * @Author: mjzhu
+
  * @Date: 2022-06-09 10:11:22
  * @LastEditTime: 2022-07-27 16:15:06
  * @FilePath: \ddh-ui\src\pages\securityCenter\user.vue
@@ -152,6 +154,9 @@ export default {
                   <a class="btn-opt" onClick={() => this.delectUser(row)}>
                     删除
                   </a>
+                  {/* <a class="btn-opt" onClick={() => this.delectUser(row)}>
+                    下载认证凭据
+                  </a> */}
                 </span>
             );
           },

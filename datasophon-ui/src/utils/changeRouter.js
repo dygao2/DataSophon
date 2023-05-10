@@ -1,4 +1,6 @@
 /*
+/*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -13,15 +15,9 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
+ *
  */
 
-/*
- * @Author: mjzhu
- * @describe: 
- * @Date: 2022-06-21 19:51:16
- * @LastEditTime: 2022-07-27 17:06:53
- * @FilePath: \ddh-ui\src\utils\changeRouter.js
- */
 import store from '@/store'
 
 function changeRouter(resData, clusterId) {
@@ -59,9 +55,6 @@ function changeRouter(resData, clusterId) {
     }
   });
   store.commit('setting/setClusterId', clusterId)
-  // localStorage.setItem("menuData", JSON.stringify(menuData));
-  // localStorage.setItem("isCluster", 'isCluster');
-  // localStorage.setItem("clusterId", clusterId);
   store.commit('setting/setMenuData', menuData)
   store.commit('setting/setIsCluster', 'isCluster')
   // 首次进入拿到菜单等数据 然后再去做刷新的操作

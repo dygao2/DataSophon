@@ -1,4 +1,6 @@
 <!--
+/*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -13,19 +15,19 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- -->
+ *
+ */
 
-<!--
- * @Author: mjzhu
+
  * @Date: 2022-06-09 10:11:22
- * @LastEditTime: 2023-01-03 16:56:20
+ * @LastEditTime: 2023-03-17 16:57:08
  * @FilePath: \ddh-ui\src\pages\serviceManage\queue.vue
 -->
 
 <template>
   <div class="queue-page">
-    <div class="flex-container" v-if="showGraph" style="position: absolute;top: 0px;right: 0px;z-index: 400000;">
-      <!-- <a-button style="margin-right: 10px; margin-bottom: 20px" type="primary" @click="addQueue({})">新建队列</a-button> -->
+    <div class="flex-container" style="position: absolute;top: -52px;right: 0px;z-index: 400000;">
+      <a-button style="margin-right: 10px; margin-bottom: 20px" type="primary" @click="addQueue({})">新建队列</a-button>
       <a-button style="margin-right: 10px; margin-bottom: 20px" type="primary" @click="refreshQueues">刷新队列到Yarn</a-button>
     </div>
     <div class="table-info steps-body">
@@ -185,7 +187,8 @@ export default {
       this.getQueueList();
     },
     refreshQueues() {
-      this.$axiosPost(global.API.refreshQueues, {
+      const ajaxApi = this.showGraph ? global.API.refreshQueuesYARN : global.API.refreshQueues
+      this.$axiosPost(ajaxApi, {
         clusterId: this.clusterId,
       }).then((res) => {
         if (res.code === 200) {

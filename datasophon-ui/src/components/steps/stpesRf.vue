@@ -1,4 +1,6 @@
 <!--
+/*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -13,12 +15,12 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- -->
+ *
+ */
 
-<!--
- * @Author: mjzhu
+
  * @Date: 2022-06-13 14:04:05
- * @LastEditTime: 2022-08-15 14:08:23
+ * @LastEditTime: 2023-04-13 15:13:22
  * @FilePath: \ddh-ui\src\components\steps\stpesRf.vue
 -->
 <template>
@@ -88,7 +90,9 @@ export default {
     },
     stepsType: {
       handler (val) {
-        if (val === 'service-example')  this.steps4Data = {...this.serviceData} 
+        if (val === 'service-example')  this.steps4Data = {...this.serviceData}
+        if (val === 'hostManage')  this.steps1Data = {...this.steps1Data, sshUser: 'root', 'sshPort': '22'} 
+
       },
       immediate: true
     }
@@ -173,7 +177,7 @@ export default {
         })
       }
       if (this.stepsNumber === 5) {
-        flag = this.$refs.steps5Ref.handleSubmit();
+        // flag = this.$refs.steps5Ref.handleSubmit();
         this.$refs.steps5Ref.handleSubmit((res) => {
           this.nextLoading = false;
           if (res.code !== 200) return false;

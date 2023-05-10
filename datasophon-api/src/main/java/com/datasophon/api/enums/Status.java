@@ -86,6 +86,9 @@ public enum Status {
     USER_NO_OPERATION_PERM(30001, "user has no operation privilege", "当前用户没有操作权限"),
     THE_CURRENT_ROLE_GROUP_IS_DEFAULT(10038, "the current role group is default role group ,please do not delete it",
             "当前角色组是默认角色组，请勿删除"),
+    NEED_SAME_ROLE_GROUP(10039,
+            "All instances of the same service on the same machine need to be within the same role group",
+            "同一个服务在同一台机器上的所有实例需要在同一个角色组内"),
             ;
 
     private final int code;

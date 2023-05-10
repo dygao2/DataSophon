@@ -1,4 +1,6 @@
 <!--
+/*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -13,10 +15,10 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- -->
+ *
+ */
 
-<!--
- * @Author: mjzhu
+
  * @Date: 2022-06-09 10:11:22
  * @LastEditTime: 2022-10-25 17:29:15
  * @FilePath: \ddh-ui\src\components\alarmModal\index.vue
@@ -89,6 +91,7 @@ export default {
           dataIndex: "alertTargetName",
         },
         { title: "告警详情", key: "alertInfo", dataIndex: "alertInfo",ellipsis: true },
+        { title: "告警时间", key: "createTime", dataIndex: "createTime",ellipsis: true },
         { title: "建议操作", key: "alertAdvice", dataIndex: "alertAdvice",ellipsis: true, }
       ],
       pagination: {

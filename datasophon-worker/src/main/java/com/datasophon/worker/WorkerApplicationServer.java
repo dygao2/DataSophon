@@ -28,6 +28,7 @@ import com.datasophon.common.utils.PropertyUtils;
 import com.datasophon.common.utils.ShellUtils;
 import com.datasophon.worker.actor.RemoteEventActor;
 import com.datasophon.worker.actor.WorkerActor;
+import com.datasophon.worker.utils.ActorUtils;
 import com.datasophon.worker.utils.UnixUtils;
 
 import java.net.InetAddress;
@@ -39,6 +40,10 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson.JSONObject;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+
 import akka.actor.ActorRef;
 import akka.actor.ActorSelection;
 import akka.actor.ActorSystem;
@@ -47,10 +52,6 @@ import akka.event.EventStream;
 import akka.remote.AssociatedEvent;
 import akka.remote.AssociationErrorEvent;
 import akka.remote.DisassociatedEvent;
-
-import com.alibaba.fastjson.JSONObject;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 
 public class WorkerApplicationServer {
 
@@ -77,6 +78,7 @@ public class WorkerApplicationServer {
         CacheUtils.put(Constants.HOSTNAME, hostname);
         // init actor
         ActorSystem system = initActor(hostname);
+        ActorUtils.setActorSystem(system);
 
         subscribeRemoteEvent(system);
 

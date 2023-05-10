@@ -1,4 +1,6 @@
 <!--
+/*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -13,10 +15,10 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- -->
+ *
+ */
 
-<!--
- * @Author: mjzhu
+
  * @Date: 2022-05-24 10:28:22
  * @LastEditTime: 2022-07-11 15:33:32
  * @FilePath: \ddh-ui\src\layouts\header\HeaderAvatar.vue
@@ -24,7 +26,7 @@
 <template>
   <a-dropdown>
     <div class="header-avatar" style="cursor: pointer">
-      <!-- <a-avatar class="avatar" size="small" shape="circle" src="../../assets/img/logo3.png"/> -->
+      <!-- <a-avatar class="avatar" size="small" shape="circle" src="../../assets/img/logo3.svg"/> -->
       <img width="32" class="mgr6" src="@/assets/img/avatar.svg" />
       <span class="name">{{ user.username }}</span>
     </div>

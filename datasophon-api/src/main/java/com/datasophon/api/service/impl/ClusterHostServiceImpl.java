@@ -17,14 +17,21 @@
 
 package com.datasophon.api.service.impl;
 
+import akka.actor.ActorRef;
+import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.enums.Status;
 import com.datasophon.api.master.ActorUtils;
+import com.datasophon.api.master.PrometheusActor;
 import com.datasophon.api.master.RackActor;
 import com.datasophon.api.service.ClusterHostService;
 import com.datasophon.api.service.ClusterInfoService;
 import com.datasophon.api.service.ClusterServiceRoleInstanceService;
 import com.datasophon.common.Constants;
 import com.datasophon.common.cache.CacheUtils;
+import com.datasophon.common.command.ExecuteCmdCommand;
+import com.datasophon.common.command.GenerateHostPrometheusConfig;
 import com.datasophon.common.command.GenerateRackPropCommand;
 import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.ClusterHostEntity;
@@ -33,27 +40,22 @@ import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
 import com.datasophon.dao.enums.RoleType;
 import com.datasophon.dao.enums.ServiceRoleState;
 import com.datasophon.dao.mapper.ClusterHostMapper;
-
 import org.apache.commons.lang.StringUtils;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
-import akka.actor.ActorRef;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service("clusterHostService")
 @Transactional
 public class ClusterHostServiceImpl extends ServiceImpl<ClusterHostMapper, ClusterHostEntity>
         implements
-            ClusterHostService {
+        ClusterHostService {
 
     @Autowired
     ClusterHostMapper hostMapper;
@@ -135,6 +137,24 @@ public class ClusterHostServiceImpl extends ServiceImpl<ClusterHostMapper, Clust
         if (CacheUtils.constainsKey(distributeAgentKey + Constants.UNDERLINE + host.getHostname())) {
             CacheUtils.removeKey(distributeAgentKey + Constants.UNDERLINE + host.getHostname());
         }
+        //stop the worker on this host
+        ActorRef execCmdActor = ActorUtils.getRemoteActor(host.getHostname(),"executeCmdActor");
+        ExecuteCmdCommand command = new ExecuteCmdCommand();
+
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add("service");
+        commands.add("datasophon-worker");
+        commands.add("stop");
+
+        command.setCommands(commands);
+        execCmdActor.tell(command, ActorRef.noSender());
+        //remove host from prometheus
+        ActorRef prometheusActor =
+                ActorUtils.getLocalActor(PrometheusActor.class, ActorUtils.getActorRefName(PrometheusActor.class));
+        GenerateHostPrometheusConfig prometheusConfigCommand = new GenerateHostPrometheusConfig();
+        prometheusConfigCommand.setClusterId(clusterInfo.getId());
+        prometheusActor.tell(prometheusConfigCommand, ActorRef.noSender());
+
         this.removeById(hostId);
         return Result.success();
     }

@@ -106,7 +106,11 @@
       "name": "HiveClient",
       "label": "HiveClient",
       "roleType": "client",
-      "cardinality": "1+"
+      "cardinality": "1+",
+      "runAs": {
+        "user": "hive",
+        "group": "hadoop"
+      }
     }
   ],
   "configWriter": {
@@ -281,7 +285,7 @@
       "description": "启用Kerberos认证",
       "required": true,
       "type": "switch",
-      "value": "",
+      "value": false,
       "configurableInWizard": true,
       "hidden": false,
       "defaultValue": false

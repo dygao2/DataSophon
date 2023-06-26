@@ -6,6 +6,7 @@ groups:
   <#list itemList as item>
   - alert: ${item.alertName}
     expr: ${item.alertExpr}
+    for: ${item.triggerDuration}s
     labels:
       # severity: 指定告警级别。有三种等级，分别为warning、critical和emergency。严重等级依次递增。
       severity: ${item.alertLevel}

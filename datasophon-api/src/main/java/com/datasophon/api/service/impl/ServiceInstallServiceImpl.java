@@ -505,6 +505,8 @@ public class ServiceInstallServiceImpl implements ServiceInstallService {
                 if (!variableValue.equals(configValue)) {
                     return true;
                 }
+            }else{
+                return true;
             }
         }
         return false;

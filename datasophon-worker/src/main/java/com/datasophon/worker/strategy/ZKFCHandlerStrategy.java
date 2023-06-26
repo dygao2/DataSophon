@@ -26,17 +26,16 @@ import com.datasophon.worker.handler.ServiceHandler;
 
 import java.util.ArrayList;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public class ZKFCHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
 
-public class ZKFCHandlerStrategy implements ServiceRoleStrategy {
-
-    private static final Logger logger = LoggerFactory.getLogger(ZKFCHandlerStrategy.class);
+    public ZKFCHandlerStrategy(String serviceName,String serviceRoleName) {
+        super(serviceName,serviceRoleName);
+    }
 
     @Override
     public ExecResult handler(ServiceRoleOperateCommand command) {
         ExecResult startResult = new ExecResult();
-        ServiceHandler serviceHandler = new ServiceHandler();
+        ServiceHandler serviceHandler = new ServiceHandler(command.getServiceName(), command.getServiceRoleName());
         String workPath = Constants.INSTALL_PATH + Constants.SLASH + command.getDecompressPackageName();
         if (!command.isSlave() && command.getCommandType().equals(CommandType.INSTALL_SERVICE)) {
             logger.info("start to execute hdfs zkfc -formatZK");

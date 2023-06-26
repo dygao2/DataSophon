@@ -26,7 +26,7 @@
 <template>
   <div class="service-list card-shadow">
     <a-tabs v-model="tabKey" @change="callback">
-      <a-tab-pane :key="1" tab="总览">
+      <a-tab-pane :key="1" tab="总览" v-if="pageOverview">
         <OverViewPage :serviceId="serviceId" />
       </a-tab-pane>
       <a-tab-pane :key="2" tab="实例">
@@ -72,6 +72,7 @@ export default {
       tabList: ["总览", "实例", "配置"],
       serviceId: "",
       webUis: [],
+      pageOverview: true,
       tableColumns: [
         { title: "序号", key: "index" },
         { title: "角色类型", key: "serviceName" },
@@ -114,7 +115,12 @@ export default {
         const arr = menuData.filter(item => item.path === 'service-manage')
         if (arr.length > 0) {
           arr[0].children.map(item => {
-            if (item.meta.params.serviceId == serviceId) name = item.name
+            if (item.meta.params.serviceId == serviceId) {
+              name = item.name
+              // console.log("grafana url: " + item.meta.obj.dashboardUrl)
+              this.pageOverview = (item.meta.obj.dashboardUrl != undefined && item.meta.obj.dashboardUrl != "")
+              this.tabKey = (this.pageOverview ? 1 : 2); // 如果没有总览，则显示实例为第二个页签
+            }
           })
           this.serviceName = name
         }

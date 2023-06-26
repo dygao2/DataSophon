@@ -17,30 +17,47 @@
 
 package com.datasophon.worker.handler;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.StreamProgress;
+import cn.hutool.core.lang.Console;
+import cn.hutool.http.HttpUtil;
 import com.datasophon.common.Constants;
 import com.datasophon.common.model.RunAs;
 import com.datasophon.common.utils.CompressUtils;
 import com.datasophon.common.utils.ExecResult;
+import com.datasophon.common.utils.FileUtils;
 import com.datasophon.common.utils.PropertyUtils;
 import com.datasophon.common.utils.ShellUtils;
-
+import com.datasophon.worker.utils.TaskConstants;
+import lombok.Data;
 import org.apache.commons.lang.StringUtils;
 
+import java.io.File;
 import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.StreamProgress;
-import cn.hutool.core.lang.Console;
-import cn.hutool.http.HttpUtil;
+import java.util.Objects;
 
+@Data
 public class InstallServiceHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(InstallServiceHandler.class);
 
     private static final String HADOOP = "hadoop";
+
+    private String serviceName;
+
+    private String serviceRoleName;
+
+    private Logger logger;
+
+    public InstallServiceHandler(String serviceName, String serviceRoleName) {
+        this.serviceName = serviceName;
+        this.serviceRoleName = serviceRoleName;
+        String loggerName = String.format("%s-%s-%s", TaskConstants.TASK_LOG_LOGGER_NAME, serviceName, serviceRoleName);
+        logger = LoggerFactory.getLogger(loggerName);
+    }
 
     public ExecResult install(String packageName, String decompressPackageName, String packageMd5, RunAs runAs) {
         ExecResult execResult = new ExecResult();
@@ -68,8 +85,7 @@ public class InstallServiceHandler {
         logger.info("Remote package md5 is {}", packageMd5);
         if (FileUtil.exist(packagePath)) {
             // check md5
-            String md5cmd = "sh " + Constants.WORKER_SCRIPT_PATH + "md5.sh " + packagePath;
-            String md5 = ShellUtils.getPackageMd5(md5cmd);
+            String md5 = FileUtils.md5(new File(packagePath));
 
             logger.info("Local md5 is {}", md5);
 

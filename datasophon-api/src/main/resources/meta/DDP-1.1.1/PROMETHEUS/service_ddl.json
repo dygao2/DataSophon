@@ -80,7 +80,7 @@
       "required": true,
       "configType": "map",
       "type": "input",
-      "value": "",
+      "value": "15",
       "configurableInWizard": true,
       "hidden": false,
       "defaultValue": "15"
@@ -92,7 +92,7 @@
       "required": true,
       "configType": "map",
       "type": "input",
-      "value": "",
+      "value": "15",
       "configurableInWizard": true,
       "hidden": false,
       "defaultValue": "15"

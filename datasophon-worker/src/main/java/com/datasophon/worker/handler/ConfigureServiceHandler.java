@@ -17,6 +17,10 @@
 
 package com.datasophon.worker.handler;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.IdUtil;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.datasophon.common.Constants;
 import com.datasophon.common.model.Generators;
 import com.datasophon.common.model.RunAs;
@@ -25,27 +29,40 @@ import com.datasophon.common.utils.ExecResult;
 import com.datasophon.common.utils.PlaceholderUtils;
 import com.datasophon.common.utils.ShellUtils;
 import com.datasophon.worker.utils.FreemakerUtils;
-
+import com.datasophon.worker.utils.TaskConstants;
+import lombok.Data;
 import org.apache.commons.lang.StringUtils;
-
-import java.io.File;
-import java.net.InetAddress;
-import java.util.*;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import java.io.File;
+import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.IdUtil;
-
+@Data
 public class ConfigureServiceHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(ConfigureServiceHandler.class);
 
     private static final String RANGER_ADMIN = "RangerAdmin";
+
+    private String serviceName;
+
+    private String serviceRoleName;
+
+    private Logger logger;
+
+    public ConfigureServiceHandler(String serviceName,String serviceRoleName) {
+        this.serviceName = serviceName;
+        this.serviceRoleName = serviceRoleName;
+        String loggerName = String.format("%s-%s-%s", TaskConstants.TASK_LOG_LOGGER_NAME, serviceName, serviceRoleName);
+        logger = LoggerFactory.getLogger(loggerName);
+    }
 
     public ExecResult configure(Map<Generators, List<ServiceConfig>> cofigFileMap,
                                 String decompressPackageName,
@@ -54,12 +71,13 @@ public class ConfigureServiceHandler {
                                 RunAs runAs) {
         ExecResult execResult = new ExecResult();
         try {
+
             String hostName = InetAddress.getLocalHost().getHostName();
             HashMap<String, String> paramMap = new HashMap<>();
             paramMap.put("${host}", hostName);
             paramMap.put("${user}", "root");
             paramMap.put("${myid}", myid + "");
-            logger.info("start configure service role {}", serviceRoleName);
+            logger.info("Start to configure service role {}", serviceRoleName);
             for (Generators generators : cofigFileMap.keySet()) {
                 List<ServiceConfig> configs = cofigFileMap.get(generators);
                 String dataDir = "";
@@ -67,7 +85,6 @@ public class ConfigureServiceHandler {
                 ArrayList<ServiceConfig> customConfList = new ArrayList<>();
                 while (iterator.hasNext()) {
                     ServiceConfig config = iterator.next();
-                    logger.info("find config {}", config.getName());
                     if (StringUtils.isNotBlank(config.getType())) {
                         switch (config.getType()) {
                             case Constants.INPUT:
@@ -92,16 +109,16 @@ public class ConfigureServiceHandler {
                         iterator.remove();
                     }
                     if (config.getValue() instanceof Boolean || config.getValue() instanceof Integer) {
-                        logger.info("convert boolean and integer to string");
+                        logger.info("Convert boolean and integer to string");
                         config.setValue(config.getValue().toString());
                     }
 
                     if ("dataDir".equals(config.getName())) {
-                        logger.info("find dataDir : {}", config.getValue());
+                        logger.info("Find dataDir : {}", config.getValue());
                         dataDir = (String) config.getValue();
                     }
                     if ("TrinoCoordinator".equals(serviceRoleName) && "coordinator".equals(config.getName())) {
-                        logger.info("start config trino coordinator");
+                        logger.info("Start config trino coordinator");
                         config.setValue("true");
                         ServiceConfig serviceConfig = new ServiceConfig();
                         serviceConfig.setName("node-scheduler.include-coordinator");
@@ -132,12 +149,17 @@ public class ConfigureServiceHandler {
                             new File(Constants.INSTALL_PATH + File.separator + decompressPackageName, "templates");
                     if (extTemplateDir.exists() && extTemplateDir.isDirectory()) {
                         // 3rd app, load ext templates
-                        logger.info("add ext app template path: {} to loader path.", extTemplateDir.getAbsolutePath());
+                        logger.info("Add ext app template path: {} to loader path.", extTemplateDir.getAbsolutePath());
                         FreemakerUtils.generateConfigFile(generators, configs, decompressPackageName,
                                 extTemplateDir.getAbsolutePath());
                     } else {
                         FreemakerUtils.generateConfigFile(generators, configs, decompressPackageName);
                     }
+                }else{
+                    String packagePath = Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName + Constants.SLASH;
+                    String outputFile =
+                            packagePath + generators.getOutputDirectory() + Constants.SLASH + generators.getFilename();
+                    FileUtil.writeUtf8String("",outputFile);
                 }
                 execResult.setExecOut("configure success");
                 logger.info("configure success");

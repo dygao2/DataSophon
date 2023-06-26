@@ -38,8 +38,11 @@ DataSophon is a similar management platform. Unlike the Sophon, which aims to li
 * Flexible and convenient alarm service, which can realize user-defined alarm groups and alarm indicators
 * Strong scalability, users can integrate or upgrade any components through configuration.
 
-
 ![img](website/static/img/dashboard.png)
+
+# Product Architecture
+
+![product-en](./website/static/img/product-en.png)
 
 # Architecture
 

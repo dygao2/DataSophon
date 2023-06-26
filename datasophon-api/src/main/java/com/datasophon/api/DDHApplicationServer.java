@@ -40,6 +40,10 @@ public class DDHApplicationServer extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
         SpringApplication.run(DDHApplicationServer.class, args);
+		// add shutdown hook， close and shutdown resources
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            shutdown();
+        }));
     }
 
     @PostConstruct
@@ -47,5 +51,12 @@ public class DDHApplicationServer extends SpringBootServletInitializer {
         String hostName = InetAddress.getLocalHost().getHostName();
         CacheUtils.put(Constants.HOSTNAME, hostName);
         ActorUtils.init();
+    }
+
+    /**
+     * Master 关闭时调用
+     */
+    public static void shutdown() {
+        ActorUtils.shutdown();
     }
 }

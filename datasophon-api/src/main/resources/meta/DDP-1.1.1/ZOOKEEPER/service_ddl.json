@@ -31,10 +31,9 @@
       },
       "statusRunner": {
         "timeout": "60",
-        "program": "bin/zkStatus.sh",
+        "program": "bin/zkServer.sh",
         "args": [
-          "status",
-          "zookeeper"
+          "status"
         ]
       },
       "restartRunner": {
@@ -129,7 +128,7 @@
     },
     {
       "name": "tickTime",
-      "label": "心跳时间",
+      "label": "心跳时间(毫秒)",
       "description": "Zookeeper服务器与客户端心跳时间，单位毫秒",
       "required": true,
       "type": "input",
@@ -140,7 +139,7 @@
     },
     {
       "name": "initLimit",
-      "label": "LF初始通信时限",
+      "label": "LF初始通信时限(tickTime的数量(次))",
       "description": "followers启动时需要连接leader，并从leader处获取它所缺失的那部分数据，以便它能和leader的数据保持同步。这个配置项限定从follower启动到恢复完成的超时时间。",
       "required": true,
       "type": "input",
@@ -151,7 +150,7 @@
     },
     {
       "name": "syncLimit",
-      "label": "LF同步通信时限",
+      "label": "LF同步通信时限(tickTime的数量(次))",
       "description": "follower和leader之间数据延迟的最大时间长度。",
       "required": true,
       "type": "input",
@@ -162,7 +161,7 @@
     },
     {
       "name": "zkHeapSize",
-      "label": "ZK最大堆内存",
+      "label": "ZK最大堆内存(GB)",
       "description": "ZK最大堆内存",
       "configType": "map",
       "required": true,
@@ -192,7 +191,7 @@
       "description": "启用Kerberos认证",
       "required": true,
       "type": "switch",
-      "value": "",
+      "value": false,
       "configurableInWizard": true,
       "hidden": false,
       "defaultValue": false

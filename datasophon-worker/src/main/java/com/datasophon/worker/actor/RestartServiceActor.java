@@ -29,7 +29,7 @@ public class RestartServiceActor extends UntypedActor {
     public void onReceive(Object msg) throws Throwable {
         if (msg instanceof ServiceRoleOperateCommand) {
             ServiceRoleOperateCommand command = (ServiceRoleOperateCommand) msg;
-            ServiceHandler serviceHandler = new ServiceHandler();
+            ServiceHandler serviceHandler = new ServiceHandler(command.getServiceName(), command.getServiceRoleName());
             ExecResult startResult =
                     serviceHandler.reStart(command.getRestartRunner(), command.getDecompressPackageName());
             getSender().tell(startResult, getSelf());

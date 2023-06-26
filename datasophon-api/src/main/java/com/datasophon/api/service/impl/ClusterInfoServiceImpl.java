@@ -17,39 +17,48 @@
 
 package com.datasophon.api.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.configuration.ConfigBean;
 import com.datasophon.api.enums.Status;
 import com.datasophon.api.load.GlobalVariables;
-import com.datasophon.api.service.*;
+import com.datasophon.api.service.AlertGroupService;
+import com.datasophon.api.service.ClusterAlertGroupMapService;
+import com.datasophon.api.service.ClusterHostService;
+import com.datasophon.api.service.ClusterInfoService;
+import com.datasophon.api.service.ClusterNodeLabelService;
+import com.datasophon.api.service.ClusterQueueCapacityService;
+import com.datasophon.api.service.ClusterRackService;
+import com.datasophon.api.service.ClusterRoleUserService;
+import com.datasophon.api.service.ClusterYarnSchedulerService;
+import com.datasophon.api.service.FrameServiceService;
 import com.datasophon.api.utils.PackageUtils;
 import com.datasophon.api.utils.ProcessUtils;
 import com.datasophon.api.utils.SecurityUtils;
 import com.datasophon.common.Constants;
 import com.datasophon.common.cache.CacheUtils;
 import com.datasophon.common.utils.Result;
-import com.datasophon.dao.entity.*;
+import com.datasophon.dao.entity.AlertGroupEntity;
+import com.datasophon.dao.entity.ClusterAlertGroupMap;
+import com.datasophon.dao.entity.ClusterInfoEntity;
+import com.datasophon.dao.entity.FrameServiceEntity;
+import com.datasophon.dao.entity.UserInfoEntity;
 import com.datasophon.dao.enums.ClusterState;
 import com.datasophon.dao.mapper.ClusterInfoMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
-import akka.actor.*;
-
 @Service("clusterInfoService")
 @Transactional
 public class ClusterInfoServiceImpl extends ServiceImpl<ClusterInfoMapper, ClusterInfoEntity>
         implements
-            ClusterInfoService {
+        ClusterInfoService {
 
     @Autowired
     private ClusterInfoMapper clusterInfoMapper;
@@ -185,7 +194,7 @@ public class ClusterInfoServiceImpl extends ServiceImpl<ClusterInfoMapper, Clust
             }
         }
         ClusterInfoEntity cluster = this.getById(clusterInfo.getId());
-        if (cluster.getClusterCode() != clusterInfo.getClusterCode()) {
+        if (!cluster.getClusterCode().equals(clusterInfo.getClusterCode())) {
             ProcessUtils.createServiceActor(clusterInfo);
         }
         this.updateById(clusterInfo);

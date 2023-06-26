@@ -19,6 +19,12 @@
 
 package com.datasophon.api.master;
 
+import akka.actor.ActorSelection;
+import akka.actor.UntypedActor;
+import akka.pattern.Patterns;
+import akka.util.Timeout;
+import cn.hutool.http.HttpUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.datasophon.api.load.ServiceRoleJmxMap;
 import com.datasophon.api.master.handler.service.ServiceConfigureHandler;
 import com.datasophon.api.service.ClusterHostService;
@@ -26,6 +32,7 @@ import com.datasophon.api.service.ClusterServiceInstanceService;
 import com.datasophon.api.service.ClusterServiceRoleInstanceService;
 import com.datasophon.api.utils.SpringTool;
 import com.datasophon.common.Constants;
+import com.datasophon.common.cache.CacheUtils;
 import com.datasophon.common.command.GenerateAlertConfigCommand;
 import com.datasophon.common.command.GenerateHostPrometheusConfig;
 import com.datasophon.common.command.GeneratePrometheusConfigCommand;
@@ -37,7 +44,8 @@ import com.datasophon.common.utils.ExecResult;
 import com.datasophon.dao.entity.ClusterHostEntity;
 import com.datasophon.dao.entity.ClusterServiceInstanceEntity;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
@@ -48,17 +56,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-
-import akka.actor.ActorSelection;
-import akka.actor.UntypedActor;
-import akka.pattern.Patterns;
-import akka.util.Timeout;
-import cn.hutool.http.HttpUtil;
 
 public class PrometheusActor extends UntypedActor {
 
@@ -166,8 +163,23 @@ public class PrometheusActor extends UntypedActor {
                 nodeGenerators.setOutputDirectory("configs");
                 nodeGenerators.setConfigFormat("custom");
                 nodeGenerators.setTemplateName("scrape.ftl");
+
+                Generators masterGenerators = new Generators();
+                masterGenerators.setFilename("master.json");
+                masterGenerators.setOutputDirectory("configs");
+                masterGenerators.setConfigFormat("custom");
+                masterGenerators.setTemplateName("scrape.ftl");
+
                 ArrayList<ServiceConfig> workerServiceConfigs = new ArrayList<>();
                 ArrayList<ServiceConfig> nodeServiceConfigs = new ArrayList<>();
+                ArrayList<ServiceConfig> masterServiceConfigs = new ArrayList<>();
+
+                ServiceConfig masterConfig = new ServiceConfig();
+                masterConfig.setName("master_" + CacheUtils.get(Constants.HOSTNAME));
+                masterConfig.setValue(CacheUtils.get(Constants.HOSTNAME) + ":8586");
+                masterConfig.setRequired(true);
+                masterServiceConfigs.add(masterConfig);
+
                 for (ClusterHostEntity clusterHostEntity : hostList) {
                     ServiceConfig serviceConfig = new ServiceConfig();
                     serviceConfig.setName("worker_" + clusterHostEntity.getHostname());
@@ -181,8 +193,11 @@ public class PrometheusActor extends UntypedActor {
                     nodeServiceConfig.setRequired(true);
                     nodeServiceConfigs.add(nodeServiceConfig);
                 }
+
                 configFileMap.put(workerGenerators, workerServiceConfigs);
                 configFileMap.put(nodeGenerators, nodeServiceConfigs);
+                configFileMap.put(masterGenerators,masterServiceConfigs);
+
                 ServiceRoleInfo serviceRoleInfo = new ServiceRoleInfo();
                 serviceRoleInfo.setName("Prometheus");
                 serviceRoleInfo.setParentName("PROMETHEUS");

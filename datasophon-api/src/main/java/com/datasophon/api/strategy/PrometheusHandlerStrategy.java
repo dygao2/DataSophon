@@ -53,7 +53,7 @@ public class PrometheusHandlerStrategy implements ServiceRoleStrategy {
     @Override
     public void handlerServiceRoleCheck(ClusterServiceRoleInstanceEntity roleInstanceEntity,
                                         Map<String, ClusterServiceRoleInstanceEntity> map) {
-        String url = "http://" + roleInstanceEntity.getHostname() + ":9090";
+        String url = "http://" + roleInstanceEntity.getHostname() + ":9090/alerts";
         try {
             HttpUtil.get(url);
             // recover alert

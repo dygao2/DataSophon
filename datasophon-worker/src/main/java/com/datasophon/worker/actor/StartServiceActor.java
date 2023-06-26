@@ -40,7 +40,7 @@ public class StartServiceActor extends UntypedActor {
             ServiceRoleOperateCommand command = (ServiceRoleOperateCommand) msg;
             logger.info("start to start service role {}", command.getServiceRoleName());
             ExecResult startResult = new ExecResult();
-            ServiceHandler serviceHandler = new ServiceHandler();
+            ServiceHandler serviceHandler = new ServiceHandler(command.getServiceName(), command.getServiceRoleName());
 
             ServiceRoleStrategy serviceRoleHandler =
                     ServiceRoleStrategyContext.getServiceRoleHandler(command.getServiceRoleName());

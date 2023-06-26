@@ -50,7 +50,7 @@ export default {
   watch: {
     $route: {
       handler(val) {
-        console.log(val)
+        // console.log("===>" + val)
         let url = ''
         const menuData = JSON.parse(localStorage.getItem('menuData')) || []
         const arr = menuData.filter(item => item.path === 'service-manage')
@@ -66,12 +66,11 @@ export default {
   },
   methods: {
     analysisRouter(url) {
-      console.log('xiaohui')
       // 先让iframe销毁
       this.reloadIframe = false;
       this.$nextTick(() => {
         // 赋值地址，再加载
-        console.log('再来')
+        // console.log('再来', url)
         this.dashboardUrl = url;
         this.reloadIframe = true;
       });

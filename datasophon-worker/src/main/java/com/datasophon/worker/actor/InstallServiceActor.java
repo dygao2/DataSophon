@@ -17,19 +17,17 @@
 
 package com.datasophon.worker.actor;
 
+import akka.actor.UntypedActor;
 import com.datasophon.common.Constants;
 import com.datasophon.common.command.InstallServiceRoleCommand;
 import com.datasophon.common.enums.ServiceRoleType;
 import com.datasophon.common.utils.ExecResult;
 import com.datasophon.common.utils.ShellUtils;
 import com.datasophon.worker.handler.InstallServiceHandler;
-
-import java.util.ArrayList;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import akka.actor.UntypedActor;
+import java.util.ArrayList;
 
 public class InstallServiceActor extends UntypedActor {
 
@@ -40,7 +38,7 @@ public class InstallServiceActor extends UntypedActor {
         if (msg instanceof InstallServiceRoleCommand) {
             InstallServiceRoleCommand command = (InstallServiceRoleCommand) msg;
             ExecResult installResult = new ExecResult();
-            InstallServiceHandler serviceHandler = new InstallServiceHandler();
+            InstallServiceHandler serviceHandler = new InstallServiceHandler(command.getServiceName(),command.getServiceRoleName());
 
             logger.info("start install package {}", command.getPackageName());
             if (command.getDecompressPackageName().contains("kerberos")) {

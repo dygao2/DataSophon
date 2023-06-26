@@ -25,6 +25,7 @@ import paths from '@/api/baseUrl'// 后台服务地址
 let path = paths.path() + '/ddh'
 export default {
   getServiceList: path + '/api/frame/service/list', // 选择服务的列表
+  deleteService: path + '/api/frame/service/delete', // 删除框架服务
   getServiceConfigOption: path + '/service/install/getServiceConfigOption', // 查询服务配置
   getServiceRoleList: path + '/api/frame/service/role/getServiceRoleList', // 查询服务对应的服务角色 
   getAllHost: path + '/api/cluster/host/all', // 查询集群所有主机  

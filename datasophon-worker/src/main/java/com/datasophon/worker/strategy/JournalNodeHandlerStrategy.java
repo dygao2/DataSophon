@@ -17,6 +17,7 @@
 
 package com.datasophon.worker.strategy;
 
+import cn.hutool.core.io.FileUtil;
 import com.datasophon.common.Constants;
 import com.datasophon.common.cache.CacheUtils;
 import com.datasophon.common.command.ServiceRoleOperateCommand;
@@ -28,19 +29,16 @@ import com.datasophon.worker.utils.KerberosUtils;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public class JournalNodeHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
 
-import cn.hutool.core.io.FileUtil;
-
-public class JournalNodeHandlerStrategy implements ServiceRoleStrategy {
-
-    private static final Logger logger = LoggerFactory.getLogger(JournalNodeHandlerStrategy.class);
+    public JournalNodeHandlerStrategy(String serviceName,String serviceRoleName) {
+        super(serviceName,serviceRoleName);
+    }
 
     @Override
     public ExecResult handler(ServiceRoleOperateCommand command) throws SQLException, ClassNotFoundException {
         ExecResult startResult = new ExecResult();
-        ServiceHandler serviceHandler = new ServiceHandler();
+        ServiceHandler serviceHandler = new ServiceHandler(command.getServiceName(), command.getServiceRoleName());
         if (command.getEnableKerberos()) {
             logger.info("start to get journalnode keytab file");
             String hostname = CacheUtils.getString(Constants.HOSTNAME);

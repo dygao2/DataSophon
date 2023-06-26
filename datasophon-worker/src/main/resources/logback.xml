@@ -28,7 +28,25 @@
             <charset>UTF-8</charset>
         </encoder>
     </appender>
-
+    <appender name="TASKLOGFILE" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <filter class="com.datasophon.worker.log.TaskLogFilter"/>
+        <Discriminator class="com.datasophon.worker.log.TaskLogDiscriminator">
+            <key>taskAppId</key>
+            <logBase>${log.base}</logBase>
+        </Discriminator>
+        <sift>
+            <appender name="FILE-${taskAppId}" class="ch.qos.logback.core.FileAppender">
+                <file>${log.base}/${taskAppId}.log</file>
+                <encoder>
+                    <pattern>
+                        [%level] %date{yyyy-MM-dd HH:mm:ss} %logger{96}:[%line] - %msg%n
+                    </pattern>
+                    <charset>UTF-8</charset>
+                </encoder>
+                <append>true</append>
+            </appender>
+        </sift>
+    </appender>
     <!-- worker server logback config start -->
     <appender name="WORKERLOGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${log.base}/datasophon-worker.log</file>
@@ -81,6 +99,7 @@
         <appender-ref ref="STDOUT" />
         <appender-ref ref="WORKERLOGFILE" />
         <appender-ref ref="errorlog" />
+        <appender-ref ref="TASKLOGFILE"/>
     </root>
 
 

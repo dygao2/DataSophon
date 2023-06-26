@@ -29,13 +29,14 @@ import akka.actor.UntypedActor;
 public class ConfigureServiceActor extends UntypedActor {
 
     private static final Logger logger = LoggerFactory.getLogger(ConfigureServiceActor.class);
+
     @Override
     public void onReceive(Object msg) throws Throwable {
         if (msg instanceof GenerateServiceConfigCommand) {
 
             GenerateServiceConfigCommand command = (GenerateServiceConfigCommand) msg;
             logger.info("start configure {}", command.getServiceName());
-            ConfigureServiceHandler serviceHandler = new ConfigureServiceHandler();
+            ConfigureServiceHandler serviceHandler = new ConfigureServiceHandler(command.getServiceName(), command.getServiceRoleName());
             ExecResult startResult = serviceHandler.configure(command.getCofigFileMap(),
                     command.getDecompressPackageName(),
                     command.getMyid(),

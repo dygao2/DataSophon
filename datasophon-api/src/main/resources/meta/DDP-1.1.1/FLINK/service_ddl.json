@@ -54,7 +54,7 @@
       "configWithHA": true,
       "required": false,
       "type": "input",
-      "value": "",
+      "value": "zookeeper",
       "configurableInWizard": true,
       "hidden": true,
       "defaultValue": "zookeeper"
@@ -65,7 +65,7 @@
       "configWithHA": true,
       "required": false,
       "type": "input",
-      "value": "",
+      "value": "hdfs://nameservice1/flink/ha/",
       "configurableInWizard": true,
       "hidden": true,
       "defaultValue": "hdfs://nameservice1/flink/ha/"
@@ -88,7 +88,7 @@
       "configWithHA": true,
       "required": false,
       "type": "input",
-      "value": "",
+      "value": "/flink",
       "configurableInWizard": true,
       "hidden": true,
       "defaultValue": "/flink"
@@ -100,7 +100,7 @@
       "configWithHA": true,
       "required": false,
       "type": "input",
-      "value": "",
+      "value": "open",
       "configurableInWizard": true,
       "hidden": true,
       "defaultValue": "open"

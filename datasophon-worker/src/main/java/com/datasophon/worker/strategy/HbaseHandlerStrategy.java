@@ -17,6 +17,7 @@
 
 package com.datasophon.worker.strategy;
 
+import cn.hutool.core.io.FileUtil;
 import com.datasophon.common.Constants;
 import com.datasophon.common.cache.CacheUtils;
 import com.datasophon.common.command.ServiceRoleOperateCommand;
@@ -29,19 +30,16 @@ import com.datasophon.worker.utils.KerberosUtils;
 
 import java.util.ArrayList;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public class HbaseHandlerStrategy extends  AbstractHandlerStrategy implements ServiceRoleStrategy {
 
-import cn.hutool.core.io.FileUtil;
-
-public class HbaseHandlerStrategy implements ServiceRoleStrategy {
-
-    private static final Logger logger = LoggerFactory.getLogger(HbaseHandlerStrategy.class);
+    public HbaseHandlerStrategy(String serviceName,String serviceRoleName) {
+        super(serviceName,serviceRoleName);
+    }
 
     @Override
     public ExecResult handler(ServiceRoleOperateCommand command) {
         ExecResult startResult = new ExecResult();
-        ServiceHandler serviceHandler = new ServiceHandler();
+        ServiceHandler serviceHandler = new ServiceHandler(command.getServiceName(), command.getServiceRoleName());
         if (command.getEnableRangerPlugin()) {
             logger.info("start to enable  hbase plugin");
             ArrayList<String> commands = new ArrayList<>();

@@ -175,7 +175,11 @@
       "name": "HdfsClient",
       "label": "HdfsClient",
       "roleType": "client",
-      "cardinality": "1+"
+      "cardinality": "1+",
+      "runAs": {
+        "user": "hdfs",
+        "group": "hadoop"
+      }
     }
   ],
   "configWriter": {
@@ -660,7 +664,7 @@
       "description": "开启Kerberos认证",
       "required": false,
       "type": "switch",
-      "value": "",
+      "value": false,
       "configurableInWizard": true,
       "hidden": false,
       "defaultValue": false

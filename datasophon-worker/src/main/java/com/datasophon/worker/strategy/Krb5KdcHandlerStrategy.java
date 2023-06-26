@@ -17,6 +17,7 @@
 
 package com.datasophon.worker.strategy;
 
+import cn.hutool.core.io.FileUtil;
 import com.datasophon.common.Constants;
 import com.datasophon.common.command.ServiceRoleOperateCommand;
 import com.datasophon.common.enums.CommandType;
@@ -27,19 +28,17 @@ import com.datasophon.worker.handler.ServiceHandler;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public class Krb5KdcHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
 
-import cn.hutool.core.io.FileUtil;
+    public Krb5KdcHandlerStrategy(String serviceName,String serviceRoleName) {
+        super(serviceName,serviceRoleName);
+    }
 
-public class Krb5KdcHandlerStrategy implements ServiceRoleStrategy {
-
-    private static final Logger logger = LoggerFactory.getLogger(Krb5KdcHandlerStrategy.class);
 
     @Override
     public ExecResult handler(ServiceRoleOperateCommand command) throws SQLException, ClassNotFoundException {
         ExecResult startResult = new ExecResult();
-        ServiceHandler serviceHandler = new ServiceHandler();
+        ServiceHandler serviceHandler = new ServiceHandler(command.getServiceName(), command.getServiceRoleName());
         if (command.getCommandType().equals(CommandType.INSTALL_SERVICE) &&
                 !FileUtil.exist("/var/kerberos/krb5kdc/principal")) {
             ArrayList<String> commands = new ArrayList<>();

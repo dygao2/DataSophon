@@ -42,4 +42,9 @@ export default {
   deleteRack: path + '/cluster/rack/delete',
   deleteClusterRack: path + '/cluster/rack/delete',
   getRackList: path + '/cluster/rack/list',
+  getParcelList: path + '/cluster/parcel/list',
+  getParcelParse: path + '/cluster/parcel/parse',
+  getParcelProcess: path + '/cluster/parcel/process',
+  downloadComponent: path + '/cluster/parcel/download',
+  installComponent: path + '/cluster/parcel/install',
 }

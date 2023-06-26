@@ -28,7 +28,9 @@
     <div class="frame-list card-shadow">
       <a-tabs default-active-key="1" @change="callback">
         <a-tab-pane v-for="(item, index) in frameList" :key="index+1" :tab="item.frameCode">
-          <a-table :columns="loadTable()" class="release-table-custom" :dataSource="item.frameServiceList" rowKey="id" :pagination="false"></a-table>
+          <a-table :columns="loadTable()" class="release-table-custom" :dataSource="item.frameServiceList" rowKey="id" :pagination="false">
+
+          </a-table>
         </a-tab-pane>
       </a-tabs>
     </div>
@@ -44,10 +46,11 @@ export default {
       spinning: false,
       frameList: [],
       tableColumns: [
-        { title: "序号", key: "index" },
-        { title: "服务", key: "label" },
+        { title: "序号", key: "index", width: 80 },
+        { title: "服务", key: "serviceName" },
         { title: "版本", key: "serviceVersion" },
         { title: "描述", key: "serviceDesc", ellipsis: true },
+        { title: "操作", key: "action", width: 80, align: "center"  },
       ],
     };
   },
@@ -64,10 +67,24 @@ export default {
           key: item.key,
           fixed: item.fixed ? item.fixed : "",
           width: item.width ? item.width : "",
+          align: item.align ? item.align : "left",
           ellipsis: item.ellipsis ? item.ellipsis : "",
           customRender: (text, record, index) => {
             if (item.key == "index") {
               return `${index + 1}`;
+            } else if (item.key == "action") {
+              let _this = this
+              const child = _this.$createElement('a', {
+                domProps: {
+                  innerHTML: "删除"
+                },
+                on: {
+                  click: function () {
+                    _this.onDelete(record)
+                  }
+                }
+              })
+              return child;
             } else {
               return <span title={record[item.key]}> {record[item.key]} </span>;
             }
@@ -84,6 +101,46 @@ export default {
         }
       });
     },
+    onDelete(record) {
+      console.log(record)
+      let self = this
+      this.$confirm({
+        title: '确认提示',
+        okText: '确认',
+        cancelText: '取消',
+        content:  (
+          <div style="margin-top:20px">
+            <div style="font-size: 16px;color: #555555;">
+              {'是否确认删除 ' + record.serviceName + ' 服务？'}
+            </div>
+            <div style="margin-top:20px;text-align:right;padding:0 30px 30px 30px">
+              <a-button
+                style="margin-right:10px;"
+                type="primary"
+                onClick={() => {
+                  self.$axiosGet(global.API.deleteService + "/" + record.id, {}).then((res) => {
+                    if (res.code === 200) {
+                      self.getFrameList();
+                      self.$destroyAll();
+                    }
+                  });
+                }}
+              >
+                确定
+              </a-button>
+              <a-button
+                style="margin-right:10px;"
+                onClick={() => self.$destroyAll() }
+              >
+                取消
+              </a-button>
+            </div>
+          </div>
+        ),
+        okType: 'danger',
+        closable: true,
+      });
+    }
   },
   mounted() {
     this.getFrameList();

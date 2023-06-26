@@ -65,6 +65,8 @@
           "replica.fetch.max.bytes",
           "num.network.threads",
           "num.io.threads",
+          "replica.lag.time.max.ms",
+          "num.replica.fetchers",
           "queued.max.requests",
           "socket.receive.buffer.bytes",
           "socket.send.buffer.bytes",
@@ -79,10 +81,10 @@
         ]
       },
       {
-        "filename": "kafka-run-class.sh",
+        "filename": "kafka-server-start.sh",
         "configFormat": "custom",
         "outputDirectory": "bin",
-        "templateName": "kafka-run-class.ftl",
+        "templateName": "kafka-server-start.ftl",
         "includeParams": [
           "kafkaHeapSize",
           "javaSecurityKrb5Conf",
@@ -259,6 +261,28 @@
       "defaultValue": "12"
     },
     {
+      "name": "num.replica.fetchers",
+      "label": "副本同步线程数",
+      "description": "副本拉取线程数，这个参数占总核数的50%的 1/3",
+      "required": true,
+      "type": "input",
+      "value": "",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": "12"
+    },
+    {
+      "name": "replica.lag.time.max.ms",
+      "label": "副本延迟最大时间",
+      "description": "",
+      "required": true,
+      "type": "input",
+      "value": "",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": "20000"
+    },
+    {
       "name": "queued.max.requests",
       "label": "等待执行的io请求最大数目",
       "description": "在网络线程停止读取新请求之前，可以排队等待I/O线程处理的最大请求个数。",
@@ -308,7 +332,7 @@
       "description": "开启Kerberos认证",
       "required": false,
       "type": "switch",
-      "value": "",
+      "value": false,
       "configurableInWizard": true,
       "hidden": false,
       "defaultValue": false

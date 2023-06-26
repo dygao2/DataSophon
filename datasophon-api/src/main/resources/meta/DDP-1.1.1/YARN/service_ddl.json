@@ -133,7 +133,11 @@
       "name": "YarnClient",
       "label": "YarnClient",
       "roleType": "client",
-      "cardinality": "1+"
+      "cardinality": "1+",
+      "runAs": {
+        "user": "yarn",
+        "group": "hadoop"
+      }
     }
   ],
   "configWriter": {
@@ -177,6 +181,7 @@
           "yarn.resourcemanager.store.class",
           "yarn.application.classpath",
           "yarn.nodemanager.local-dirs",
+          "yarn.nodemanager.log-dirs",
           "yarn.nodemanager.address",
           "yarn.nodemanager.resource.count-logical-processors-as-cores",
           "yarn.nodemanager.resource.detect-hardware-capabilities",
@@ -663,6 +668,21 @@
       "defaultValue": ""
     },
     {
+      "name": "yarn.nodemanager.log-dirs",
+      "label": "NodeManager日志存储目录",
+      "description": "NodeManager日志存储目录，可配置多个，按逗号分隔",
+      "required": true,
+      "configType": "path",
+      "separator": ",",
+      "type": "multiple",
+      "value": [
+        "/data/nm/userlogs"
+      ],
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": ""
+    },
+    {
       "name": "mapreduce.cluster.local.dir",
       "label": "MapReduce本地存储目录",
       "description": "MapReduce本地存储目录",
@@ -821,7 +841,7 @@
       "description": "启用Kerberos认证",
       "required": true,
       "type": "switch",
-      "value": "",
+      "value": false,
       "configurableInWizard": true,
       "hidden": false,
       "defaultValue": false

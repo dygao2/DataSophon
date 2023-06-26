@@ -93,18 +93,18 @@
         <dependency>
             <groupId>com.datasophon</groupId>
             <artifactId>datasophon-dao</artifactId>
-            <version>1.1.1</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.datasophon</groupId>
             <artifactId>datasophon-common</artifactId>
-            <version>1.1.1</version>
+            <version>${project.version}</version>
         </dependency>
         <!-- ui 工程打包是一个空包，这里依赖主要是让 ui 先编译，这样前端就能自动打包到 tar 介质中-->
         <dependency>
             <groupId>com.datasophon</groupId>
             <artifactId>datasophon-ui</artifactId>
-            <version>1.1.1</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.typesafe.akka</groupId>
@@ -126,6 +126,11 @@
         <dependency>
             <groupId>org.apache.sshd</groupId>
             <artifactId>sshd-sftp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.i2p.crypto</groupId>
+            <artifactId>eddsa</artifactId>
+            <version>0.3.0</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>

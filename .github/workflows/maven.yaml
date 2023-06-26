@@ -7,7 +7,7 @@ on:
   push:
     branches: [ "dev" ]
   pull_request:
-    branches: [ "" ]
+    branches: [ "dev" ]
 
 concurrency:
   group: backend-${{ github.event.pull_request.number || github.ref }}
@@ -41,4 +41,5 @@ jobs:
         run: |
           ./mvnw -Pgoogle-mirror -B clean install \
                  -Dmaven.test.skip=true \
-                 --no-snapshot-updates
+                 --no-snapshot-updates \
+                 -pl !datasophon-ui,!datasophon-api -am

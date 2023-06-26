@@ -29,19 +29,19 @@ import com.datasophon.common.utils.ExecResult;
 import com.datasophon.common.utils.ThrowableUtils;
 import com.datasophon.worker.handler.ServiceHandler;
 import com.datasophon.worker.utils.ActorUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
-public class FEHandlerStrategy implements ServiceRoleStrategy {
+public class FEHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
 
-    private static final Logger logger = LoggerFactory.getLogger(FEHandlerStrategy.class);
+    public FEHandlerStrategy(String serviceName,String serviceRoleName) {
+        super(serviceName,serviceRoleName);
+    }
 
     @Override
     public ExecResult handler(ServiceRoleOperateCommand command) {
         ExecResult startResult = new ExecResult();
-        ServiceHandler serviceHandler = new ServiceHandler();
+        ServiceHandler serviceHandler = new ServiceHandler(command.getServiceName(), command.getServiceRoleName());
         if (command.getCommandType() == CommandType.INSTALL_SERVICE) {
             if (command.isSlave()) {
                 logger.info("first start  fe");

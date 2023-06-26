@@ -1,0 +1,23 @@
+{
+    "lastUpdated": 1686225152486,
+    "parcel": {
+        "parcelName": "datasophon.com-Parcel Repo",
+        "hash": "13c6c02e41fa020ec3d526ab4b72f08174b444a5",
+        "md5": "13c6c02e41fa020ec3d526ab4b72f08174b444a5",
+        "depends": "DDP (>1.0). DDP (<<2.0)",
+        "meta": "DDP-1.1.1",
+        "components": [
+            {
+                "parcelName": "ftpserver-1.1.1.tar.gz",
+                "md5": "492ad4869b50fdad9380368fce30993f",
+                "hash": "c5f269987bc51b852a7a49cf5f8fed808717392a",
+                "name": "FTPSERVER",
+                "label": "FTPServer",
+                "description": "FTPServer for HDFS",
+                "version": "1.1.1",
+                "packageName": "ftpserver-1.1.1.tar.gz",
+                "decompressPackageName": "ftpserver-1.1.1"
+            }
+        ]
+    }
+}

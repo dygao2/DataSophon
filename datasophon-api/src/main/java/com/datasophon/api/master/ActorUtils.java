@@ -70,9 +70,10 @@ public class ActorUtils {
         actorSystem.actorOf(Props.create(MasterNodeProcessingActor.class),
                 getActorRefName(MasterNodeProcessingActor.class));
 
+        // 节点检测 5m 检测一次
         actorSystem.scheduler().schedule(
-                FiniteDuration.apply(60L, TimeUnit.SECONDS),
-                FiniteDuration.apply(5L, TimeUnit.MINUTES),
+                FiniteDuration.apply(30L, TimeUnit.SECONDS),
+                FiniteDuration.apply(300L, TimeUnit.SECONDS),
                 hostCheckActor,
                 new HostCheckCommand(),
                 actorSystem.dispatcher(),
@@ -134,6 +135,18 @@ public class ActorUtils {
         }
 
         return actorRef;
+    }
+
+    /**
+     * shutdown
+     */
+    public static void shutdown() {
+        if(actorSystem != null) {
+            try {
+                actorSystem.shutdown();
+            } catch (Exception ignore){}
+            actorSystem = null;
+        }
     }
 
     /**

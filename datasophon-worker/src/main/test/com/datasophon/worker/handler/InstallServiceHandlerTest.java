@@ -1,6 +1,5 @@
 package com.datasophon.worker.handler;
 
-import com.datasophon.common.utils.ExecResult;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -10,7 +9,7 @@ public class InstallServiceHandlerTest {
 
     @Before
     public void setUp() {
-        installServiceHandlerUnderTest = new InstallServiceHandler();
+        installServiceHandlerUnderTest = new InstallServiceHandler("HDFS","NameNode");
     }
 
     @Test

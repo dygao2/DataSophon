@@ -17,16 +17,14 @@
 
 package com.datasophon.dao.entity;
 
-import com.datasophon.dao.enums.MANAGED;
-
-import java.io.Serializable;
-import java.util.Date;
-
-import lombok.Data;
-
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.datasophon.dao.enums.MANAGED;
+import lombok.Data;
+
+import java.io.Serializable;
+import java.util.Date;
 
 @TableName("t_ddh_cluster_host")
 @Data
@@ -88,7 +86,7 @@ public class ClusterHostEntity implements Serializable {
      */
     private Integer clusterId;
     /**
-     * 1:正常运行 2：存在异常 3、断线
+     * 1:正常运行 2：断线 3、存在告警
      */
     private Integer hostState;
     /**

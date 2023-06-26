@@ -73,6 +73,11 @@ const options = {
         component: () => import('@/pages/colonyManage/list'),
       },
       {
+        path: 'colony-parcel',
+        name: '存储库管理',
+        component: () => import('@/pages/colonyManage/parcel'),
+      },
+      {
         path: 'colony-frame',
         name: '集群框架',
         component: () => import('@/pages/colonyManage/frame'),

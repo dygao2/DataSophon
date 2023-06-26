@@ -17,9 +17,14 @@
 
 package com.datasophon.api.strategy;
 
+import com.alibaba.fastjson.JSONObject;
 import com.datasophon.api.load.GlobalVariables;
 import com.datasophon.api.load.ServiceConfigMap;
-import com.datasophon.api.service.*;
+import com.datasophon.api.service.ClusterInfoService;
+import com.datasophon.api.service.ClusterServiceInstanceService;
+import com.datasophon.api.service.ClusterServiceRoleGroupConfigService;
+import com.datasophon.api.service.ClusterServiceRoleInstanceService;
+import com.datasophon.api.service.ServiceInstallService;
 import com.datasophon.api.utils.ProcessUtils;
 import com.datasophon.api.utils.SpringTool;
 import com.datasophon.common.Constants;
@@ -29,17 +34,14 @@ import com.datasophon.dao.entity.ClusterInfoEntity;
 import com.datasophon.dao.entity.ClusterServiceInstanceEntity;
 import com.datasophon.dao.entity.ClusterServiceRoleGroupConfig;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.alibaba.fastjson.JSONObject;
 
 public class RangerAdminHandlerStrategy extends ServiceHandlerAbstract implements ServiceRoleStrategy {
 
@@ -167,6 +169,7 @@ public class RangerAdminHandlerStrategy extends ServiceHandlerAbstract implement
                     serviceConfigs.add(parameter);
                 }
             }
+            logger.info("Update hdfs enable ranger plugin");
             serviceInstallService.saveServiceConfig(clusterId, serviceInstance.getServiceName(), serviceConfigs,
                     roleGroupId);
         }

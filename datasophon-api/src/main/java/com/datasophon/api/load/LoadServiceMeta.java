@@ -117,7 +117,7 @@ public class LoadServiceMeta implements ApplicationRunner {
     @Transactional(rollbackFor = Exception.class)
     public void run(ApplicationArguments args) throws Exception {
         File[] ddps = FileUtil.ls(PATH);
-        // load global variable
+        // load global variable, 加载 frame
         List<ClusterInfoEntity> clusters = clusterInfoService.list();
         loadGlobalVariables(clusters);
 
@@ -130,44 +130,66 @@ public class LoadServiceMeta implements ApplicationRunner {
                 if (file.getName().endsWith(Constants.JSON)) {
                     String serviceName = file.getParentFile().getName();
                     String serviceDdl = FileReader.create(file).readString();
-                    ServiceInfo serviceInfo = JSONObject.parseObject(serviceDdl, ServiceInfo.class);
-                    String serviceInfoMd5 = SecureUtil.md5(serviceDdl);
-
-                    // save service config
-                    List<ServiceConfig> allParameters = serviceInfo.getParameters();
-                    Map<String, ServiceConfig> map =
-                            allParameters.stream()
-                                    .collect(
-                                            Collectors.toMap(
-                                                    ServiceConfig::getName,
-                                                    serviceConfig -> serviceConfig,
-                                                    (v1, v2) -> v1));
-                    Map<Generators, List<ServiceConfig>> configFileMap = new HashMap<>();
-
-                    buildConfigFileMap(serviceInfo, map, configFileMap);
-
-                    PackageUtils.putServicePackageName(
-                            frameCode, serviceName, serviceInfo.getDecompressPackageName());
-
-                    putServiceHomeToVariable(
-                            clusters, serviceName, serviceInfo.getDecompressPackageName());
-                    // save service and service config
-                    FrameServiceEntity serviceEntity =
-                            saveFrameService(
-                                    frameCode,
-                                    frameInfo,
-                                    serviceName,
-                                    serviceDdl,
-                                    serviceInfo,
-                                    serviceInfoMd5,
-                                    allParameters,
-                                    configFileMap);
-                    // save frame service role
-                    saveFrameServiceRole(frameCode, serviceName, serviceInfo, serviceEntity);
+                    try {
+                        parseServiceDdl(frameCode, clusters, frameInfo, serviceName, serviceDdl);
+                    } catch (Exception e) {
+                        logger.error("invalid service ddl file: " + serviceName, e);
+                    }
                 }
             }
         }
     }
+
+
+    /**
+     * 解析 DDL 并存储到 frame 库
+     * @param frameCode
+     * @param clusters
+     * @param frameInfo
+     * @param serviceName
+     * @param serviceDdl
+     */
+    public void parseServiceDdl(final String frameCode,
+                                List<ClusterInfoEntity> clusters,
+                                FrameInfoEntity frameInfo,
+                                final String serviceName,
+                                final String serviceDdl) {
+        ServiceInfo serviceInfo = JSONObject.parseObject(serviceDdl, ServiceInfo.class);
+        String serviceInfoMd5 = SecureUtil.md5(serviceDdl);
+
+        // save service config
+        List<ServiceConfig> allParameters = serviceInfo.getParameters();
+        Map<String, ServiceConfig> map =
+                allParameters.stream()
+                        .collect(
+                                Collectors.toMap(
+                                        ServiceConfig::getName,
+                                        serviceConfig -> serviceConfig,
+                                        (v1, v2) -> v1));
+        Map<Generators, List<ServiceConfig>> configFileMap = new HashMap<>();
+
+        buildConfigFileMap(serviceInfo, map, configFileMap);
+
+        PackageUtils.putServicePackageName(
+                frameCode, serviceName, serviceInfo.getDecompressPackageName());
+
+        putServiceHomeToVariable(
+                clusters, serviceName, serviceInfo.getDecompressPackageName());
+        // save service and service config
+        FrameServiceEntity serviceEntity =
+                saveFrameService(
+                        frameCode,
+                        frameInfo,
+                        serviceName,
+                        serviceDdl,
+                        serviceInfo,
+                        serviceInfoMd5,
+                        allParameters,
+                        configFileMap);
+        // save frame service role
+        saveFrameServiceRole(frameCode, serviceName, serviceInfo, serviceEntity);
+    }
+
 
     private void putServiceHomeToVariable(
                                           List<ClusterInfoEntity> clusters, String serviceName,
@@ -336,7 +358,7 @@ public class LoadServiceMeta implements ApplicationRunner {
         return frameInfo;
     }
 
-    private void loadGlobalVariables(List<ClusterInfoEntity> clusters) throws UnknownHostException {
+    public void loadGlobalVariables(List<ClusterInfoEntity> clusters) throws UnknownHostException {
         if (Objects.nonNull(clusters) && clusters.size() > 0) {
             for (ClusterInfoEntity cluster : clusters) {
                 HashMap<String, String> globalVariables = new HashMap<>();

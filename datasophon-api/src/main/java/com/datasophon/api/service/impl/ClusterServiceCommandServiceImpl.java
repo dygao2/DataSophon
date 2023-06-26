@@ -339,4 +339,10 @@ public class ClusterServiceCommandServiceImpl
                         .eq(Constants.COMMAND_TYPE, CommandType.INSTALL_SERVICE.getValue())
                         .orderByDesc(Constants.CREATE_TIME).last("limit 1"));
     }
+
+    @Override
+    public ClusterServiceCommandEntity getCommandById(String commandId) {
+        return this.getOne(
+                new QueryWrapper<ClusterServiceCommandEntity>().eq("command_id", commandId));
+    }
 }

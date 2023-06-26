@@ -17,12 +17,14 @@
 
 package com.datasophon.api.master.handler.service;
 
+import akka.actor.ActorSelection;
+import akka.pattern.Patterns;
+import akka.util.Timeout;
 import com.datasophon.api.master.ActorUtils;
 import com.datasophon.common.command.ServiceRoleOperateCommand;
 import com.datasophon.common.enums.ServiceRoleType;
 import com.datasophon.common.model.ServiceRoleInfo;
 import com.datasophon.common.utils.ExecResult;
-
 import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
@@ -30,16 +32,13 @@ import scala.concurrent.duration.Duration;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import akka.actor.ActorSelection;
-import akka.pattern.Patterns;
-import akka.util.Timeout;
-
 public class ServiceStopHandler extends ServiceHandler {
 
     @Override
     public ExecResult handlerRequest(ServiceRoleInfo serviceRoleInfo) throws Exception {
         // 停止
         ServiceRoleOperateCommand serviceRoleOperateCommand = new ServiceRoleOperateCommand();
+        serviceRoleOperateCommand.setServiceName(serviceRoleInfo.getParentName());
         serviceRoleOperateCommand.setServiceRoleName(serviceRoleInfo.getName());
         serviceRoleOperateCommand.setStopRunner(serviceRoleInfo.getStopRunner());
         serviceRoleOperateCommand.setStatusRunner(serviceRoleInfo.getStatusRunner());

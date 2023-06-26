@@ -26,18 +26,18 @@ import com.datasophon.common.utils.ExecResult;
 import com.datasophon.common.utils.ShellUtils;
 import com.datasophon.worker.handler.ServiceHandler;
 import com.datasophon.worker.utils.KerberosUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
-public class NameNodeHandlerStrategy implements ServiceRoleStrategy {
+public class NameNodeHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
 
-    private static final Logger logger = LoggerFactory.getLogger(NameNodeHandlerStrategy.class);
+    public NameNodeHandlerStrategy(String serviceName,String serviceRoleName) {
+        super(serviceName,serviceRoleName);
+    }
 
     @Override
     public ExecResult handler(ServiceRoleOperateCommand command) {
-        ServiceHandler serviceHandler = new ServiceHandler();
+        ServiceHandler serviceHandler = new ServiceHandler(command.getServiceName(), command.getServiceRoleName());
         String workPath = Constants.INSTALL_PATH + Constants.SLASH + command.getDecompressPackageName();
         if (command.getCommandType().equals(CommandType.INSTALL_SERVICE)) {
             if (command.isSlave()) {
@@ -51,7 +51,7 @@ public class NameNodeHandlerStrategy implements ServiceRoleStrategy {
                 if (execResult.getExecResult()) {
                     logger.info("Namenode standby success");
                 } else {
-                    logger.info("Namenode standby failed");
+                    logger.error("Namenode standby failed");
                     return execResult;
                 }
             } else {
@@ -67,7 +67,7 @@ public class NameNodeHandlerStrategy implements ServiceRoleStrategy {
                 if (execResult.getExecResult()) {
                     logger.info("Namenode format success");
                 } else {
-                    logger.info("Namenode format failed");
+                    logger.error("Namenode format failed");
                     return execResult;
                 }
             }

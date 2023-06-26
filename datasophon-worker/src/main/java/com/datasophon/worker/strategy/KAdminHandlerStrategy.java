@@ -25,17 +25,16 @@ import com.datasophon.worker.handler.ServiceHandler;
 
 import java.sql.SQLException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public class KAdminHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
 
-public class KAdminHandlerStrategy implements ServiceRoleStrategy {
-
-    private static final Logger logger = LoggerFactory.getLogger(KAdminHandlerStrategy.class);
+    public KAdminHandlerStrategy(String serviceName,String serviceRoleName) {
+        super(serviceName,serviceRoleName);
+    }
 
     @Override
     public ExecResult handler(ServiceRoleOperateCommand command) throws SQLException, ClassNotFoundException {
         ExecResult startResult = new ExecResult();
-        ServiceHandler serviceHandler = new ServiceHandler();
+        ServiceHandler serviceHandler = new ServiceHandler(command.getServiceName(), command.getServiceRoleName());
         if (command.getCommandType().equals(CommandType.INSTALL_SERVICE)) {
             startResult = serviceHandler.start(command.getStartRunner(), command.getStatusRunner(),
                     command.getDecompressPackageName(), command.getRunAs());

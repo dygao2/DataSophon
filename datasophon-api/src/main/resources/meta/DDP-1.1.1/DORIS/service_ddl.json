@@ -228,6 +228,7 @@
       "label": "BE数据存储目录",
       "description": "BE数据存储目录，可配置多个，按分号分隔，例如/data1,medium:HDD;/data2,medium:SSD;/data3",
       "configType": "path",
+      "separator": ";",
       "required": true,
       "type": "input",
       "value": "",

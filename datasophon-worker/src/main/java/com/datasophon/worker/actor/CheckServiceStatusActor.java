@@ -29,11 +29,12 @@ import akka.actor.UntypedActor;
 public class CheckServiceStatusActor extends UntypedActor {
 
     private static final Logger logger = LoggerFactory.getLogger(CheckServiceStatusActor.class);
+
     @Override
     public void onReceive(Object msg) throws Throwable {
         if (msg instanceof InstallServiceRoleCommand) {
             InstallServiceRoleCommand command = (InstallServiceRoleCommand) msg;
-            ServiceHandler serviceHandler = new ServiceHandler();
+            ServiceHandler serviceHandler = new ServiceHandler(command.getServiceName(), command.getServiceRoleName());
             ExecResult statusResult =
                     serviceHandler.status(command.getStatusRunner(), command.getDecompressPackageName());
             if (!statusResult.getExecResult()) {

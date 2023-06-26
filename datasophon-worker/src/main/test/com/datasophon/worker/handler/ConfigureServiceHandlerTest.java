@@ -2,7 +2,6 @@ package com.datasophon.worker.handler;
 
 import com.datasophon.common.model.Generators;
 import com.datasophon.common.model.ServiceConfig;
-import com.datasophon.common.utils.ExecResult;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,7 +15,7 @@ public class ConfigureServiceHandlerTest {
 
     @Before
     public void setUp() {
-        configureServiceHandlerUnderTest = new ConfigureServiceHandler();
+        configureServiceHandlerUnderTest = new ConfigureServiceHandler("HDFS","NameNode");
     }
 
     @Test

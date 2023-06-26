@@ -27,25 +27,25 @@ public class ServiceRoleStrategyContext {
     private static final Map<String, ServiceRoleStrategy> map = new ConcurrentHashMap<>();
 
     static {
-        map.put("NameNode", new NameNodeHandlerStrategy());
-        map.put("ZKFC", new ZKFCHandlerStrategy());
-        map.put("JournalNode", new JournalNodeHandlerStrategy());
-        map.put("DataNode", new DataNodeHandlerStrategy());
-        map.put("ResourceManager", new ResourceManagerHandlerStrategy());
-        map.put("NodeManager", new NodeManagerHandlerStrategy());
-        map.put("RangerAdmin", new RangerAdminHandlerStrategy());
-        map.put("HiveServer2", new HiveServer2HandlerStrategy());
-        map.put("HbaseMaster", new HbaseHandlerStrategy());
-        map.put("RegionServer", new HbaseHandlerStrategy());
-        map.put("Krb5Kdc", new Krb5KdcHandlerStrategy());
-        map.put("KAdmin", new KAdminHandlerStrategy());
-        map.put("SRFE", new FEHandlerStrategy());
-        map.put("DorisFE", new FEHandlerStrategy());
-        map.put("ZkServer", new ZkServerHandlerStrategy());
-        map.put("KafkaBroker", new KafkaHandlerStrategy());
-        map.put("SRBE", new BEHandlerStrategy());
-        map.put("DorisBE", new BEHandlerStrategy());
-        map.put("HistoryServer", new HistoryServerHandlerStrategy());
+        map.put("NameNode", new NameNodeHandlerStrategy("HDFS", "NameNode"));
+        map.put("ZKFC", new ZKFCHandlerStrategy("HDFS", "ZKFC"));
+        map.put("JournalNode", new JournalNodeHandlerStrategy("HDFS", "JournalNode"));
+        map.put("DataNode", new DataNodeHandlerStrategy("HDFS", "DataNode"));
+        map.put("ResourceManager", new ResourceManagerHandlerStrategy("YARN", "ResourceManager"));
+        map.put("NodeManager", new NodeManagerHandlerStrategy("YARN", "NodeManager"));
+        map.put("RangerAdmin", new RangerAdminHandlerStrategy("RANGER", "RangerAdmin"));
+        map.put("HiveServer2", new HiveServer2HandlerStrategy("HIVE", "HiveServer2"));
+        map.put("HbaseMaster", new HbaseHandlerStrategy("HBASE", "HbaseMaster"));
+        map.put("RegionServer", new HbaseHandlerStrategy("HBASE", "RegionServer"));
+        map.put("Krb5Kdc", new Krb5KdcHandlerStrategy("KERBEROS", "Krb5Kdc"));
+        map.put("KAdmin", new KAdminHandlerStrategy("KERBEROS", "KAdmin"));
+        map.put("SRFE", new FEHandlerStrategy("STARROCKS", "SRFE"));
+        map.put("DorisFE", new FEHandlerStrategy("DORIS", "DorisFE"));
+        map.put("ZkServer", new ZkServerHandlerStrategy("ZOOKEEPER", "ZkServer"));
+        map.put("KafkaBroker", new KafkaHandlerStrategy("KAFKA", "KafkaBroker"));
+        map.put("SRBE", new BEHandlerStrategy("STARROCKS", "SRBE"));
+        map.put("DorisBE", new BEHandlerStrategy("DORIS", "DorisBE"));
+        map.put("HistoryServer", new HistoryServerHandlerStrategy("YARN", "HistoryServer"));
     }
 
     public static ServiceRoleStrategy getServiceRoleHandler(String type) {

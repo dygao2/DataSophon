@@ -68,6 +68,9 @@ public class WorkerActor extends UntypedActor {
                 getContext().actorOf(Props.create(NMStateActor.class), getActorRefName(NMStateActor.class));
         ActorRef rMStateActor =
                 getContext().actorOf(Props.create(RMStateActor.class), getActorRefName(RMStateActor.class));
+        ActorRef pingActor = getContext().actorOf(Props.create(PingActor.class), getActorRefName(PingActor.class));
+
+        // 添加监听服务
         getContext().watch(installServiceActor);
         getContext().watch(configureServiceActor);
         getContext().watch(startServiceActor);
@@ -82,6 +85,7 @@ public class WorkerActor extends UntypedActor {
         getContext().watch(kerberosActor);
         getContext().watch(rMStateActor);
         getContext().watch(nMStateActor);
+		getContext().watch(pingActor);
     }
 
     /** Get ActorRef name from Class name. */
@@ -100,11 +104,4 @@ public class WorkerActor extends UntypedActor {
             unhandled(message);
         }
     }
-
-    public static void main(String[] args) {
-        String str =
-                "{coreNum: 8, totalMem: 31.4189, totalDisk: 991.51,usedDisk: 9.59, diskAvail: 981.92,usedMem:5.91602,memUsedPersent:18.8295,diskUsedPersent:1.0,averageLoad:0.06}";
-        StartWorkerMessage message = JSONObject.parseObject(str, StartWorkerMessage.class);
-    }
-
 }

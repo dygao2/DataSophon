@@ -278,7 +278,7 @@
       "description": "开启Kerberos认证",
       "required": false,
       "type": "switch",
-      "value": "",
+      "value": false,
       "configurableInWizard": true,
       "hidden": false,
       "defaultValue": false

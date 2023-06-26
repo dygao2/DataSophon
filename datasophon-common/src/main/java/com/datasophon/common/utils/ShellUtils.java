@@ -18,16 +18,20 @@
 package com.datasophon.common.utils;
 
 import com.datasophon.common.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ShellUtils {
 
@@ -47,6 +51,7 @@ public class ShellUtils {
         }
         return process;
     }
+
     /**
      * @param pathOrCommand 脚本路径或者命令
      * @return
@@ -81,6 +86,7 @@ public class ShellUtils {
         }
         return result;
     }
+
     // 获取cpu架构 arm或x86
     public static String getCpuArchitecture() {
         try {
@@ -106,30 +112,6 @@ public class ShellUtils {
         return null;
     }
 
-    // 获取cpu架构 arm或x86
-    public static String getPackageMd5(String md5Cmd) {
-        try {
-            Process ps = Runtime.getRuntime().exec(new String[]{"sh", "-c", md5Cmd});
-            StringBuffer stringBuffer = new StringBuffer();
-            int exitValue = ps.waitFor();
-            if (0 == exitValue) {
-                // 只能接收脚本echo打印的数据，并且是echo打印的最后一次数据
-                BufferedInputStream in = new BufferedInputStream(ps.getInputStream());
-                BufferedReader br = new BufferedReader(new InputStreamReader(in));
-                String line;
-                while ((line = br.readLine()) != null) {
-                    logger.info("脚本返回的数据如下： " + line);
-                    stringBuffer.append(line);
-                }
-                in.close();
-                br.close();
-                return stringBuffer.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     public static ExecResult execWithStatus(String workPath, List<String> command, long timeout) {
         Process process = null;
@@ -154,6 +136,64 @@ public class ShellUtils {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public static ExecResult execWithStatus(String workPath, List<String> command, long timeout, Logger logger) {
+        Process process = null;
+        ExecResult result = new ExecResult();
+        try {
+            processBuilder.directory(new File(workPath));
+            processBuilder.command(command);
+            processBuilder.redirectErrorStream(true);
+            process = processBuilder.start();
+            getOutput(process, logger);
+            boolean execResult = process.waitFor(timeout, TimeUnit.SECONDS);
+            if (execResult && process.exitValue() == 0) {
+                logger.info("script execute success");
+                result.setExecResult(true);
+                result.setExecOut("script execute success");
+            } else {
+                result.setExecOut("script execute failed");
+            }
+            return result;
+        } catch (Exception e) {
+            result.setExecErrOut(e.getMessage());
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public static void getOutput(Process process, Logger logger) {
+
+        ExecutorService getOutputLogService = Executors.newSingleThreadExecutor();
+
+        getOutputLogService.submit(() -> {
+            BufferedReader inReader = null;
+            try {
+                inReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                String line;
+                while ((line = inReader.readLine()) != null) {
+                    logger.info(line);
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            } finally {
+                closeQuietly(inReader);
+            }
+            BufferedReader errorReader = null;
+            try {
+                errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                String line;
+                while ((line = errorReader.readLine()) != null) {
+                    logger.error(line);
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            } finally {
+                closeQuietly(errorReader);
+            }
+        });
+        getOutputLogService.shutdown();
     }
 
     public static void getOutput(Process process) {
@@ -218,7 +258,7 @@ public class ShellUtils {
         command.add("-R");
         command.add(chmod);
         command.add(path);
-        execWithStatus(Constants.INSTALL_PATH, command, 60);
+        execWithStatus(Constants.INSTALL_PATH, command, 60, logger);
     }
 
     public static void addChown(String path, String user, String group) {
@@ -227,6 +267,6 @@ public class ShellUtils {
         command.add("-R");
         command.add(user + ":" + group);
         command.add(path);
-        execWithStatus(Constants.INSTALL_PATH, command, 60);
+        execWithStatus(Constants.INSTALL_PATH, command, 60, logger);
     }
 }

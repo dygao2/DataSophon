@@ -17,47 +17,37 @@
 
 package com.datasophon.api.service.impl;
 
-import com.datasophon.api.load.GlobalVariables;
+import akka.actor.ActorSelection;
+import akka.pattern.Patterns;
+import akka.util.Timeout;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.master.ActorUtils;
 import com.datasophon.api.service.ClusterInfoService;
 import com.datasophon.api.service.ClusterServiceCommandHostCommandService;
+import com.datasophon.api.service.ClusterServiceCommandService;
 import com.datasophon.api.service.FrameServiceRoleService;
 import com.datasophon.api.service.FrameServiceService;
 import com.datasophon.common.Constants;
 import com.datasophon.common.command.GetLogCommand;
 import com.datasophon.common.utils.ExecResult;
-import com.datasophon.common.utils.PlaceholderUtils;
 import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.ClusterInfoEntity;
+import com.datasophon.dao.entity.ClusterServiceCommandEntity;
 import com.datasophon.dao.entity.ClusterServiceCommandHostCommandEntity;
-import com.datasophon.dao.entity.FrameServiceEntity;
-import com.datasophon.dao.entity.FrameServiceRoleEntity;
 import com.datasophon.dao.enums.CommandState;
-import com.datasophon.dao.enums.RoleType;
 import com.datasophon.dao.mapper.ClusterServiceCommandHostCommandMapper;
-
-import org.apache.commons.lang.StringUtils;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
-import akka.actor.ActorSelection;
-import akka.pattern.Patterns;
-import akka.util.Timeout;
 
 @Service("clusterServiceCommandHostCommandService")
 public class ClusterServiceCommandHostCommandServiceImpl
@@ -79,6 +69,9 @@ public class ClusterServiceCommandHostCommandServiceImpl
 
     @Autowired
     ClusterInfoService clusterInfoService;
+
+    @Autowired
+    ClusterServiceCommandService commandService;
 
     @Override
     public Result getHostCommandList(String hostname, String commandHostId, Integer page, Integer pageSize) {
@@ -132,22 +125,17 @@ public class ClusterServiceCommandHostCommandServiceImpl
         ClusterServiceCommandHostCommandEntity hostCommand =
                 this.getOne(new QueryWrapper<ClusterServiceCommandHostCommandEntity>().eq(Constants.HOST_COMMAND_ID,
                         hostCommandId));
-        FrameServiceRoleEntity serviceRole = frameServiceRoleService.getServiceRoleByFrameCodeAndServiceRoleName(
-                clusterInfo.getClusterFrame(), hostCommand.getServiceRoleName());
-        Map<String, String> globalVariables = GlobalVariables.get(clusterId);
-        if (serviceRole.getServiceRoleType() == RoleType.CLIENT) {
-            return Result.success("client does not have any log");
-        }
-        FrameServiceEntity frameServiceEntity = frameService.getById(serviceRole.getServiceId());
-        String logFile = serviceRole.getLogFile();
-        if (StringUtils.isNotBlank(logFile)) {
-            logFile = PlaceholderUtils.replacePlaceholders(logFile, globalVariables, Constants.REGEX_VARIABLE);
-            logger.info("logFile is {}", logFile);
-        }
+
+        ClusterServiceCommandEntity commandEntity = commandService.getCommandById(hostCommand.getCommandId());
+
+        String serviceName = commandEntity.getServiceName();
+        String serviceRoleName = hostCommand.getServiceRoleName();
+        String logFile = String.format("%s/%s/%s.log","logs",serviceName,serviceRoleName);
+
         GetLogCommand command = new GetLogCommand();
         command.setLogFile(logFile);
-        command.setDecompressPackageName(frameServiceEntity.getDecompressPackageName());
-        logger.info("start to get {} log from {}", serviceRole.getServiceRoleName(), hostCommand.getHostname());
+        command.setDecompressPackageName("datasophon-worker");
+        logger.info("Start to get {} install log from host {}", serviceRoleName, hostCommand.getHostname());
         ActorSelection configActor = ActorUtils.actorSystem
                 .actorSelection("akka.tcp://datasophon@" + hostCommand.getHostname() + ":2552/user/worker/logActor");
         Timeout timeout = new Timeout(Duration.create(60, TimeUnit.SECONDS));

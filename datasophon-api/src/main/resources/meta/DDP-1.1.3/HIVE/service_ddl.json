@@ -143,7 +143,14 @@
           "hive.zookeeper.client.port",
           "hive.server2.thrift.bind.host",
           "hive.server2.thrift.port",
-          "custom.hive.site.xml"
+          "custom.hive.site.xml",
+          "mapreduce.framework.name",
+          "hive.execution.engine",
+          "hive.merge.mapfiles",
+          "hive.merge.mapredfiles",
+          "hive.merge.size.per.task",
+          "hive.merge.smallfiles.avgsize",
+          "hive.exec.submit.local.task.via.child"
         ]
       },
       {
@@ -290,7 +297,90 @@
       "hidden": false,
       "defaultValue": false
     },
-
+    {
+      "name": "mapreduce.framework.name",
+      "label": "mr执行引擎",
+      "description": "MapReduce作业是在哪种运行时框架下执行的",
+      "required": true,
+      "type": "select",
+      "value": "yarn",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": "yarn",
+      "selectValue" : ["local", "classic", "yarn"]
+    },
+    {
+      "name": "hive.execution.engine",
+      "label": "Hive执行引擎",
+      "description": "Hive执行引擎",
+      "required": true,
+      "type": "select",
+      "value": "mr",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": "mr",
+      "selectValue" : ["mr", "tez", "spark"]
+    },
+    {
+      "name": "hive.merge.mapfiles",
+      "label": "启用(Map-Only)小文件合并",
+      "description": "在 map-only 作业结束时合并小文件。如启用，将创建 map-only 作业以合并目标表/分区中的文件",
+      "required": true,
+      "configType": "map",
+      "type": "switch",
+      "value": true,
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": true
+    },
+    {
+      "name": "hive.merge.mapredfiles",
+      "label": "启用(Map-Reduce)小文件合并",
+      "description": "在 map-reduce 作业结束时合并小文件。如启用，将创建 map-only 作业以合并目标表/分区中的文件",
+      "required": true,
+      "configType": "map",
+      "type": "switch",
+      "value": true,
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": true
+    },
+    {
+      "name": "hive.merge.size.per.task",
+      "label": "合并后所需的文件大小",
+      "description": "合并后所需的文件大小。应大于 hive.merge.smallfiles.avgsize",
+      "required": true,
+      "configType": "map",
+      "type": "input",
+      "value": "268435456",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": "268435456"
+    },
+    {
+      "name": "hive.merge.smallfiles.avgsize",
+      "label": "小文件平均大小合并阈值",
+      "description": "当作业的平均输出文件大小小于此属性的值时，Hive 将启动额外的 map-only 作业来将输出文件合并成大文件。仅当 hive.merge.mapfiles 为 true 对map-only 作业执行，当 hive.merge.mapredfiles 为 true 时对 map-reduce 作业执行，以及当 hive.merge.sparkfiles 为 true 时对 Spark 作业执行",
+      "required": true,
+      "configType": "map",
+      "type": "input",
+      "value": "104857600",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": "104857600"
+    },
+    {
+      "name": "hive.exec.submit.local.task.via.child",
+      "label": "地任务是否单独启动进程",
+      "description": "决定本地任务（通常是mapjoin的哈希表生成阶段）是否在单独的JVM中运行",
+      "required": true,
+      "configType": "map",
+      "type": "switch",
+      "value": false,
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": false
+    },
     {
       "name": "hive.server2.authentication",
       "label": "hive认证方式",

@@ -18,14 +18,14 @@
 package com.datasophon.api.master.handler.service;
 
 import com.datasophon.api.master.ActorUtils;
-import com.datasophon.api.service.ClusterHostService;
+import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.service.ClusterServiceRoleInstanceService;
 import com.datasophon.api.utils.SpringTool;
 import com.datasophon.common.Constants;
 import com.datasophon.common.command.InstallServiceRoleCommand;
 import com.datasophon.common.model.ServiceRoleInfo;
 import com.datasophon.common.utils.ExecResult;
-import com.datasophon.dao.entity.ClusterHostEntity;
+import com.datasophon.dao.entity.ClusterHostDO;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
 
 import scala.concurrent.Await;
@@ -54,7 +54,7 @@ public class ServiceInstallHandler extends ServiceHandler {
         ClusterHostService clusterHostService = SpringTool.getApplicationContext().getBean(ClusterHostService.class);
         ClusterServiceRoleInstanceEntity serviceRole = roleInstanceService.getOneServiceRole(serviceRoleInfo.getName(),
                 serviceRoleInfo.getHostname(), serviceRoleInfo.getClusterId());
-        ClusterHostEntity hostEntity = clusterHostService.getClusterHostByHostname(serviceRoleInfo.getHostname());
+        ClusterHostDO hostEntity = clusterHostService.getClusterHostByHostname(serviceRoleInfo.getHostname());
         if (Objects.nonNull(serviceRole)) {
             ExecResult execResult = new ExecResult();
             execResult.setExecResult(true);

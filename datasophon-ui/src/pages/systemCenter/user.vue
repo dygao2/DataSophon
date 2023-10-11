@@ -43,7 +43,7 @@
         </a-card>
         <a-card class="card-shadow">  
           <div class="table-info steps-body">
-            <a-table @change="(pagination)=>{this.tableChange(pagination,item.key)}" :columns="item.key == 'user' ?columns : groupColumns" :loading="loading" :dataSource="dataSource" rowKey="id" :pagination="pagination"></a-table>
+            <a-table @change="(pagination)=>{tableChange(pagination,item.key)}" :columns="item.key == 'user' ?columns : groupColumns" :loading="loading" :dataSource="dataSource" rowKey="id" :pagination="pagination"></a-table>
           </div>
         </a-card>  
       </div>

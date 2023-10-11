@@ -26,7 +26,7 @@ import com.datasophon.api.enums.Status;
 import com.datasophon.api.exceptions.ServiceException;
 import com.datasophon.api.master.ActorUtils;
 import com.datasophon.api.service.ClusterGroupService;
-import com.datasophon.api.service.ClusterHostService;
+import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.service.ClusterUserGroupService;
 import com.datasophon.api.utils.ProcessUtils;
 import com.datasophon.common.Constants;
@@ -35,9 +35,10 @@ import com.datasophon.common.command.remote.DelUnixGroupCommand;
 import com.datasophon.common.utils.ExecResult;
 import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.ClusterGroup;
-import com.datasophon.dao.entity.ClusterHostEntity;
+import com.datasophon.dao.entity.ClusterHostDO;
 import com.datasophon.dao.entity.ClusterUser;
 import com.datasophon.dao.mapper.ClusterGroupMapper;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +57,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class ClusterGroupServiceImpl extends ServiceImpl<ClusterGroupMapper, ClusterGroup>
         implements
-            ClusterGroupService {
+        ClusterGroupService {
 
     private static final Logger logger = LoggerFactory.getLogger(ClusterGroupServiceImpl.class);
 
@@ -76,8 +77,8 @@ public class ClusterGroupServiceImpl extends ServiceImpl<ClusterGroupMapper, Clu
         clusterGroup.setGroupName(groupName);
         this.save(clusterGroup);
 
-        List<ClusterHostEntity> hostList = hostService.getHostListByClusterId(clusterId);
-        for (ClusterHostEntity clusterHost : hostList) {
+        List<ClusterHostDO> hostList = hostService.getHostListByClusterId(clusterId);
+        for (ClusterHostDO clusterHost : hostList) {
             ActorRef unixGroupActor = ActorUtils.getRemoteActor(clusterHost.getHostname(), "unixGroupActor");
             CreateUnixGroupCommand createUnixGroupCommand = new CreateUnixGroupCommand();
             createUnixGroupCommand.setGroupName(groupName);
@@ -114,7 +115,7 @@ public class ClusterGroupServiceImpl extends ServiceImpl<ClusterGroupMapper, Clu
 
     @Override
     public void refreshUserGroupToHost(Integer clusterId) {
-        List<ClusterHostEntity> hostList = hostService.getHostListByClusterId(clusterId);
+        List<ClusterHostDO> hostList = hostService.getHostListByClusterId(clusterId);
         List<ClusterGroup> groupList = this.list();
         for (ClusterGroup clusterGroup : groupList) {
             ProcessUtils.syncUserGroupToHosts(hostList, clusterGroup.getGroupName(), "groupadd");
@@ -129,8 +130,8 @@ public class ClusterGroupServiceImpl extends ServiceImpl<ClusterGroupMapper, Clu
             return Result.error(Status.USER_GROUP_TIPS_ONE.getMsg());
         }
         this.removeById(id);
-        List<ClusterHostEntity> hostList = hostService.getHostListByClusterId(clusterGroup.getClusterId());
-        for (ClusterHostEntity clusterHost : hostList) {
+        List<ClusterHostDO> hostList = hostService.getHostListByClusterId(clusterGroup.getClusterId());
+        for (ClusterHostDO clusterHost : hostList) {
             ActorRef unixGroupActor = ActorUtils.getRemoteActor(clusterHost.getHostname(), "unixGroupActor");
             DelUnixGroupCommand delUnixGroupCommand = new DelUnixGroupCommand();
             delUnixGroupCommand.setGroupName(clusterGroup.getGroupName());
@@ -152,9 +153,11 @@ public class ClusterGroupServiceImpl extends ServiceImpl<ClusterGroupMapper, Clu
     }
 
     @Override
-    public Result listPage(String groupName, Integer page, Integer pageSize) {
+    public Result listPage(String groupName, Integer clusterId, Integer page, Integer pageSize) {
         Integer offset = (page - 1) * pageSize;
-        List<ClusterGroup> list = this.list(new QueryWrapper<ClusterGroup>().like(Constants.GROUP_NAME, groupName)
+        List<ClusterGroup> list = this.list(new QueryWrapper<ClusterGroup>()
+                .like(StringUtils.isNotBlank(groupName), Constants.GROUP_NAME, groupName)
+                .eq(Constants.CLUSTER_ID, clusterId)
                 .last("limit " + offset + "," + pageSize));
         for (ClusterGroup clusterGroup : list) {
             List<ClusterUser> clusterUserList = userGroupService.listClusterUsers(clusterGroup.getId());
@@ -164,7 +167,9 @@ public class ClusterGroupServiceImpl extends ServiceImpl<ClusterGroupMapper, Clu
                 clusterGroup.setClusterUsers(clusterUsers);
             }
         }
-        int total = this.count(new QueryWrapper<ClusterGroup>().like(Constants.GROUP_NAME, groupName));
+        int total = this.count(new QueryWrapper<ClusterGroup>().
+                like(StringUtils.isNotBlank(groupName), Constants.GROUP_NAME, groupName)
+                .eq(Constants.CLUSTER_ID, clusterId));
         return Result.success(list).put(Constants.TOTAL, total);
     }
 

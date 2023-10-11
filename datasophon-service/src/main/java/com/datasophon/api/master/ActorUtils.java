@@ -113,7 +113,7 @@ public class ActorUtils {
         try {
             actorRef = Await.result(future, Duration.create(30, TimeUnit.SECONDS));
         } catch (Exception e) {
-            logger.error("{} actor not found", actorName);
+            logger.warn("{} actor not found , create it", actorName);
         }
         if (Objects.isNull(actorRef)) {
             logger.info("create actor {}", actorName);

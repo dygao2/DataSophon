@@ -44,7 +44,7 @@ public interface InstallService {
 
 
     /**
-     * 启动 主机上安装的服务启动
+     * 启动/停止 主机上安装的服务启动
      * @param clusterHostIds
      * @param commandType
      * @return

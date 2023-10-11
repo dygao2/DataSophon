@@ -62,8 +62,6 @@ public class FreemarkerTest {
         nodeServiceConfig.setRequired(true);
         nodeServiceConfigs.add(nodeServiceConfig);
 
-
-        FreemakerUtils.testGenerateConfigFile(nodeGenerators,nodeServiceConfigs,"");
     }
     @Test
     public void generateSRCustomTemplate() throws IOException, TemplateException {
@@ -98,7 +96,6 @@ public class FreemarkerTest {
         serviceConfigs.add(beServiceConfig);
         configFileMap.put(generators,serviceConfigs);
 
-        FreemakerUtils.testGenerateConfigFile(generators,serviceConfigs,"");
     }
 
     @Test

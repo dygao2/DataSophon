@@ -25,7 +25,7 @@ This pull request is already covered by existing tests, such as *(please describ
 This change added tests and can be verified as follows:
 
 <!--*(example:)*
-- *Added datasophon-dao tests for end-to-end.*
+- *Added datasophon-infrastructure tests for end-to-end.*
 - *Added CronUtilsTest to verify the change.*
 - *Manually verified the change by testing locally.* -->
 

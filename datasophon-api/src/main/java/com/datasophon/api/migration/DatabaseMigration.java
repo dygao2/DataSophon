@@ -22,22 +22,6 @@ package com.datasophon.api.migration;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import com.datasophon.common.utils.FileUtils;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.ibatis.jdbc.SQL;
@@ -52,6 +36,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ResourceUtils;
 
+import java.io.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.util.*;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Component
 public class DatabaseMigration {
@@ -65,12 +55,12 @@ public class DatabaseMigration {
   public final static String SPLIT = "__";
 
   private static final String TABLE_CREATE_SQL = "CREATE TABLE `migration_history`  (" +
-      "  `version` varchar(128) NOT NULL," +
-      "  `execute_user` varchar(128) NOT NULL," +
-      "  `execute_date` timestamp NOT NULL," +
-      "  `success` tinyint(1) NOT NULL," +
-      "  PRIMARY KEY (`version`)" +
-      ");";
+          "  `version` varchar(128) NOT NULL," +
+          "  `execute_user` varchar(128) NOT NULL," +
+          "  `execute_date` timestamp NOT NULL," +
+          "  `success` tinyint(1) NOT NULL," +
+          "  PRIMARY KEY (`version`)" +
+          ");";
 
   @Value("${spring.datasource.url}")
   private String url;
@@ -179,16 +169,16 @@ public class DatabaseMigration {
     }
     File home = new File(FileUtils.concatPath(System.getProperty("user.dir"), MIGRATION_HOME));
     if (home.exists() && home.isDirectory()) {
-      File[] sqlFiles = home.listFiles(pathname ->
-          "sql".equals(FileUtil.getSuffix(pathname.getName()))
+      List<File> sqlFiles = FileUtil.loopFiles(home ,pathname ->
+              "sql".equals(FileUtil.getSuffix(pathname.getName()))
       );
       if (sqlFiles != null) {
-        resources = Arrays.stream(sqlFiles).map(FileSystemResource::new).toArray(Resource[]::new);
+        resources = sqlFiles.stream().map(FileSystemResource::new).toArray(Resource[]::new);
       }
     }
     Map<String, List<Resource>> resourceMap = Arrays.stream(resources)
-        .filter(Migration::isMigrationFile)
-        .collect(Collectors.groupingBy(r -> Objects.requireNonNull(r.getFilename()).substring(1, r.getFilename().indexOf(SPLIT))));
+            .filter(Migration::isMigrationFile)
+            .collect(Collectors.groupingBy(r -> Objects.requireNonNull(r.getFilename()).substring(1, r.getFilename().indexOf(SPLIT))));
 
     for (Map.Entry<String, List<Resource>> entries : resourceMap.entrySet()) {
       Resource ddl = null, dml = null, rollback = null;
@@ -218,20 +208,20 @@ public class DatabaseMigration {
   private void upsertMigration(Migration migration) {
     SQL query = new SQL();
     query.SELECT("*").FROM(MIGRATION_TABLE_NAME)
-        .WHERE("`version` = '" + migration.getVersion() + "'");
+            .WHERE("`version` = '" + migration.getVersion() + "'");
     List<Migration> migrations = jdbcTemplate.query(query.toString(), new BeanPropertyRowMapper<>(Migration.class));
     SQL sql = new SQL();
     if (!CollectionUtils.isEmpty(migrations) && !migrations.get(0).isSuccess()) {
       sql.UPDATE(MIGRATION_TABLE_NAME)
-          .SET("success = " + String.format("'%s'", (migration.isSuccess() ? "1" : "0"))
-              , "execute_date = " + String.format("'%s'", DateFormatUtils.format(new Date(), DEFAULT_DATE_FORMAT)))
-          .WHERE("`version` = " + String.format("'%s'", migration.getVersion()));
+              .SET("success = " + String.format("'%s'", (migration.isSuccess() ? "1" : "0"))
+                      , "execute_date = " + String.format("'%s'", DateFormatUtils.format(new Date(), DEFAULT_DATE_FORMAT)))
+              .WHERE("`version` = " + String.format("'%s'", migration.getVersion()));
     } else {
       sql.INSERT_INTO(MIGRATION_TABLE_NAME)
-          .INTO_VALUES(String.format("'%s'", migration.getVersion())
-              , String.format("'%s'", migration.getExecuteUser())
-              , String.format("'%s'", DateFormatUtils.format(migration.getExecuteDate(), DEFAULT_DATE_FORMAT))
-              , String.format("'%s'", migration.isSuccess() ? "1" : "0"));
+              .INTO_VALUES(String.format("'%s'", migration.getVersion())
+                      , String.format("'%s'", migration.getExecuteUser())
+                      , String.format("'%s'", DateFormatUtils.format(migration.getExecuteDate(), DEFAULT_DATE_FORMAT))
+                      , String.format("'%s'", migration.isSuccess() ? "1" : "0"));
     }
     jdbcTemplate.execute(sql.toString());
   }

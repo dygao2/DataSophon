@@ -27,7 +27,7 @@ import cn.hutool.http.HttpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.datasophon.api.load.ServiceRoleJmxMap;
 import com.datasophon.api.master.handler.service.ServiceConfigureHandler;
-import com.datasophon.api.service.ClusterHostService;
+import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.service.ClusterServiceInstanceService;
 import com.datasophon.api.service.ClusterServiceRoleInstanceService;
 import com.datasophon.api.utils.SpringTool;
@@ -41,7 +41,7 @@ import com.datasophon.common.model.Generators;
 import com.datasophon.common.model.ServiceConfig;
 import com.datasophon.common.model.ServiceRoleInfo;
 import com.datasophon.common.utils.ExecResult;
-import com.datasophon.dao.entity.ClusterHostEntity;
+import com.datasophon.dao.entity.ClusterHostDO;
 import com.datasophon.dao.entity.ClusterServiceInstanceEntity;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
 import org.slf4j.Logger;
@@ -145,9 +145,9 @@ public class PrometheusActor extends UntypedActor {
             ClusterServiceRoleInstanceService roleInstanceService =
                     SpringTool.getApplicationContext()
                             .getBean(ClusterServiceRoleInstanceService.class);
-            List<ClusterHostEntity> hostList =
+            List<ClusterHostDO> hostList =
                     hostService.list(
-                            new QueryWrapper<ClusterHostEntity>()
+                            new QueryWrapper<ClusterHostDO>()
                                     .eq(Constants.MANAGED, 1)
                                     .eq(Constants.CLUSTER_ID, clusterId));
             ClusterServiceRoleInstanceEntity prometheusInstance =
@@ -182,16 +182,16 @@ public class PrometheusActor extends UntypedActor {
                 masterConfig.setRequired(true);
                 masterServiceConfigs.add(masterConfig);
 
-                for (ClusterHostEntity clusterHostEntity : hostList) {
+                for (ClusterHostDO clusterHostDO : hostList) {
                     ServiceConfig serviceConfig = new ServiceConfig();
-                    serviceConfig.setName("worker_" + clusterHostEntity.getHostname());
-                    serviceConfig.setValue(clusterHostEntity.getHostname() + ":8585");
+                    serviceConfig.setName("worker_" + clusterHostDO.getHostname());
+                    serviceConfig.setValue(clusterHostDO.getHostname() + ":8585");
                     serviceConfig.setRequired(true);
                     workerServiceConfigs.add(serviceConfig);
 
                     ServiceConfig nodeServiceConfig = new ServiceConfig();
-                    nodeServiceConfig.setName("node_" + clusterHostEntity.getHostname());
-                    nodeServiceConfig.setValue(clusterHostEntity.getHostname() + ":9100");
+                    nodeServiceConfig.setName("node_" + clusterHostDO.getHostname());
+                    nodeServiceConfig.setValue(clusterHostDO.getHostname() + ":9100");
                     nodeServiceConfig.setRequired(true);
                     nodeServiceConfigs.add(nodeServiceConfig);
                 }
@@ -273,7 +273,9 @@ public class PrometheusActor extends UntypedActor {
                                 + Constants.UNDERLINE
                                 + roleInstanceEntity.getServiceRoleName();
                 logger.info("jmxKey is {}", jmxKey);
-                if ("SRFE".equals(roleInstanceEntity.getServiceRoleName()) || "DorisFE".equals(roleInstanceEntity.getServiceRoleName())) {
+                if ("SRFE".equals(roleInstanceEntity.getServiceRoleName())
+                        || "DorisFE".equals(roleInstanceEntity.getServiceRoleName())
+                        || "DorisFEObserver".equals(roleInstanceEntity.getServiceRoleName())) {
                     logger.info(ServiceRoleJmxMap.get(jmxKey));
                     feList.add(
                             roleInstanceEntity.getHostname() + ":" + ServiceRoleJmxMap.get(jmxKey));

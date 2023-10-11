@@ -100,7 +100,7 @@
           "restart",
           "hivemetastore"
         ]
-    }
+      }
     },
     {
       "name": "HiveClient",
@@ -130,10 +130,6 @@
           "hive.metastore.warehouse.dir",
           "hive.metastore.port",
           "hive.metastore.uris",
-          "hive.execution.engine",
-          "hive.tez.container.size",
-          "hive.files.umask.value",
-          "tez.lib.uris",
           "hive.server2.map.fair.scheduler.queue",
           "hive.server2.authentication",
           "hive.server2.authentication.kerberos.principal",
@@ -147,8 +143,14 @@
           "hive.zookeeper.client.port",
           "hive.server2.thrift.bind.host",
           "hive.server2.thrift.port",
-          "hive.server2.tez.wm.am.registry.timeout",
-          "custom.hive.site.xml"
+          "custom.hive.site.xml",
+          "mapreduce.framework.name",
+          "hive.execution.engine",
+          "hive.merge.mapfiles",
+          "hive.merge.mapredfiles",
+          "hive.merge.size.per.task",
+          "hive.merge.smallfiles.avgsize",
+          "hive.exec.submit.local.task.via.child"
         ]
       },
       {
@@ -232,13 +234,13 @@
     },{
       "name": "hive.metastore.schema.verification",
       "label": "是否验证schema",
-      "description": "是否验证schema",
+      "description": "",
       "required": true,
-      "type": "switch",
+      "type": "input",
       "value": "",
       "configurableInWizard": true,
       "hidden": false,
-      "defaultValue": true
+      "defaultValue": "true"
     },
     {
       "name": "hive.metastore.warehouse.dir",
@@ -278,11 +280,11 @@
       "label": "HiveServer2是否使用公平调度队列",
       "description": "",
       "required": true,
-      "type": "switch",
+      "type": "input",
       "value": "",
       "configurableInWizard": true,
       "hidden": false,
-      "defaultValue": false
+      "defaultValue": "false"
     },
     {
       "name": "enableKerberos",
@@ -294,6 +296,18 @@
       "configurableInWizard": true,
       "hidden": false,
       "defaultValue": false
+    },
+    {
+      "name": "mapreduce.framework.name",
+      "label": "mr执行引擎",
+      "description": "MapReduce作业是在哪种运行时框架下执行的",
+      "required": true,
+      "type": "select",
+      "value": "yarn",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": "yarn",
+      "selectValue" : ["local", "classic", "yarn"]
     },
     {
       "name": "hive.execution.engine",
@@ -308,54 +322,65 @@
       "selectValue" : ["mr", "tez", "spark"]
     },
     {
-      "name": "hive.tez.container.size",
-      "label": "HiveTez Container申请内存大小",
-      "description": "HiveTez Container申请内存大小(MB)",
+      "name": "hive.merge.mapfiles",
+      "label": "启用(Map-Only)小文件合并",
+      "description": "在 map-only 作业结束时合并小文件。如启用，将创建 map-only 作业以合并目标表/分区中的文件",
       "required": true,
-      "minValue": 512,
-      "maxValue": 8192,
-      "type": "slider",
-      "value": "",
+      "configType": "map",
+      "type": "switch",
+      "value": true,
       "configurableInWizard": true,
       "hidden": false,
-      "defaultValue": 1024
-    }
+      "defaultValue": true
+    },
     {
-      "name": "hive.files.umask.value",
-      "label": "Hive文件权限",
-      "description": "",
+      "name": "hive.merge.mapredfiles",
+      "label": "启用(Map-Reduce)小文件合并",
+      "description": "在 map-reduce 作业结束时合并小文件。如启用，将创建 map-only 作业以合并目标表/分区中的文件",
       "required": true,
+      "configType": "map",
+      "type": "switch",
+      "value": true,
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": true
+    },
+    {
+      "name": "hive.merge.size.per.task",
+      "label": "合并后所需的文件大小",
+      "description": "合并后所需的文件大小。应大于 hive.merge.smallfiles.avgsize",
+      "required": true,
+      "configType": "map",
       "type": "input",
-      "value": "",
+      "value": "268435456",
       "configurableInWizard": true,
       "hidden": false,
-      "defaultValue": "0002"
+      "defaultValue": "268435456"
     },
     {
-      "name": "hive.server2.tez.wm.am.registry.timeout",
-      "label": "HiveTez AM注册超时时间设置",
-      "description": "",
+      "name": "hive.merge.smallfiles.avgsize",
+      "label": "小文件平均大小合并阈值",
+      "description": "当作业的平均输出文件大小小于此属性的值时，Hive 将启动额外的 map-only 作业来将输出文件合并成大文件。仅当 hive.merge.mapfiles 为 true 对map-only 作业执行，当 hive.merge.mapredfiles 为 true 时对 map-reduce 作业执行，以及当 hive.merge.sparkfiles 为 true 时对 Spark 作业执行",
       "required": true,
-      "minValue": 5000,
-      "maxValue": 65000,
-      "type": "slider",
-      "value": "",
-      "configurableInWizard": true,
-      "hidden": false,
-      "defaultValue": 30000
-    },
-    {
-      "name": "tez.lib.uris",
-      "label": "Tez Share Lib URI",
-      "description": "Tez Share Lib URI(tez jars and libs on hdfs)",
-      "required": true,
+      "configType": "map",
       "type": "input",
-      "value": "",
+      "value": "104857600",
       "configurableInWizard": true,
       "hidden": false,
-      "defaultValue": "${fs.defaultFS}/user/tez/tez.tar.gz"
+      "defaultValue": "104857600"
     },
-
+    {
+      "name": "hive.exec.submit.local.task.via.child",
+      "label": "本地任务是否单独启动进程",
+      "description": "决定本地任务（通常是mapjoin的哈希表生成阶段）是否在单独的JVM中运行",
+      "required": true,
+      "configType": "map",
+      "type": "switch",
+      "value": false,
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": false
+    },
     {
       "name": "hive.server2.authentication",
       "label": "hive认证方式",

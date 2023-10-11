@@ -24,9 +24,9 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.EnumUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.datasophon.api.enums.Status;
 import com.datasophon.api.master.ActorUtils;
 import com.datasophon.api.master.DAGBuildActor;
-import com.datasophon.api.service.ClusterHostService;
 import com.datasophon.api.service.ClusterInfoService;
 import com.datasophon.api.service.ClusterServiceCommandHostCommandService;
 import com.datasophon.api.service.ClusterServiceCommandHostService;
@@ -36,6 +36,7 @@ import com.datasophon.api.service.ClusterServiceInstanceService;
 import com.datasophon.api.service.ClusterServiceRoleInstanceService;
 import com.datasophon.api.service.FrameServiceRoleService;
 import com.datasophon.api.service.FrameServiceService;
+import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.utils.ProcessUtils;
 import com.datasophon.common.Constants;
 import com.datasophon.common.cache.CacheUtils;
@@ -68,9 +69,9 @@ import java.util.Objects;
 @Service("clusterServiceCommandService")
 public class ClusterServiceCommandServiceImpl
         extends
-            ServiceImpl<ClusterServiceCommandMapper, ClusterServiceCommandEntity>
+        ServiceImpl<ClusterServiceCommandMapper, ClusterServiceCommandEntity>
         implements
-            ClusterServiceCommandService {
+        ClusterServiceCommandService {
 
     private static final Logger logger = LoggerFactory.getLogger(ClusterServiceCommandServiceImpl.class);
 
@@ -163,6 +164,10 @@ public class ClusterServiceCommandServiceImpl
                 }
             }
         }
+        if (commandHostList.isEmpty()) {
+            logger.warn("No service role selected");
+            return Result.error(Status.NO_SERVICE_ROLE_SELECTED.getMsg());
+        }
         commandService.saveBatch(list);
         commandHostService.saveBatch(commandHostList);
         hostCommandService.saveBatch(hostCommandList);
@@ -182,10 +187,10 @@ public class ClusterServiceCommandServiceImpl
     public Result getServiceCommandlist(Integer clusterId, Integer page, Integer pageSize) {
         Integer offset = (page - 1) * pageSize;
         List<ClusterServiceCommandEntity> list = this.list(new QueryWrapper<ClusterServiceCommandEntity>()
-                .eq(Constants.CLUSTER_ID,clusterId)
+                .eq(Constants.CLUSTER_ID, clusterId)
                 .orderByDesc(Constants.CREATE_TIME).last("limit " + offset + "," + pageSize));
         Integer total = this.count(new QueryWrapper<ClusterServiceCommandEntity>()
-                .eq(Constants.CLUSTER_ID,clusterId));
+                .eq(Constants.CLUSTER_ID, clusterId));
         for (ClusterServiceCommandEntity commandEntity : list) {
             commandEntity.setCommandStateCode(commandEntity.getCommandState().getValue());
             Date createTime = commandEntity.getCreateTime();

@@ -316,6 +316,11 @@ public class ClusterServiceRoleInstanceServiceImpl
     }
 
     @Override
+    public void updateToNeedRestartByHost(String hostName) {
+        roleInstanceMapper.updateToNeedRestartByHost(hostName);
+    }
+
+    @Override
     public List<ClusterServiceRoleInstanceEntity> getObsoleteService(Integer serviceInstanceId) {
         return this.lambdaQuery()
                 .eq(ClusterServiceRoleInstanceEntity::getServiceId, serviceInstanceId)

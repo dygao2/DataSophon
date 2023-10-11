@@ -57,6 +57,7 @@ public class ServiceRoleCheckActor extends UntypedActor {
                                             "SRFE",
                                             "SRBE",
                                             "DorisFE",
+                                            "DorisFEObserver",
                                             "DorisBE",
                                             "NameNode",
                                             "ResourceManager"));

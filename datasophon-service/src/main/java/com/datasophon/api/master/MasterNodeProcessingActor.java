@@ -1,7 +1,7 @@
 package com.datasophon.api.master;
 
 import akka.actor.UntypedActor;
-import com.datasophon.common.command.OlapOpsType;
+import cn.hutool.json.JSONUtil;
 import com.datasophon.common.command.OlapSqlExecCommand;
 import com.datasophon.common.utils.ExecResult;
 import com.datasophon.common.utils.OlapUtils;
@@ -16,29 +16,47 @@ public class MasterNodeProcessingActor extends UntypedActor {
 
     @Override
     public void onReceive(Object message) throws Throwable {
+        logger.info("MasterNodeProcessingActor receive message: " + JSONUtil.toJsonStr(message) );
         if (message instanceof OlapSqlExecCommand) {
             OlapSqlExecCommand command = (OlapSqlExecCommand) message;
-            ExecResult execResult = OlapOpsType.ADD_BE.equals(command.getOpsType())
-                    ? OlapUtils.addBackendBySqlClient(command.getFeMaster(), command.getHostName())
-                    : OlapUtils.addFollowerBySqlClient(command.getFeMaster(), command.getHostName());
-            String tip = OlapOpsType.ADD_BE.equals(command.getOpsType()) ? "backend" : "follower";
+            ExecResult execResult = new ExecResult();
+            String tip = command.getOpsType().getDesc();
+            switch (command.getOpsType()) {
+                case ADD_BE:
+                    execResult = OlapUtils.addBackend(command.getFeMaster(), command.getHostName());
+                    break;
+                case ADD_FE_FOLLOWER:
+                    execResult = OlapUtils.addFollower(command.getFeMaster(), command.getHostName());
+                    break;
+                case ADD_FE_OBSERVER:
+                    execResult = OlapUtils.addObserver(command.getFeMaster(), command.getHostName());
+                    break;
+            }
             if (execResult.getExecResult()) {
-                logger.info(command.getHostName() + " " + tip + " be added success");
+                logger.info(command.getHostName() + " " + tip + " added success");
             } else {
-                logger.info(command.getHostName() + " " + tip + " be added failed");
+                logger.info(command.getHostName() + " " + tip + " added failed");
             }
             int tryTimes = 0;
             while (!execResult.getExecResult() && tryTimes < 3) {
                 try {
                     TimeUnit.SECONDS.sleep(10L);
-                    execResult = OlapOpsType.ADD_BE.equals(command.getOpsType())
-                            ? OlapUtils.addBackendBySqlClient(command.getFeMaster(), command.getHostName())
-                            : OlapUtils.addFollowerBySqlClient(command.getFeMaster(), command.getHostName());
+                    switch (command.getOpsType()) {
+                        case ADD_BE:
+                            execResult = OlapUtils.addBackendBySqlClient(command.getFeMaster(), command.getHostName());
+                            break;
+                        case ADD_FE_FOLLOWER:
+                            execResult = OlapUtils.addFollowerBySqlClient(command.getFeMaster(), command.getHostName());
+                            break;
+                        case ADD_FE_OBSERVER:
+                            execResult = OlapUtils.addObserverBySqlClient(command.getFeMaster(), command.getHostName());
+                            break;
+                    }
                     if (execResult.getExecResult()) {
-                        logger.info(command.getHostName() + " " + tip + " be added success");
+                        logger.info(command.getHostName() + " " + tip + " added success");
                         break;
                     } else {
-                        logger.info(command.getHostName() + " " + tip + " be added failed");
+                        logger.info(command.getHostName() + " " + tip + " added failed");
                     }
                     tryTimes++;
                 } catch (InterruptedException e) {

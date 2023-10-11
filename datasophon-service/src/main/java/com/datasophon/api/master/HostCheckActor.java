@@ -22,7 +22,7 @@ import akka.actor.UntypedActor;
 import akka.pattern.Patterns;
 import akka.util.Timeout;
 import cn.hutool.extra.spring.SpringUtil;
-import com.datasophon.api.service.ClusterHostService;
+import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.service.ClusterInfoService;
 import com.datasophon.api.service.ClusterServiceRoleInstanceService;
 import com.datasophon.common.command.HostCheckCommand;
@@ -31,10 +31,11 @@ import com.datasophon.common.model.HostInfo;
 import com.datasophon.common.utils.ExecResult;
 import com.datasophon.common.utils.PromInfoUtils;
 import com.datasophon.common.utils.Result;
-import com.datasophon.dao.entity.ClusterHostEntity;
+import com.datasophon.dao.entity.ClusterHostDO;
 import com.datasophon.dao.entity.ClusterInfoEntity;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
-import com.datasophon.dao.enums.MANAGED;
+import com.datasophon.domain.host.enums.HostState;
+import com.datasophon.domain.host.enums.MANAGED;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,22 +82,22 @@ public class HostCheckActor extends UntypedActor {
             roleInstanceService.getOneServiceRole("Prometheus", "", clusterInfoEntity.getId());
         if (Objects.nonNull(prometheusInstance)) {
           // 集群正常安装了 Prometheus
-          List<ClusterHostEntity> list = clusterHostService.getHostListByClusterId(clusterInfoEntity.getId());
+          List<ClusterHostDO> list = clusterHostService.getHostListByClusterId(clusterInfoEntity.getId());
           String promUrl = "http://" + prometheusInstance.getHostname() + ":9090/api/v1/query";
-          for (ClusterHostEntity clusterHostEntity : list) {
-            if (hostInfo != null && !StringUtils.equals(clusterHostEntity.getHostname(), hostInfo.getHostname())) {
+          for (ClusterHostDO clusterHostDO : list) {
+            if (hostInfo != null && !StringUtils.equals(clusterHostDO.getHostname(), hostInfo.getHostname())) {
               // 指定了节点，直接只处理这一个节点的
               continue;
             }
             try {
-              String hostname = clusterHostEntity.getHostname();
+              String hostname = clusterHostDO.getHostname();
               // 查询内存总量
               String totalMemPromQl = "node_memory_MemTotal_bytes{job=~\"node\",instance=\"" + hostname
                   + ":9100\"}/1024/1024/1024";
               String totalMemStr = PromInfoUtils.getSinglePrometheusMetric(promUrl, totalMemPromQl);
               if (StringUtils.isNotBlank(totalMemStr)) {
                 int totalMem = Double.valueOf(totalMemStr).intValue();
-                clusterHostEntity.setTotalMem(totalMem);
+                clusterHostDO.setTotalMem(totalMem);
               }
               // 查询内存使用量
               String memAvailablePromQl = "node_memory_MemAvailable_bytes{job=~\"node\",instance=\""
@@ -105,8 +106,8 @@ public class HostCheckActor extends UntypedActor {
                   PromInfoUtils.getSinglePrometheusMetric(promUrl, memAvailablePromQl);
               if (StringUtils.isNotBlank(memAvailableStr)) {
                 int memAvailable = Double.valueOf(memAvailableStr).intValue();
-                Integer memUsed = clusterHostEntity.getTotalMem() - memAvailable;
-                clusterHostEntity.setUsedMem(memUsed);
+                Integer memUsed = clusterHostDO.getTotalMem() - memAvailable;
+                clusterHostDO.setUsedMem(memUsed);
               }
               // 总磁盘容量
               String totalDistPromQl = "sum(node_filesystem_size_bytes{instance=\"" + hostname
@@ -114,7 +115,7 @@ public class HostCheckActor extends UntypedActor {
               String totalDiskStr = PromInfoUtils.getSinglePrometheusMetric(promUrl, totalDistPromQl);
               if (StringUtils.isNotBlank(totalDiskStr)) {
                 int totalDisk = Double.valueOf(totalDiskStr).intValue();
-                clusterHostEntity.setTotalDisk(totalDisk);
+                clusterHostDO.setTotalDisk(totalDisk);
               }
               // 查询磁盘使用量
               String diskUsedPromQl = "sum(node_filesystem_size_bytes{instance=\"" + hostname
@@ -123,13 +124,13 @@ public class HostCheckActor extends UntypedActor {
                   + ":9100\",fstype=~\"ext.*|xfs\",mountpoint !~\".*pod.*\"})/1024/1024/1024";
               String diskUsed = PromInfoUtils.getSinglePrometheusMetric(promUrl, diskUsedPromQl);
               if (StringUtils.isNotBlank(diskUsed)) {
-                clusterHostEntity.setUsedDisk(Double.valueOf(diskUsed).intValue());
+                clusterHostDO.setUsedDisk(Double.valueOf(diskUsed).intValue());
               }
               // 查询cpu负载
               String cpuLoadPromQl = "node_load5{job=~\"node\",instance=\"" + hostname + ":9100\"}";
               String cpuLoad = PromInfoUtils.getSinglePrometheusMetric(promUrl, cpuLoadPromQl);
               if (StringUtils.isNotBlank(cpuLoad)) {
-                clusterHostEntity.setAverageLoad(cpuLoad);
+                clusterHostDO.setAverageLoad(cpuLoad);
               }
             } catch (Exception e) {
               logger.warn("check cluster state error, cause: {}", e.getMessage());
@@ -140,15 +141,15 @@ public class HostCheckActor extends UntypedActor {
           }
         } else {
           // 没有 Prometheus？直接获取节点，通过 rpc 检测是否启动
-          List<ClusterHostEntity> hosts = clusterHostService.getHostListByClusterId(clusterInfoEntity.getId());
-          List<ClusterHostEntity> checkedHosts = new ArrayList<>(hosts.size());
-          for (ClusterHostEntity host : hosts) {
+          List<ClusterHostDO> hosts = clusterHostService.getHostListByClusterId(clusterInfoEntity.getId());
+          List<ClusterHostDO> checkedHosts = new ArrayList<>(hosts.size());
+          for (ClusterHostDO host : hosts) {
             if (hostInfo != null && !StringUtils.equals(host.getHostname(), hostInfo.getHostname())) {
               // 指定了节点，直接只处理这一个节点的
               continue;
             }
             // copy 一个新的，只更新状态
-            ClusterHostEntity checkedHost = new ClusterHostEntity();
+            ClusterHostDO checkedHost = new ClusterHostDO();
             checkedHost.setId(host.getId());
             checkedHost.setCheckTime(new Date());
             try {
@@ -165,11 +166,11 @@ public class HostCheckActor extends UntypedActor {
                 logger.warn("ping host: {} fail, reason: {}", host.getHostname(), execResult.getExecOut());
                 throw new IllegalStateException("ping host: " + host.getHostname() + " failed.");
               }
-              checkedHost.setHostState(1);
+              checkedHost.setHostState(HostState.RUNNING);
               checkedHost.setManaged(MANAGED.YES);
             } catch (Exception e) {
               logger.warn("host: " + host.getHostname() + " rpc error, cause: " + e.getMessage());
-              checkedHost.setHostState(2);
+              checkedHost.setHostState(HostState.OFFLINE);
             }
             checkedHosts.add(checkedHost);
           }

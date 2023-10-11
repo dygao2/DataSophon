@@ -20,11 +20,11 @@ package com.datasophon.api.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.enums.Status;
-import com.datasophon.api.service.ClusterHostService;
+import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.service.ClusterRackService;
 import com.datasophon.common.Constants;
 import com.datasophon.common.utils.Result;
-import com.datasophon.dao.entity.ClusterHostEntity;
+import com.datasophon.dao.entity.ClusterHostDO;
 import com.datasophon.dao.entity.ClusterRack;
 import com.datasophon.dao.mapper.ClusterRackMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +70,7 @@ public class ClusterRackServiceImpl extends ServiceImpl<ClusterRackMapper, Clust
     }
 
     private boolean rackInUse(ClusterRack clusterRack) {
-        List<ClusterHostEntity> list =
+        List<ClusterHostDO> list =
                 hostService.getClusterHostByRack(clusterRack.getClusterId(), clusterRack.getRack());
         if (list.size() > 0) {
             return true;

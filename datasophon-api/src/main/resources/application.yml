@@ -9,11 +9,11 @@ security:
 # mysql
 spring:
   datasource:
-    type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://localhost:3306/datasophon?useUnicode=true&characterEncoding=utf-8
-    username: root
-    password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://${datasource.ip:localhost}:${datasource.port:3306}/${datasource.database:datasophon}?&useUnicode=true&characterEncoding=utf-8
+    username: ${datasource.username:datasophon}
+    password: ${datasource.password:datasophon}
   #json格式化全局配置
   jackson:
     time-zone: GMT+8
@@ -36,7 +36,7 @@ mybatis-plus:
   mapper-locations: classpath*:/mapper/*.xml
   #实体扫描，多个package用逗号或者分号分隔
   typeAliasesPackage: com.datasophon.dao.entity
-  typeEnumsPackage: com.datasophon.dao.enums
+  typeEnumsPackage: com.datasophon.dao.enums,com.datasophon.domain.host.enums
   global-config:
     #数据库相关配置
     db-config:
@@ -63,3 +63,4 @@ logging:
 datasophon:
   migration:
     enable: true
+

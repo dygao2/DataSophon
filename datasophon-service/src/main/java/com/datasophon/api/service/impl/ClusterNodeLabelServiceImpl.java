@@ -25,7 +25,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.enums.Status;
 import com.datasophon.api.exceptions.BusinessException;
 import com.datasophon.api.master.ActorUtils;
-import com.datasophon.api.service.ClusterHostService;
+import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.service.ClusterInfoService;
 import com.datasophon.api.service.ClusterNodeLabelService;
 import com.datasophon.api.service.ClusterServiceRoleInstanceService;
@@ -34,7 +34,7 @@ import com.datasophon.common.Constants;
 import com.datasophon.common.command.ExecuteCmdCommand;
 import com.datasophon.common.utils.ExecResult;
 import com.datasophon.common.utils.Result;
-import com.datasophon.dao.entity.ClusterHostEntity;
+import com.datasophon.dao.entity.ClusterHostDO;
 import com.datasophon.dao.entity.ClusterInfoEntity;
 import com.datasophon.dao.entity.ClusterNodeLabelEntity;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
@@ -142,7 +142,7 @@ public class ClusterNodeLabelServiceImpl extends ServiceImpl<ClusterNodeLabelMap
         List<String> ids = Arrays.asList(hostIds.split(","));
         hostService.updateBatchNodeLabel(ids, nodeLabelEntity.getNodeLabel());
 
-        List<ClusterHostEntity> list = hostService.getHostListByIds(ids);
+        List<ClusterHostDO> list = hostService.getHostListByIds(ids);
         String assignNodeLabel = list.stream().map(e -> e.getHostname() + "=" + nodeLabelEntity.getNodeLabel())
                 .collect(Collectors.joining(" "));
         logger.info("assign node label {}", assignNodeLabel);
@@ -168,7 +168,7 @@ public class ClusterNodeLabelServiceImpl extends ServiceImpl<ClusterNodeLabelMap
     }
 
     private boolean nodeLabelInUse(String nodeLabel) {
-        List<ClusterHostEntity> list = hostService.list(new QueryWrapper<ClusterHostEntity>()
+        List<ClusterHostDO> list = hostService.list(new QueryWrapper<ClusterHostDO>()
                 .eq(Constants.NODE_LABEL, nodeLabel));
         if (list.size() > 0) {
             return true;

@@ -4,7 +4,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 -- Table structure for t_ddh_access_token
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_access_token`;
+
 CREATE TABLE `t_ddh_access_token`  (
   `id` int(10) NOT NULL,
   `user_id` int(10) DEFAULT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE `t_ddh_access_token`  (
 -- ----------------------------
 -- Table structure for t_ddh_alert_group
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_alert_group`;
+
 CREATE TABLE `t_ddh_alert_group`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `alert_group_name` varchar(32)  DEFAULT NULL COMMENT '告警组名称',
@@ -32,7 +32,7 @@ CREATE TABLE `t_ddh_alert_group`  (
 -- ----------------------------
 -- Table structure for t_ddh_cluster_alert_expression
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_cluster_alert_expression`;
+
 CREATE TABLE `t_ddh_cluster_alert_expression`  (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '自增 ID',
   `name` varchar(255)  DEFAULT NULL COMMENT '指标名称',
@@ -50,7 +50,7 @@ CREATE TABLE `t_ddh_cluster_alert_expression`  (
 -- ----------------------------
 -- Table structure for t_ddh_cluster_alert_group_map
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_cluster_alert_group_map`;
+
 CREATE TABLE `t_ddh_cluster_alert_group_map`  (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `cluster_id` int(10) DEFAULT NULL,
@@ -61,7 +61,7 @@ CREATE TABLE `t_ddh_cluster_alert_group_map`  (
 -- ----------------------------
 -- Table structure for t_ddh_cluster_alert_history
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_cluster_alert_history`;
+
 CREATE TABLE `t_ddh_cluster_alert_history`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `alert_group_name` varchar(32)  DEFAULT NULL COMMENT '告警组',
@@ -82,7 +82,7 @@ CREATE TABLE `t_ddh_cluster_alert_history`  (
 -- ----------------------------
 -- Table structure for t_ddh_cluster_alert_quota
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_cluster_alert_quota`;
+
 CREATE TABLE `t_ddh_cluster_alert_quota`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `alert_quota_name` varchar(32)  DEFAULT NULL COMMENT '告警指标名称',
@@ -106,7 +106,7 @@ CREATE TABLE `t_ddh_cluster_alert_quota`  (
 -- ----------------------------
 -- Table structure for t_ddh_cluster_alert_rule
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_cluster_alert_rule`;
+
 CREATE TABLE `t_ddh_cluster_alert_rule`  (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '自增 ID',
   `expression_id` bigint(20) NOT NULL COMMENT '表达式 ID',
@@ -130,7 +130,7 @@ CREATE TABLE `t_ddh_cluster_alert_rule`  (
 -- ----------------------------
 -- Table structure for t_ddh_cluster_group
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_cluster_group`;
+
 CREATE TABLE `t_ddh_cluster_group`  (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `group_name` varchar(255)  DEFAULT NULL,
@@ -141,7 +141,7 @@ CREATE TABLE `t_ddh_cluster_group`  (
 -- ----------------------------
 -- Table structure for t_ddh_cluster_host
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_cluster_host`;
+
 CREATE TABLE `t_ddh_cluster_host`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
@@ -166,7 +166,7 @@ CREATE TABLE `t_ddh_cluster_host`  (
 -- ----------------------------
 -- Table structure for t_ddh_cluster_info
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_cluster_info`;
+
 CREATE TABLE `t_ddh_cluster_info`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `create_by` varchar(128)  DEFAULT NULL COMMENT '创建人',
@@ -183,7 +183,7 @@ CREATE TABLE `t_ddh_cluster_info`  (
 -- ----------------------------
 -- Table structure for t_ddh_cluster_node_label
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_cluster_node_label`;
+
 CREATE TABLE `t_ddh_cluster_node_label`  (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `cluster_id` int(10) DEFAULT NULL,
@@ -194,7 +194,7 @@ CREATE TABLE `t_ddh_cluster_node_label`  (
 -- ----------------------------
 -- Table structure for t_ddh_cluster_queue_capacity
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_cluster_queue_capacity`;
+
 CREATE TABLE `t_ddh_cluster_queue_capacity`  (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `cluster_id` int(10) DEFAULT NULL,
@@ -210,7 +210,7 @@ CREATE TABLE `t_ddh_cluster_queue_capacity`  (
 -- ----------------------------
 -- Table structure for t_ddh_cluster_rack
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_cluster_rack`;
+
 CREATE TABLE `t_ddh_cluster_rack`  (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `rack` varchar(255)  DEFAULT NULL,
@@ -221,7 +221,7 @@ CREATE TABLE `t_ddh_cluster_rack`  (
 -- ----------------------------
 -- Table structure for t_ddh_cluster_role_user
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_cluster_role_user`;
+
 CREATE TABLE `t_ddh_cluster_role_user`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `cluster_id` int(11) DEFAULT NULL COMMENT '集群id',
@@ -233,7 +233,7 @@ CREATE TABLE `t_ddh_cluster_role_user`  (
 -- ----------------------------
 -- Table structure for t_ddh_cluster_service_command
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_cluster_service_command`;
+
 CREATE TABLE `t_ddh_cluster_service_command`  (
   `command_id` varchar(128)  NOT NULL COMMENT '主键',
   `create_by` varchar(32)  DEFAULT NULL COMMENT '创建人',
@@ -253,7 +253,6 @@ CREATE TABLE `t_ddh_cluster_service_command`  (
 -- ----------------------------
 -- Table structure for t_ddh_cluster_service_command_host
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_cluster_service_command_host`;
 CREATE TABLE `t_ddh_cluster_service_command_host`  (
   `command_host_id` varchar(128)  NOT NULL DEFAULT '1' COMMENT '主键',
   `hostname` varchar(32)  DEFAULT NULL COMMENT '主机',
@@ -267,7 +266,7 @@ CREATE TABLE `t_ddh_cluster_service_command_host`  (
 -- ----------------------------
 -- Table structure for t_ddh_cluster_service_command_host_command
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_cluster_service_command_host_command`;
+
 CREATE TABLE `t_ddh_cluster_service_command_host_command`  (
   `host_command_id` varchar(128)  NOT NULL DEFAULT '1' COMMENT '主键',
   `command_name` varchar(256)  DEFAULT NULL COMMENT '指令名称',
@@ -288,7 +287,7 @@ CREATE TABLE `t_ddh_cluster_service_command_host_command`  (
 -- ----------------------------
 -- Table structure for t_ddh_cluster_service_dashboard
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_cluster_service_dashboard`;
+
 CREATE TABLE `t_ddh_cluster_service_dashboard`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主机',
   `service_name` varchar(128)  DEFAULT NULL COMMENT '服务名称',
@@ -299,7 +298,7 @@ CREATE TABLE `t_ddh_cluster_service_dashboard`  (
 -- ----------------------------
 -- Table structure for t_ddh_cluster_service_instance
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_cluster_service_instance`;
+
 CREATE TABLE `t_ddh_cluster_service_instance`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `cluster_id` int(11) DEFAULT NULL COMMENT '集群id',
@@ -317,7 +316,7 @@ CREATE TABLE `t_ddh_cluster_service_instance`  (
 -- ----------------------------
 -- Table structure for t_ddh_cluster_service_instance_role_group
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_cluster_service_instance_role_group`;
+
 CREATE TABLE `t_ddh_cluster_service_instance_role_group`  (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `role_group_name` varchar(255)  DEFAULT NULL,
@@ -332,7 +331,7 @@ CREATE TABLE `t_ddh_cluster_service_instance_role_group`  (
 -- ----------------------------
 -- Table structure for t_ddh_cluster_service_role_group_config
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_cluster_service_role_group_config`;
+
 CREATE TABLE `t_ddh_cluster_service_role_group_config`  (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `role_group_id` int(10) DEFAULT NULL,
@@ -351,7 +350,7 @@ CREATE TABLE `t_ddh_cluster_service_role_group_config`  (
 -- ----------------------------
 -- Table structure for t_ddh_cluster_service_role_instance
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_cluster_service_role_instance`;
+
 CREATE TABLE `t_ddh_cluster_service_role_instance`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `service_role_name` varchar(32)  DEFAULT NULL COMMENT '服务角色名称',
@@ -371,7 +370,7 @@ CREATE TABLE `t_ddh_cluster_service_role_instance`  (
 -- ----------------------------
 -- Table structure for t_ddh_cluster_service_role_instance_webuis
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_cluster_service_role_instance_webuis`;
+
 CREATE TABLE `t_ddh_cluster_service_role_instance_webuis`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `service_role_instance_id` int(10) DEFAULT NULL COMMENT '服务角色id',
@@ -385,7 +384,7 @@ CREATE TABLE `t_ddh_cluster_service_role_instance_webuis`  (
 -- ----------------------------
 -- Table structure for t_ddh_cluster_user
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_cluster_user`;
+
 CREATE TABLE `t_ddh_cluster_user`  (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `username` varchar(255)  DEFAULT NULL,
@@ -396,7 +395,7 @@ CREATE TABLE `t_ddh_cluster_user`  (
 -- ----------------------------
 -- Table structure for t_ddh_cluster_user_group
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_cluster_user_group`;
+
 CREATE TABLE `t_ddh_cluster_user_group`  (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `user_id` int(10) DEFAULT NULL,
@@ -409,7 +408,7 @@ CREATE TABLE `t_ddh_cluster_user_group`  (
 -- ----------------------------
 -- Table structure for t_ddh_cluster_variable
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_cluster_variable`;
+
 CREATE TABLE `t_ddh_cluster_variable`  (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `cluster_id` int(10) DEFAULT NULL,
@@ -422,7 +421,7 @@ CREATE TABLE `t_ddh_cluster_variable`  (
 -- ----------------------------
 -- Table structure for t_ddh_cluster_yarn_queue
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_cluster_yarn_queue`;
+
 CREATE TABLE `t_ddh_cluster_yarn_queue`  (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `queue_name` varchar(255)  DEFAULT NULL,
@@ -443,7 +442,7 @@ CREATE TABLE `t_ddh_cluster_yarn_queue`  (
 -- ----------------------------
 -- Table structure for t_ddh_cluster_yarn_scheduler
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_cluster_yarn_scheduler`;
+
 CREATE TABLE `t_ddh_cluster_yarn_scheduler`  (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `cluster_id` int(11) DEFAULT NULL,
@@ -455,7 +454,7 @@ CREATE TABLE `t_ddh_cluster_yarn_scheduler`  (
 -- ----------------------------
 -- Table structure for t_ddh_cluster_zk
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_cluster_zk`;
+
 CREATE TABLE `t_ddh_cluster_zk`  (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `zk_server` varchar(255)  DEFAULT NULL,
@@ -467,7 +466,7 @@ CREATE TABLE `t_ddh_cluster_zk`  (
 -- ----------------------------
 -- Table structure for t_ddh_command
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_command`;
+
 CREATE TABLE `t_ddh_command`  (
   `id` int(10) NOT NULL,
   `command_type` int(2) DEFAULT NULL,
@@ -477,7 +476,7 @@ CREATE TABLE `t_ddh_command`  (
 -- ----------------------------
 -- Table structure for t_ddh_frame_info
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_frame_info`;
+
 CREATE TABLE `t_ddh_frame_info`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `frame_name` varchar(128)  DEFAULT NULL COMMENT '框架名称',
@@ -490,7 +489,7 @@ CREATE TABLE `t_ddh_frame_info`  (
 -- ----------------------------
 -- Table structure for t_ddh_frame_service
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_frame_service`;
+
 CREATE TABLE `t_ddh_frame_service`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `frame_id` int(11) DEFAULT NULL COMMENT '版本id',
@@ -515,7 +514,7 @@ CREATE TABLE `t_ddh_frame_service`  (
 -- ----------------------------
 -- Table structure for t_ddh_frame_service_role
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_frame_service_role`;
+
 CREATE TABLE `t_ddh_frame_service_role`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `service_id` int(11) DEFAULT NULL COMMENT '服务id',
@@ -534,7 +533,7 @@ CREATE TABLE `t_ddh_frame_service_role`  (
 -- ----------------------------
 -- Table structure for t_ddh_install_step
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_install_step`;
+
 CREATE TABLE `t_ddh_install_step`  (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `step_name` varchar(128)  DEFAULT NULL,
@@ -547,7 +546,7 @@ CREATE TABLE `t_ddh_install_step`  (
 -- ----------------------------
 -- Table structure for t_ddh_notice_group
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_notice_group`;
+
 CREATE TABLE `t_ddh_notice_group`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `notice_group_name` varchar(32)  DEFAULT NULL COMMENT '通知组名称',
@@ -559,7 +558,7 @@ CREATE TABLE `t_ddh_notice_group`  (
 -- ----------------------------
 -- Table structure for t_ddh_notice_group_user
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_notice_group_user`;
+
 CREATE TABLE `t_ddh_notice_group_user`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `notice_group_id` int(11) DEFAULT NULL COMMENT '通知组id',
@@ -571,7 +570,7 @@ CREATE TABLE `t_ddh_notice_group_user`  (
 -- ----------------------------
 -- Table structure for t_ddh_role_info
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_role_info`;
+
 CREATE TABLE `t_ddh_role_info`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `role_name` varchar(128)  DEFAULT NULL COMMENT '角色名称',
@@ -583,7 +582,7 @@ CREATE TABLE `t_ddh_role_info`  (
 -- ----------------------------
 -- Table structure for t_ddh_session
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_session`;
+
 CREATE TABLE `t_ddh_session`  (
   `id` varchar(128)  NOT NULL,
   `user_id` int(10) DEFAULT NULL,
@@ -597,7 +596,7 @@ CREATE TABLE `t_ddh_session`  (
 -- ----------------------------
 -- Table structure for t_ddh_user_info
 -- ----------------------------
-DROP TABLE IF EXISTS `t_ddh_user_info`;
+
 CREATE TABLE `t_ddh_user_info`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `username` varchar(128)  DEFAULT NULL COMMENT '用户名',

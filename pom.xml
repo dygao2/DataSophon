@@ -28,7 +28,7 @@
         and scalable big data cloud native platform.</description>
     <modules>
         <module>datasophon-api</module>
-        <module>datasophon-dao</module>
+        <module>datasophon-infrastructure</module>
         <module>datasophon-common</module>
         <module>datasophon-worker</module>
         <module>datasophon-ui</module>
@@ -37,7 +37,7 @@
     </modules>
 
     <properties>
-        <revision>1.1.3</revision>
+        <revision>1.2.0</revision>
         <akka.version>2.4.20</akka.version>
         <commons.httpclient>3.0.1</commons.httpclient>
         <commons.lang>2.6</commons.lang>
@@ -52,6 +52,7 @@
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <mybatis-plus.version>3.2.0</mybatis-plus.version>
         <mybatis.spring.version>2.0.1</mybatis.spring.version>
+        <mybatis-plus-join>1.2.0</mybatis-plus-join>
         <mysql.connector.version>8.0.28</mysql.connector.version>
         <org.apache.sshd.version>2.9.2</org.apache.sshd.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -101,6 +102,11 @@
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus</artifactId>
                 <version>${mybatis-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>icu.mhb</groupId>
+                <artifactId>mybatis-plus-join</artifactId>
+                <version>${mybatis-plus-join}</version>
             </dependency>
             <dependency>
                 <groupId>com.alibaba</groupId>

@@ -76,6 +76,9 @@ public class MasterServiceActor extends UntypedActor {
                         "{} service role size is {}",
                         serviceRoleInfo.getName(),
                         serviceRoleInfoList.size());
+                if (CancelCommandMap.exists(serviceRoleInfo.getHostCommandId())) {
+                    continue;
+                }
                 ExecResult execResult = new ExecResult();
                 Integer serviceInstanceId = serviceRoleInfo.getServiceInstanceId();
                 ClusterServiceRoleInstanceEntity serviceRoleInstance =

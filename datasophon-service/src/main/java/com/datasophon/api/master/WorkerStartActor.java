@@ -17,16 +17,15 @@
 
 package com.datasophon.api.master;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toList;
-
+import akka.actor.ActorRef;
+import akka.actor.UntypedActor;
+import cn.hutool.core.util.ObjectUtil;
 import com.datasophon.api.service.ClusterGroupService;
-import com.datasophon.api.service.ClusterHostService;
 import com.datasophon.api.service.ClusterInfoService;
 import com.datasophon.api.service.ClusterServiceCommandService;
 import com.datasophon.api.service.ClusterServiceRoleInstanceService;
 import com.datasophon.api.service.ClusterUserService;
+import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.utils.ProcessUtils;
 import com.datasophon.api.utils.SpringTool;
 import com.datasophon.common.Constants;
@@ -40,23 +39,23 @@ import com.datasophon.common.model.WorkerServiceMessage;
 import com.datasophon.common.utils.CollectionUtils;
 import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.ClusterGroup;
-import com.datasophon.dao.entity.ClusterHostEntity;
+import com.datasophon.dao.entity.ClusterHostDO;
 import com.datasophon.dao.entity.ClusterInfoEntity;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
 import com.datasophon.dao.entity.ClusterUser;
-import com.datasophon.dao.enums.MANAGED;
+import com.datasophon.domain.host.enums.MANAGED;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.datasophon.dao.enums.ServiceRoleState;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import akka.actor.ActorRef;
-import akka.actor.UntypedActor;
-import cn.hutool.core.util.ObjectUtil;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toList;
 
 public class WorkerStartActor extends UntypedActor {
 
@@ -76,7 +75,7 @@ public class WorkerStartActor extends UntypedActor {
                     SpringTool.getApplicationContext().getBean(ClusterInfoService.class);
 
             // is managed?
-            ClusterHostEntity hostEntity = clusterHostService.getClusterHostByHostname(hostname);
+            ClusterHostDO hostEntity = clusterHostService.getClusterHostByHostname(hostname);
             ClusterInfoEntity cluster = clusterInfoService.getById(clusterId);
             logger.info("Host install set to 100%");
             if (CacheUtils.constainsKey(cluster.getClusterCode() + Constants.HOST_MAP)) {
@@ -110,28 +109,45 @@ public class WorkerStartActor extends UntypedActor {
             prometheusActor.tell(prometheusConfigCommand, getSelf());
 
             // tell to worker what need to start
-            autoStartServiceNeeded(msg.getHostname(), cluster.getId());
+            autoAddServiceOperatorNeeded(msg.getHostname(), cluster.getId(), CommandType.START_SERVICE,false);
         } else if(message instanceof WorkerServiceMessage) {
-            // 启动节点上安装的服务
             WorkerServiceMessage msg = (WorkerServiceMessage) message;
-            // tell to worker what need to start
-            autoStartServiceNeeded(msg.getHostname(), msg.getClusterId());
+            // tell to worker what need to start/stop
+            autoAddServiceOperatorNeeded(msg.getHostname(), msg.getClusterId(), msg.getCommandType(),true);
         }
     }
 
     /**
-     * Automatically start services that need to be started
+     * Automatically start/stop services that need to be started
      *
      * @param clusterId
      */
-    private void autoStartServiceNeeded(String hostname, Integer clusterId) {
+    private void autoAddServiceOperatorNeeded(String hostname, Integer clusterId,CommandType commandType,
+        boolean needRestart) {
         ClusterServiceRoleInstanceService roleInstanceService =
                 SpringTool.getApplicationContext().getBean(ClusterServiceRoleInstanceService.class);
         ClusterServiceCommandService serviceCommandService =
                 SpringTool.getApplicationContext().getBean(ClusterServiceCommandService.class);
 
-        List<ClusterServiceRoleInstanceEntity> serviceRoleList =
-                roleInstanceService.listStoppedServiceRoleListByHostnameAndClusterId(hostname, clusterId);
+        List<ClusterServiceRoleInstanceEntity> serviceRoleList = null;
+        // 启动服务
+        if (CommandType.START_SERVICE.equals(commandType)) {
+            serviceRoleList = roleInstanceService
+                .listStoppedServiceRoleListByHostnameAndClusterId(hostname, clusterId);
+            // 重启时重刷服务配置以支持磁盘故障等问题
+            if(needRestart){
+                roleInstanceService.updateToNeedRestartByHost(hostname);
+            }
+        }
+
+        // 停止运行状态的服务
+        if(commandType.STOP_SERVICE.equals(commandType)){
+            serviceRoleList = roleInstanceService
+                .getServiceRoleListByHostnameAndClusterId(hostname, clusterId).stream()
+                .filter(roleInstance -> (!ServiceRoleState.STOP.equals(roleInstance.getServiceRoleState()) &&
+                    !ServiceRoleState.DECOMMISSIONED.equals(roleInstance.getServiceRoleState()))).collect(toList());
+        }
+
         if (CollectionUtils.isEmpty(serviceRoleList)) {
             logger.info("No services need to start at host {}.", hostname);
             return;
@@ -143,7 +159,7 @@ public class WorkerStartActor extends UntypedActor {
                                 ClusterServiceRoleInstanceEntity::getServiceId,
                                 mapping(i -> String.valueOf(i.getId()), toList())));
         Result result =
-                serviceCommandService.generateServiceRoleCommands(clusterId, CommandType.START_SERVICE, serviceRoleMap);
+                serviceCommandService.generateServiceRoleCommands(clusterId, commandType, serviceRoleMap);
         if (result.getCode() == 200) {
             logger.info("Auto-start services successful");
         } else {

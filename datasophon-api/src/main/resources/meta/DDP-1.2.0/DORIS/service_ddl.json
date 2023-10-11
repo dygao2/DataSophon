@@ -16,7 +16,7 @@
       "logFile": "fe/log/fe.log",
       "jmxPort": 18030,
       "startRunner": {
-        "timeout": "60",
+        "timeout": "600",
         "program": "fe/bin/start_fe.sh",
         "args": [
           "--daemon"
@@ -44,6 +44,35 @@
       }
     },
     {
+      "name": "DorisFEObserver",
+      "label": "DorisFEObserver",
+      "roleType": "worker",
+      "logFile": "fe/log/fe.log",
+      "jmxPort": 18031,
+      "startRunner": {
+        "timeout": "60",
+        "program": "fe/bin/start_fe.sh",
+        "args": [
+          "--daemon"
+        ]
+      },
+      "stopRunner": {
+        "timeout": "600",
+        "program": "fe/bin/stop_fe.sh",
+        "args": [
+          "--daemon"
+        ]
+      },
+      "statusRunner": {
+        "timeout": "60",
+        "program": "fe/bin/status_observer.sh",
+        "args": [
+          "status",
+          "fe"
+        ]
+      }
+    },
+    {
       "name": "DorisBE",
       "label": "DorisBE",
       "roleType": "worker",
@@ -51,7 +80,7 @@
       "logFile": "be/log/be.INFO",
       "jmxPort": 18040,
       "startRunner": {
-        "timeout": "60",
+        "timeout": "600",
         "program": "be/bin/start_be.sh",
         "args": [
           "--daemon"
@@ -87,6 +116,7 @@
           "webserver_port",
           "brpc_port",
           "storage_root_path",
+          "mem_limit",
           "custom.be.conf"
         ]
       },
@@ -96,11 +126,14 @@
         "outputDirectory": "fe/conf",
         "templateName": "doris_fe.ftl",
         "includeParams": [
+          "fe_heap_size",
           "cluster_id",
           "meta_dir",
           "rpc_port",
           "query_port",
           "fe_priority_networks",
+          "lower_case_table_names",
+          "enable_outfile_to_local",
           "custom.fe.conf"
         ]
       }
@@ -122,6 +155,7 @@
       "name": "meta_dir",
       "label": "FE元数据的保存目录",
       "description": "FE元数据的保存目录",
+      "configType": "path",
       "required": true,
       "type": "input",
       "value": "",
@@ -161,6 +195,48 @@
       "configurableInWizard": true,
       "hidden": false,
       "defaultValue": "0.0.0.0/24"
+    },
+    {
+      "name": "fe_heap_size",
+      "label": "FE最大堆内存",
+      "description": "FE最大堆内存，单位为GB",
+      "required": true,
+      "configType": "map",
+      "type": "slider",
+      "minValue": 0,
+      "maxValue": 64,
+      "value": "",
+      "unit": "GB",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": "8"
+    },
+    {
+      "name": "lower_case_table_names",
+      "label": "表名大小写是否敏感,只有初始化安装时有效",
+      "description": "值为 0 时，表名大小写敏感。默认为0。\n值为 1 时，表名大小写不敏感，doris在存储和查询时会将表名转换为小写。\n优点是在一条语句中可以使用表名的任意大小写形式\n缺点是建表后无法获得建表语句中指定的表名，show tables 查看的表名为指定表名的小写。\n值为 2 时，表名大小写不敏感，doris存储建表语句中指定的表名，查询时转换为小写进行比较。\n优点是show tables 查看的表名为建表语句中指定的表名；\n缺点是同一语句中只能使用表名的一种大小写形式。",
+      "required": true,
+      "type": "select",
+      "value": "0",
+      "configurableInWizard": true,
+      "selectValue": [
+        "0",
+        "1",
+        "2"
+      ],
+      "hidden": false,
+      "defaultValue": "0"
+    },
+    {
+      "name": "enable_outfile_to_local",
+      "label": "是否允许outfile函数将结果导出到本地磁盘",
+      "description": "是否允许 outfile 函数将结果导出到本地磁盘",
+      "required": true,
+      "type": "switch",
+      "value": "",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": false
     },
     {
       "name": "be_priority_networks",
@@ -230,13 +306,25 @@
       "configType": "path",
       "separator": ";",
       "required": true,
+      "type": "multiple",
+      "value": [
+        "/data/be/storage"
+      ],
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": ""
+    },
+    {
+      "name": "mem_limit",
+      "label": "BE进程使用服务器最大内存百分比",
+      "description": "限制BE进程使用服务器最大内存百分比。用于防止BE内存挤占太多的机器内存，该参数必须大于0，当百分大于100%之后，该值会默认为100%。",
+      "required": true,
       "type": "input",
       "value": "",
       "configurableInWizard": true,
       "hidden": false,
-      "defaultValue": "/data/be/storage"
+      "defaultValue": "100%"
     },
-
     {
       "name": "custom.fe.conf",
       "label": "自定义配置fe.conf",

@@ -17,6 +17,7 @@
 
 package com.datasophon.common.model;
 
+import com.datasophon.common.enums.CommandType;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -44,11 +45,14 @@ public class WorkerServiceMessage implements Serializable {
      */
     private String ip;
 
+    private CommandType commandType;
+
     public WorkerServiceMessage() {
     }
 
-    public WorkerServiceMessage(String hostname, Integer clusterId) {
+    public WorkerServiceMessage(String hostname, Integer clusterId,CommandType commandType) {
         this.hostname = hostname;
         this.clusterId = clusterId;
+        this.commandType = commandType;
     }
 }

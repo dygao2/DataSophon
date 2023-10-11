@@ -18,7 +18,7 @@
 package com.datasophon.api.master;
 
 import com.datasophon.api.master.handler.service.ServiceConfigureHandler;
-import com.datasophon.api.service.ClusterHostService;
+import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.service.ClusterInfoService;
 import com.datasophon.api.service.ClusterServiceRoleInstanceService;
 import com.datasophon.api.utils.PackageUtils;
@@ -29,7 +29,7 @@ import com.datasophon.common.model.Generators;
 import com.datasophon.common.model.ServiceConfig;
 import com.datasophon.common.model.ServiceRoleInfo;
 import com.datasophon.common.utils.ExecResult;
-import com.datasophon.dao.entity.ClusterHostEntity;
+import com.datasophon.dao.entity.ClusterHostDO;
 import com.datasophon.dao.entity.ClusterInfoEntity;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
 
@@ -70,10 +70,10 @@ public class RackActor extends UntypedActor {
             generators.setConfigFormat("properties2");
 
             ArrayList<ServiceConfig> serviceConfigs = new ArrayList<>();
-            List<ClusterHostEntity> hostList = hostService.list();
-            for (ClusterHostEntity clusterHostEntity : hostList) {
-                ServiceConfig serviceConfig = ProcessUtils.createServiceConfig(clusterHostEntity.getIp(),
-                        Constants.SLASH + clusterHostEntity.getRack(), "input");
+            List<ClusterHostDO> hostList = hostService.list();
+            for (ClusterHostDO clusterHostDO : hostList) {
+                ServiceConfig serviceConfig = ProcessUtils.createServiceConfig(clusterHostDO.getIp(),
+                        Constants.SLASH + clusterHostDO.getRack(), "input");
                 serviceConfigs.add(serviceConfig);
             }
             configFileMap.put(generators, serviceConfigs);

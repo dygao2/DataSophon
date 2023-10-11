@@ -31,7 +31,7 @@ public interface ClusterGroupService extends IService<ClusterGroup> {
 
     Result deleteUserGroup(Integer id);
 
-    Result listPage(String groupName, Integer page, Integer pageSize);
+    Result listPage(String groupName, Integer clusterId, Integer page, Integer pageSize);
 
     List<ClusterGroup> listAllUserGroup(Integer clusterId);
 

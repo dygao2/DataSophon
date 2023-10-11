@@ -18,44 +18,34 @@
 package com.datasophon.api.service.impl;
 
 import akka.actor.ActorRef;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.master.ActorUtils;
 import com.datasophon.api.master.PrometheusActor;
+import com.datasophon.api.master.alert.AlertActor;
 import com.datasophon.api.service.ClusterAlertHistoryService;
-import com.datasophon.api.service.ClusterHostService;
 import com.datasophon.api.service.ClusterInfoService;
-import com.datasophon.api.service.ClusterServiceInstanceService;
 import com.datasophon.api.service.ClusterServiceRoleInstanceService;
 import com.datasophon.common.Constants;
 import com.datasophon.common.command.GeneratePrometheusConfigCommand;
-import com.datasophon.common.model.alert.AlertLabels;
-import com.datasophon.common.model.alert.AlertMessage;
-import com.datasophon.common.model.alert.Alerts;
 import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.ClusterAlertHistory;
-import com.datasophon.dao.entity.ClusterHostEntity;
 import com.datasophon.dao.entity.ClusterInfoEntity;
-import com.datasophon.dao.entity.ClusterServiceInstanceEntity;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
-import com.datasophon.dao.enums.AlertLevel;
-import com.datasophon.dao.enums.ServiceRoleState;
-import com.datasophon.dao.enums.ServiceState;
 import com.datasophon.dao.mapper.ClusterAlertHistoryMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import scala.concurrent.duration.FiniteDuration;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @Service("clusterAlertHistoryService")
-public class ClusterAlertHistoryServiceImpl extends ServiceImpl<ClusterAlertHistoryMapper, ClusterAlertHistory>
-        implements
-            ClusterAlertHistoryService {
+@Transactional
+public class ClusterAlertHistoryServiceImpl extends ServiceImpl<ClusterAlertHistoryMapper, ClusterAlertHistory> implements ClusterAlertHistoryService {
 
     private static final Logger logger = LoggerFactory.getLogger(ClusterAlertHistoryServiceImpl.class);
 
@@ -63,171 +53,19 @@ public class ClusterAlertHistoryServiceImpl extends ServiceImpl<ClusterAlertHist
     private ClusterServiceRoleInstanceService roleInstanceService;
 
     @Autowired
-    private ClusterServiceInstanceService serviceInstanceService;
-
-    @Autowired
-    private ClusterHostService hostService;
-
-    @Autowired
     private ClusterInfoService clusterInfoService;
 
     @Override
     public void saveAlertHistory(String alertMessage) {
-        AlertMessage alertMes = JSONObject.parseObject(alertMessage, AlertMessage.class);
-        List<Alerts> alerts = alertMes.getAlerts();
-        for (Alerts alertInfo : alerts) {
-            String status = alertInfo.getStatus();
-            AlertLabels labels = alertInfo.getLabels();
-            int clusterId = labels.getClusterId();
-            String instance = labels.getInstance();
-            String hostname = instance.split(":")[0];
-            // 查询告警历史
-            ClusterAlertHistory clusterAlertHistory = this.getOne(new QueryWrapper<ClusterAlertHistory>()
-                    .eq(Constants.ALERT_TARGET_NAME, labels.getAlertname())
-                    .eq(Constants.CLUSTER_ID, labels.getClusterId())
-                    .eq(Constants.HOSTNAME, hostname)
-                    .eq(Constants.IS_ENABLED, 1));
-            String serviceRoleName = labels.getServiceRoleName();
-            if ("firing".equals(status)) {// 生成告警历史
-                // 查询服务实例，服务角色实例
-                if ("node".equals(serviceRoleName)) {
-                    ClusterHostEntity clusterHost = hostService.getClusterHostByHostname(hostname);
-                    if (Objects.isNull(clusterAlertHistory)) {
-                        clusterAlertHistory = new ClusterAlertHistory();
-                        clusterAlertHistory.setClusterId(clusterId);
-                        clusterAlertHistory.setAlertGroupName(labels.getJob());
-                        clusterAlertHistory.setAlertTargetName(labels.getAlertname());
-                        clusterAlertHistory.setCreateTime(new Date());
-                        clusterAlertHistory.setUpdateTime(new Date());
-                        if ("warning".equals(labels.getSeverity())) {
-                            clusterAlertHistory.setAlertLevel(AlertLevel.WARN);
-                            clusterHost.setHostState(3);
-                        }
-                        clusterAlertHistory.setAlertInfo(alertInfo.getAnnotations().getDescription());
-                        clusterAlertHistory.setAlertAdvice(alertInfo.getAnnotations().getSummary());
-                        clusterAlertHistory.setHostname(hostname);
-                        clusterAlertHistory.setIsEnabled(1);
-
-                        if ("exception".equals(labels.getSeverity())) {
-                            clusterAlertHistory.setAlertLevel(AlertLevel.EXCEPTION);
-                            clusterHost.setHostState(2);
-                        }
-                        this.save(clusterAlertHistory);
-                    } else {
-                        clusterHost.setHostState(3);
-                        if ("exception".equals(labels.getSeverity())) {
-                            clusterHost.setHostState(2);
-                        }
-                    }
-                    hostService.updateById(clusterHost);
-                } else {
-                    ClusterServiceRoleInstanceEntity roleInstance =
-                            roleInstanceService.getOneServiceRole(serviceRoleName, hostname, clusterId);
-                    if (Objects.nonNull(roleInstance)) {
-                        ClusterServiceInstanceEntity serviceInstance =
-                                serviceInstanceService.getById(roleInstance.getServiceId());
-                        if (Objects.isNull(clusterAlertHistory)) {
-                            clusterAlertHistory = new ClusterAlertHistory();
-                            clusterAlertHistory.setClusterId(clusterId);
-                            clusterAlertHistory.setAlertGroupName(labels.getJob());
-                            clusterAlertHistory.setAlertTargetName(labels.getAlertname());
-                            clusterAlertHistory.setCreateTime(new Date());
-                            clusterAlertHistory.setUpdateTime(new Date());
-                            clusterAlertHistory.setServiceRoleInstanceId(roleInstance.getId());
-                            if ("warning".equals(labels.getSeverity())) {
-                                clusterAlertHistory.setAlertLevel(AlertLevel.WARN);
-                            }
-                            clusterAlertHistory.setAlertInfo(alertInfo.getAnnotations().getDescription());
-                            clusterAlertHistory.setAlertAdvice(alertInfo.getAnnotations().getSummary());
-
-                            clusterAlertHistory.setHostname(hostname);
-                            clusterAlertHistory.setIsEnabled(1);
-
-                            serviceInstance.setServiceState(ServiceState.EXISTS_ALARM);
-                            roleInstance.setServiceRoleState(ServiceRoleState.EXISTS_ALARM);
-                            clusterAlertHistory.setServiceInstanceId(serviceInstance.getId());
-                            if ("exception".equals(labels.getSeverity())) {
-                                clusterAlertHistory.setAlertLevel(AlertLevel.EXCEPTION);
-                                serviceInstance.setServiceState(ServiceState.EXISTS_EXCEPTION);
-                                // 查询服务角色实例
-                                roleInstance.setServiceRoleState(ServiceRoleState.STOP);
-                            }
-                            this.save(clusterAlertHistory);
-                        } else {
-                            serviceInstance.setServiceState(ServiceState.EXISTS_ALARM);
-                            roleInstance.setServiceRoleState(ServiceRoleState.EXISTS_ALARM);
-                            if ("exception".equals(labels.getSeverity())) {
-                                serviceInstance.setServiceState(ServiceState.EXISTS_EXCEPTION);
-                                // 查询服务角色实例
-                                roleInstance.setServiceRoleState(ServiceRoleState.STOP);
-                            }
-                        }
-                        serviceInstanceService.updateById(serviceInstance);
-                        roleInstanceService.updateById(roleInstance);
-                    }
-                }
-
-            }
-            if ("resolved".equals(status)) {
-                if (Objects.nonNull(clusterAlertHistory)) {
-                    clusterAlertHistory.setIsEnabled(2);
-                    List<ClusterAlertHistory> warnAlertList = this.lambdaQuery()
-                            .eq(ClusterAlertHistory::getHostname, hostname)
-                            .eq(ClusterAlertHistory::getAlertGroupName, serviceRoleName.toLowerCase())
-                            .eq(ClusterAlertHistory::getIsEnabled, 1)
-                            .eq(ClusterAlertHistory::getAlertLevel, AlertLevel.WARN)
-                            .ne(ClusterAlertHistory::getId, clusterAlertHistory.getId())
-                            .list();
-                    if ("exception".equals(labels.getSeverity())) {// 异常告警处理
-                        if ("node".equals(serviceRoleName)) {
-                            // 置为正常
-                            ClusterHostEntity clusterHost = hostService.getClusterHostByHostname(hostname);
-                            clusterHost.setHostState(1);
-                            if (Objects.nonNull(warnAlertList) && warnAlertList.size() > 0) {
-                                clusterHost.setHostState(3);
-                            }
-                            hostService.updateById(clusterHost);
-                        } else {
-                            // 查询服务角色实例
-                            ClusterServiceRoleInstanceEntity roleInstance = roleInstanceService
-                                    .getOneServiceRole(labels.getServiceRoleName(), hostname, clusterId);
-                            if (roleInstance.getServiceRoleState() != ServiceRoleState.RUNNING) {
-                                roleInstance.setServiceRoleState(ServiceRoleState.RUNNING);
-                                if (Objects.nonNull(warnAlertList) && warnAlertList.size() > 0) {
-                                    roleInstance.setServiceRoleState(ServiceRoleState.EXISTS_ALARM);
-                                }
-                                roleInstanceService.updateById(roleInstance);
-                            }
-                        }
-                    } else {
-                        // 警告告警处理
-                        if ("node".equals(serviceRoleName)) {
-                            // 置为正常
-                            ClusterHostEntity clusterHost = hostService.getClusterHostByHostname(hostname);
-                            clusterHost.setHostState(1);
-                            if (Objects.nonNull(warnAlertList) && warnAlertList.size() > 0) {
-                                clusterHost.setHostState(3);
-                            }
-                            hostService.updateById(clusterHost);
-                        } else {
-                            // 查询服务角色实例
-                            ClusterServiceRoleInstanceEntity roleInstance = roleInstanceService
-                                    .getOneServiceRole(labels.getServiceRoleName(), hostname, clusterId);
-                            if (roleInstance.getServiceRoleState() != ServiceRoleState.RUNNING) {
-                                roleInstance.setServiceRoleState(ServiceRoleState.RUNNING);
-                                if (Objects.nonNull(warnAlertList) && warnAlertList.size() > 0) {
-                                    roleInstance.setServiceRoleState(ServiceRoleState.EXISTS_ALARM);
-                                }
-                                roleInstanceService.updateById(roleInstance);
-                            }
-                        }
-                    }
-
-                    this.updateById(clusterAlertHistory);
-                }
-            }
-        }
+        logger.warn("Receive Alert Message : {}", alertMessage);
+        ActorRef alertActor = ActorUtils.getLocalActor(AlertActor.class, "alertActor");
+        ActorUtils.actorSystem.scheduler().scheduleOnce(FiniteDuration.apply(
+                2L, TimeUnit.SECONDS),
+                alertActor, alertMessage,
+                ActorUtils.actorSystem.dispatcher(),
+                ActorRef.noSender());
     }
+
 
     @Override
     public Result getAlertList(Integer serviceInstanceId) {

@@ -26,7 +26,7 @@ import com.datasophon.api.enums.Status;
 import com.datasophon.api.exceptions.ServiceException;
 import com.datasophon.api.master.ActorUtils;
 import com.datasophon.api.service.ClusterGroupService;
-import com.datasophon.api.service.ClusterHostService;
+import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.service.ClusterUserGroupService;
 import com.datasophon.api.service.ClusterUserService;
 import com.datasophon.common.Constants;
@@ -35,7 +35,7 @@ import com.datasophon.common.command.remote.DelUnixUserCommand;
 import com.datasophon.common.utils.ExecResult;
 import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.ClusterGroup;
-import com.datasophon.dao.entity.ClusterHostEntity;
+import com.datasophon.dao.entity.ClusterHostDO;
 import com.datasophon.dao.entity.ClusterUser;
 import com.datasophon.dao.entity.ClusterUserGroup;
 import com.datasophon.dao.mapper.ClusterUserMapper;
@@ -76,7 +76,7 @@ public class ClusterUserServiceImpl extends ServiceImpl<ClusterUserMapper, Clust
         if (hasRepeatUserName(clusterId, username)) {
             return Result.error(Status.DUPLICATE_USER_NAME.getMsg());
         }
-        List<ClusterHostEntity> hostList = hostService.getHostListByClusterId(clusterId);
+        List<ClusterHostDO> hostList = hostService.getHostListByClusterId(clusterId);
 
         ClusterUser clusterUser = new ClusterUser();
         clusterUser.setUsername(username);
@@ -97,7 +97,7 @@ public class ClusterUserServiceImpl extends ServiceImpl<ClusterUserMapper, Clust
 
         ClusterGroup mainGroup = groupService.getById(mainGroupId);
         // sync to all hosts
-        for (ClusterHostEntity clusterHost : hostList) {
+        for (ClusterHostDO clusterHost : hostList) {
             ActorSelection unixUserActor = ActorUtils.actorSystem.actorSelection(
                     "akka.tcp://datasophon@" + clusterHost.getHostname() + ":2552/user/worker/unixUserActor");
 
@@ -148,7 +148,8 @@ public class ClusterUserServiceImpl extends ServiceImpl<ClusterUserMapper, Clust
     @Override
     public Result listPage(Integer clusterId, String username, Integer page, Integer pageSize) {
         Integer offset = (page - 1) * pageSize;
-        List<ClusterUser> list = this.list(new QueryWrapper<ClusterUser>().like(Constants.USERNAME, username)
+        List<ClusterUser> list = this.list(new QueryWrapper<ClusterUser>()
+                .like(StringUtils.isNotBlank(username), Constants.USERNAME, username)
                 .eq(Constants.CLUSTER_ID, clusterId)
                 .last("limit " + offset + "," + pageSize));
         for (ClusterUser clusterUser : list) {
@@ -161,7 +162,9 @@ public class ClusterUserServiceImpl extends ServiceImpl<ClusterUserMapper, Clust
             }
             clusterUser.setMainGroup(mainGroup.getGroupName());
         }
-        int total = this.count(new QueryWrapper<ClusterUser>().like(Constants.USERNAME, username));
+        int total = this.count(new QueryWrapper<ClusterUser>()
+                .like(StringUtils.isNotBlank(username), Constants.USERNAME, username)
+                .eq(Constants.CLUSTER_ID, clusterId));
         return Result.success(list).put(Constants.TOTAL, total);
     }
 
@@ -170,9 +173,9 @@ public class ClusterUserServiceImpl extends ServiceImpl<ClusterUserMapper, Clust
         ClusterUser clusterUser = this.getById(id);
         // delete user and group
         userGroupService.deleteByUser(id);
-        List<ClusterHostEntity> hostList = hostService.getHostListByClusterId(clusterUser.getClusterId());
+        List<ClusterHostDO> hostList = hostService.getHostListByClusterId(clusterUser.getClusterId());
         // sync to all hosts
-        for (ClusterHostEntity clusterHost : hostList) {
+        for (ClusterHostDO clusterHost : hostList) {
             ActorSelection unixUserActor = ActorUtils.actorSystem.actorSelection(
                     "akka.tcp://datasophon@" + clusterHost.getHostname() + ":2552/user/worker/unixUserActor");
             DelUnixUserCommand createUnixUserCommand = new DelUnixUserCommand();

@@ -34,6 +34,7 @@ public class DatabaseMigrationAware implements ApplicationContextAware, Ordered 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         String migrationEnable = applicationContext.getEnvironment().getProperty("datasophon.migration.enable");
+        log.info("Database Migration enable is {}", migrationEnable);
         if (migrationEnable == null || "false".equals(migrationEnable)) {
             return;
         }

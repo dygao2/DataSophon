@@ -21,14 +21,11 @@
 
 export default {
   path() {
-    let path = process.env.VUE_APP_API_BASE_URL
-    console.log(path, 'path地址', process.env.NOOE_ENV)
-    if(process.env.NOOE_ENV === 'production') {
-      console.log(1)
-    }else {
-      path = ''
-    }
-
+    let path = ''
+    // if(process.env.NODE_ENV === 'production') {
+    //   path = process.env.VUE_APP_API_BASE_URL
+    // }
+    // console.log(path, 'path地址', process.env.NODE_ENV)
     return path
   }
 }

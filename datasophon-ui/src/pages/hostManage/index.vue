@@ -43,6 +43,7 @@
           <a-dropdown>
             <a-menu slot="overlay" @click="handleMenuClick">
               <a-menu-item key="handStartService">启动主机服务</a-menu-item>
+              <a-menu-item key="handStopService">停止主机服务</a-menu-item>
               <a-menu-item key="handStartHost">启动主机Worker</a-menu-item>
               <a-menu-item key="handStopHost">停止主机Worker</a-menu-item>
               <a-menu-item key="handAgent">重新安装Worker</a-menu-item>
@@ -482,6 +483,10 @@ export default {
         this.doConfirm("启动该主机服务", this.handStartService);
         return false;
       }
+      if(key.key === "handStopService") {
+        this.doConfirm("停止该主机服务", this.handStopCommand);
+        return false;
+      }
       if(key.key === "handStartHost") {
         // 启动主机 Worker
         this.doConfirm("启动该主机 Worker", this.handStartHost)
@@ -539,13 +544,19 @@ export default {
       })
     },
     handStartService() {
+      this.handCommand('start')
+    },
+    handStopCommand() {
+      this.handCommand('stop')
+    },
+    handCommand(op){
       let params = {
         clusterHostIds: this.hostnames.join(","),
-        commandType: "start",
+        commandType: op,
       };
       this.$axiosPost(global.API.generateHostServiceCommand, params).then((resp) => {
         if (resp.code === 200) {
-          this.$message.success("启动 Worker 服务成功");
+          this.$message.success(op == 'start' ? "启动 Worker 服务成功" : "停止 Worker 服务成功");
         } else {
           this.$message.error(resp.msg);
         }

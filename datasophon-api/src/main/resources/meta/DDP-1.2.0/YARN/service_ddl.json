@@ -126,64 +126,10 @@
         "timeout": "60",
         "program": "control_hadoop.sh",
         "args": [
-          "status",
-          "historyserver"
-        ]
-      },
-      "restartRunner": {
-        "timeout": "60",
-        "program": "control_hadoop.sh",
-        "args": [
-          "restart",
-          "historyserver"
+          "status","historyserver"
         ]
       }
-    },
-    {
-      "name": "TimelineServer",
-      "label": "TimelineServer",
-      "roleType": "master",
-      "cardinality": "1",
-      "runAs": {
-        "user": "yarn",
-        "group": "hadoop"
-      },
-      "sortNum": 4,
-      "logFile": "logs/hadoop-yarn-timelineserver-${host}.log",
-      "startRunner": {
-        "timeout": "60",
-        "program": "control_hadoop.sh",
-        "args": [
-          "start",
-          "timelineserver"
-        ]
-      },
-      "stopRunner": {
-        "timeout": "600",
-        "program": "control_hadoop.sh",
-        "args": [
-          "stop",
-          "timelineserver"
-        ]
-      },
-      "statusRunner": {
-        "timeout": "60",
-        "program": "control_hadoop.sh",
-        "args": [
-          "status",
-          "timelineserver"
-        ]
-      },
-      "restartRunner": {
-        "timeout": "60",
-        "program": "control_hadoop.sh",
-        "args": [
-          "restart",
-          "timelineserver"
-        ]
-      }
-    },
-    {
+    },{
       "name": "YarnClient",
       "label": "YarnClient",
       "roleType": "client",
@@ -233,10 +179,6 @@
           "yarn.resourcemanager.zk-address",
           "yarn.resourcemanager.recovery.enabled",
           "yarn.resourcemanager.store.class",
-          "yarn.timeline-service.enabled",
-          "yarn.timeline-service.hostname",
-          "yarn.timeline-service.http-cross-origin.enabled",
-          "yarn.resourcemanager.system-metrics-publisher.enabled",
           "yarn.application.classpath",
           "yarn.nodemanager.local-dirs",
           "yarn.nodemanager.log-dirs",
@@ -264,7 +206,8 @@
         "includeParams": [
           "mapreduce.jobhistory.keytab",
           "mapreduce.jobhistory.principal",
-          "mapreduce.cluster.local.dir"
+          "mapreduce.cluster.local.dir",
+          "custom.mapred.site.xml"
         ]
       }
     ]
@@ -473,50 +416,6 @@
       "configurableInWizard": true,
       "hidden": false,
       "defaultValue": false
-    },
-    {
-      "name": "yarn.timeline-service.enabled",
-      "label": "是否开启 Timeline Server",
-      "description": "是否开启 Timeline Server",
-      "required": true,
-      "type": "switch",
-      "value":"",
-      "configurableInWizard": true,
-      "hidden": false,
-      "defaultValue": true
-    },
-    {
-      "name": "yarn.timeline-service.hostname",
-      "label": "Timeline Server节点",
-      "description": "Timeline Server节点",
-      "required": true,
-      "type": "input",
-      "value":"",
-      "configurableInWizard": true,
-      "hidden": false,
-      "defaultValue": "${yarn_timeline_server}"
-    },
-    {
-      "name": "yarn.timeline-service.http-cross-origin.enabled",
-      "label": "开启 Timeline Server 跨域访问",
-      "description": "开启 Timeline Server 跨域访问",
-      "required": true,
-      "type": "switch",
-      "value":"",
-      "configurableInWizard": true,
-      "hidden": false,
-      "defaultValue": true
-    },
-    {
-      "name": "yarn.resourcemanager.system-metrics-publisher.enabled",
-      "label": "开启 resourcemanager 指标信息广播",
-      "description": "开启 resourcemanager 指标信息广播",
-      "required": true,
-      "type": "switch",
-      "value":"",
-      "configurableInWizard": true,
-      "hidden": false,
-      "defaultValue": true
     },
     {
       "name": "yarn.resourcemanager.ha.enabled",
@@ -951,6 +850,18 @@
     {
       "name": "custom.yarn.site.xml",
       "label": "自定义配置yarn-site.xml",
+      "description": "自定义配置",
+      "configType": "custom",
+      "required": false,
+      "type": "multipleWithKey",
+      "value": [],
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": ""
+    },
+    {
+      "name": "custom.mapred.site.xml",
+      "label": "自定义配置mapred-site.xml",
       "description": "自定义配置",
       "configType": "custom",
       "required": false,

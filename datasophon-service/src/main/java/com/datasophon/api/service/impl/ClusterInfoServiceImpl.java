@@ -26,6 +26,7 @@ import com.datasophon.api.load.GlobalVariables;
 import com.datasophon.api.master.ActorUtils;
 import com.datasophon.api.master.ClusterActor;
 import com.datasophon.api.service.*;
+import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.utils.PackageUtils;
 import com.datasophon.api.utils.ProcessUtils;
 import com.datasophon.api.utils.SecurityUtils;
@@ -210,16 +211,20 @@ public class ClusterInfoServiceImpl extends ServiceImpl<ClusterInfoMapper, Clust
             List<ClusterServiceInstanceEntity> serviceInstanceList = clusterServiceInstanceService.listAll(id);
             if (serviceInstanceList.stream().noneMatch(instance -> clusterServiceInstanceService.hasRunningRoleInstance(instance.getId()))) {
                 ActorUtils.getLocalActor(
-                                ClusterActor.class, "clusterActor")
+                        ClusterActor.class, "clusterActor")
                         .tell(new ClusterCommand(ClusterCommandType.DELETE, id), ActorRef.noSender());
 
                 this.updateClusterState(id, ClusterState.DELETING.getValue());
             }
         }
+        if (ClusterState.NEED_CONFIG.equals(clusterInfo.getClusterState())) {
+            this.removeByIds(ids);
+            // delete host
+            clusterHostService.removeHostByClusterId(id);
+        }
 
 
-        // delete host
-//    clusterHostService.removeHostByClusterId(id);
+
     }
 
 }

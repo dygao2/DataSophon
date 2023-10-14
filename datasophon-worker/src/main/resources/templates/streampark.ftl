@@ -11,84 +11,89 @@ logging:
   level:
     root: info
 
+knife4j:
+  enable: true
+  basic:
+    # basic authentication, used to access swagger-ui and doc
+    enable: false
+    username: admin
+    password: streampark
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+  packages-to-scan: org.apache.streampark.console
+
 spring:
-  application.name: streamx
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
-  devtools:
-    restart:
-      enabled: false
+  application.name: StreamPark
+  devtools.restart.enabled: false
+  mvc.pathmatch.matching-strategy: ant_path_matcher
   servlet:
     multipart:
       enabled: true
       max-file-size: 500MB
       max-request-size: 500MB
-  datasource:
-    dynamic:
-      # 是否开启 SQL日志输出，生产环境建议关闭，有性能损耗
-      p6spy: false
-      hikari:
-        connection-timeout: 30000
-        max-lifetime: 1800000
-        max-pool-size: 15
-        min-idle: 5
-        connection-test-query: select 1
-        pool-name: HikariCP-DS-POOL
-      # 配置默认数据源
-      primary: primary
-      datasource:
-        # 数据源-1，名称为 primary
-        primary:
-          username: ${username}
-          password: ${password}
-          driver-class-name: com.mysql.cj.jdbc.Driver
-          url: ${databaseUrl}
   aop.proxy-target-class: true
   messages.encoding: utf-8
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+    deserialization:
+      fail-on-unknown-properties: false
   main:
     allow-circular-references: true
     banner-mode: off
-
+  mvc:
+    converters:
+      preferred-json-mapper: jackson
+  datasource:
+    username: ${username}
+    password: ${password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${databaseUrl}
 
 management:
   endpoints:
     web:
       exposure:
-        include: [ 'httptrace', 'metrics' ]
+        include: [ 'health', 'httptrace', 'metrics' ]
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+      probes:
+        enabled: true
+  health:
+    ldap:
+      enabled: false
 
-#mybatis plus 设置
-mybatis-plus:
-  type-aliases-package: com.streamxhub.streamx.console.*.entity
-  mapper-locations: classpath:mapper/*/*.xml
-  configuration:
-    jdbc-type-for-null: null
-  global-config:
-    db-config:
-      id-type: auto
-    # 关闭 mybatis-plus的 banner
-    banner: false
+streampark:
+  proxy:
+    # knox process address https://cdpsit02.example.cn:8443/gateway/cdp-proxy/yarn
+    yarn-url:
+    # lark alert proxy,default https://open.feishu.cn
+    lark-url:
+  yarn:
+    # default sample, or kerberos
+    http-auth: sample
 
-streamx:
   # HADOOP_USER_NAME
   hadoop-user-name: ${hadoopUserName}
-  # 本地的工作空间,用于存放项目源码,构建的目录等.
+  # local workspace, used to store source code and build dir etc.
   workspace:
-    local: /opt/datasophon/streampark-1.2.3/workspace
-    remote: hdfs://nameservice1/streamx   # support hdfs:///streamx/ 、 /streamx 、hdfs://host:ip/streamx/
+    local: ${workspaceLocal}
+    remote: ${workspaceRemote}   # support hdfs:///streamx/ 、 /streamx 、hdfs://host:ip/streamx/
 
-  # remote docker register namespace for streamx
+  # remote docker register namespace for streampark
   docker:
-    register:
-      image-namespace: streamx
     # instantiating DockerHttpClient
     http-client:
       max-connections: 10000
       connection-timeout-sec: 10000
       response-timeout-sec: 12000
+      docker-host: ""
 
   # flink-k8s tracking configuration
   flink-k8s:
@@ -109,25 +114,20 @@ streamx:
     exec-cron: 0 0 0/6 * * ?
 
   shiro:
-    # token有效期，单位秒
+    # token timeout, unit second
     jwtTimeOut: 86400
-    # 后端免认证接口 url
+    # backend authentication-free resources url
     anonUrl: >
-      /passport/**,
-      /systemName,
-      /user/check/**,
-      /websocket/**,
-      /metrics/**,
-      /index.html,
-      /assets/**,
-      /css/**,
-      /fonts/**,
-      /img/**,
-      /js/**,
-      /loading/**,
-      /*.js,
-      /*.png,
-      /*.jpg,
-      /*.less,
-      /
 
+ldap:
+  # Is ldap enabled? If so, please modify the urls
+  enable: false
+  ## AD server IP, default port 389
+  urls: ldap://99.99.99.99:389
+  ## Login Account
+  base-dn: dc=streampark,dc=com
+  username: cn=Manager,dc=streampark,dc=com
+  password: streampark
+  user:
+    identity-attribute: uid
+    email-attribute: mail

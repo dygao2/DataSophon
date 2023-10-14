@@ -65,22 +65,25 @@ public class ServiceInstallHandler extends ServiceHandler {
         installServiceRoleCommand.setServiceName(serviceRoleInfo.getParentName());
         installServiceRoleCommand.setServiceRoleName(serviceRoleInfo.getName());
         installServiceRoleCommand.setServiceRoleType(serviceRoleInfo.getRoleType());
-        installServiceRoleCommand.setPackageName(serviceRoleInfo.getPackageName());
         installServiceRoleCommand.setDecompressPackageName(serviceRoleInfo.getDecompressPackageName());
         installServiceRoleCommand.setRunAs(serviceRoleInfo.getRunAs());
         installServiceRoleCommand.setServiceRoleType(serviceRoleInfo.getRoleType());
-        String md5 = FileUtil.readString(
-                Constants.MASTER_MANAGE_PACKAGE_PATH + Constants.SLASH + serviceRoleInfo.getPackageName() + ".md5",
-                Charset.defaultCharset());
-        installServiceRoleCommand.setPackageMd5(md5);
+
+        String md5 ;
         if ("aarch64".equals(hostEntity.getCpuArchitecture()) && FileUtil.exist(Constants.MASTER_MANAGE_PACKAGE_PATH
                 + Constants.SLASH + serviceRoleInfo.getDecompressPackageName() + "-arm.tar.gz")) {
             installServiceRoleCommand.setPackageName(serviceRoleInfo.getDecompressPackageName() + "-arm.tar.gz");
             logger.info("find arm package {}", installServiceRoleCommand.getPackageName());
-            String armMd5 = FileUtil.readString(Constants.MASTER_MANAGE_PACKAGE_PATH + Constants.SLASH
+            md5 = FileUtil.readString(Constants.MASTER_MANAGE_PACKAGE_PATH + Constants.SLASH
                     + serviceRoleInfo.getDecompressPackageName() + "-arm.tar.gz.md5", Charset.defaultCharset());
-            installServiceRoleCommand.setPackageMd5(armMd5);
+        }else {
+            installServiceRoleCommand.setPackageName(serviceRoleInfo.getPackageName());
+            md5 = FileUtil.readString(
+                    Constants.MASTER_MANAGE_PACKAGE_PATH + Constants.SLASH + serviceRoleInfo.getPackageName() + ".md5",
+                    Charset.defaultCharset());
         }
+        installServiceRoleCommand.setPackageMd5(md5);
+
         ActorSelection actorSelection = ActorUtils.actorSystem.actorSelection(
                 "akka.tcp://datasophon@" + serviceRoleInfo.getHostname() + ":2552/user/worker/installServiceActor");
         Timeout timeout = new Timeout(Duration.create(180, TimeUnit.SECONDS));

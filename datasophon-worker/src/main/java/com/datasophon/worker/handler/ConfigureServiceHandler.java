@@ -135,6 +135,17 @@ public class ConfigureServiceHandler {
                         config.setName("priority_networks");
                     }
 
+                    if("KyuubiServer".equals(serviceRoleName) && "sparkHome".equals(config.getName())){
+                        // add hive-site.xml link in kerberos module
+                        final String targetPath = Constants.INSTALL_PATH + File.separator + decompressPackageName+"/conf/hive-site.xml";
+                        if(!FileUtil.exist(targetPath)){
+                            logger.info("Add hive-site.xml link");
+                            ExecResult result = ShellUtils.exceShell("ln -s "+config.getValue()+"/conf/hive-site.xml "+targetPath);
+                            if(!result.getExecResult()){
+                                logger.warn("Add hive-site.xml link failed,msg: "+result.getExecErrOut());
+                            }
+                        }
+                    }
                 }
 
                 if (Objects.nonNull(myid) && StringUtils.isNotBlank(dataDir)) {

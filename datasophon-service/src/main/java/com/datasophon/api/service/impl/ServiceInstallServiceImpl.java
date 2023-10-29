@@ -706,6 +706,9 @@ public class ServiceInstallServiceImpl implements ServiceInstallService {
         if ("DorisFE".equals(serviceRole) && (hosts.size() & 1) == 0) {
             throw new ServiceException(Status.ODD_NUMBER_ARE_REQUIRED_FOR_DORISFE.getMsg());
         }
+        if ("KyuubiServer".equals(serviceRole) && hosts.size() !=2) {
+            throw new ServiceException(Status.TWO_KYUUBISERVERS_NEED_TO_BE_DEPLOYED.getMsg());
+        }
     }
 
     private List<ServiceConfig> listServiceConfigByServiceInstance(

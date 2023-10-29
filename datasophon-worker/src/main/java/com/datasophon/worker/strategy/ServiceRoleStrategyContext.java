@@ -50,6 +50,8 @@ public class ServiceRoleStrategyContext {
 
         // TEZ Server service
         map.put("TezServer", new TezServerHandlerStrategy("TEZ", "TezServer"));
+        //kyuubi
+        map.put("KyuubiServer", new KyuubiServerHandlerStrategy("KYUUBI", "KyuubiServer"));
     }
 
     public static ServiceRoleStrategy getServiceRoleHandler(String type) {

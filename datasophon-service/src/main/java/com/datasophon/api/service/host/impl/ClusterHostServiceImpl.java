@@ -26,6 +26,7 @@ import com.datasophon.api.enums.Status;
 import com.datasophon.api.master.ActorUtils;
 import com.datasophon.api.master.PrometheusActor;
 import com.datasophon.api.master.RackActor;
+import com.datasophon.api.service.ClusterRackService;
 import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.service.ClusterInfoService;
 import com.datasophon.api.service.ClusterServiceRoleInstanceService;
@@ -39,6 +40,7 @@ import com.datasophon.common.model.HostInfo;
 import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.ClusterHostDO;
 import com.datasophon.dao.entity.ClusterInfoEntity;
+import com.datasophon.dao.entity.ClusterRack;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
 import com.datasophon.domain.host.enums.HostState;
 import com.datasophon.dao.enums.RoleType;
@@ -74,6 +76,9 @@ public class ClusterHostServiceImpl extends ServiceImpl<ClusterHostMapper, Clust
     @Autowired
     ClusterInfoService clusterInfoService;
 
+    @Autowired
+    ClusterRackService clusterRackService;
+
     private final String IP = "ip";
 
     @Override
@@ -96,6 +101,10 @@ public class ClusterHostServiceImpl extends ServiceImpl<ClusterHostMapper, Clust
                         .orderByAsc("asc".equals(orderType), orderField)
                         .orderByDesc("desc".equals(orderType), orderField)
                         .last("limit " + offset + "," + pageSize));
+
+        // 回显rack的名称 而不是ID
+        Map<String, String> rackMap = clusterRackService.queryClusterRack(clusterId).stream()
+            .collect(Collectors.toMap(obj->obj.getId()+"", ClusterRack::getRack));
         for (ClusterHostDO clusterHostDO : list) {
             QueryHostListPageDTO queryHostListPageDTO = new QueryHostListPageDTO();
             BeanUtils.copyProperties(clusterHostDO,queryHostListPageDTO);
@@ -104,6 +113,7 @@ public class ClusterHostServiceImpl extends ServiceImpl<ClusterHostMapper, Clust
                     .eq(Constants.HOSTNAME, clusterHostDO.getHostname()));
             queryHostListPageDTO.setServiceRoleNum(serviceRoleNum);
             queryHostListPageDTO.setHostState(clusterHostDO.getHostState().getValue());
+            queryHostListPageDTO.setRack(rackMap.getOrDefault(queryHostListPageDTO.getRack(),"/default-rack"));
             hostListPageDTOS.add(queryHostListPageDTO);
         }
         int count = this.count(new QueryWrapper<ClusterHostDO>().eq(Constants.CLUSTER_ID, clusterId)

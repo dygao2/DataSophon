@@ -58,6 +58,7 @@ public class ServiceRoleStrategyContext {
         map.put("KAFKA", new KafkaHandlerStrategy());
         map.put("HBASE", new HBaseHandlerStrategy());
         map.put("FLINK", new FlinkHandlerStrategy());
+        map.put("KYUUBI",new KyuubiServerHandlerStrategy());
     }
 
     public static ServiceRoleStrategy getServiceRoleHandler(String type) {

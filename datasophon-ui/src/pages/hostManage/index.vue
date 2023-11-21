@@ -42,8 +42,11 @@
         <a-col :span="8" style="text-align: right">
           <a-dropdown>
             <a-menu slot="overlay" @click="handleMenuClick">
-              <!-- <a-menu-item key="distribution">分配机架</a-menu-item> -->
-              <a-menu-item key="handAgent">Agent重新分发</a-menu-item>
+              <a-menu-item key="handStartService">启动主机服务</a-menu-item>
+              <a-menu-item key="handStopService">停止主机服务</a-menu-item>
+              <a-menu-item key="handStartHost">启动主机Worker</a-menu-item>
+              <a-menu-item key="handStopHost">停止主机Worker</a-menu-item>
+              <a-menu-item key="handAgent">重新安装Worker</a-menu-item>
               <a-menu-item key="handLabel">分配标签</a-menu-item>
               <a-menu-item key="handRack">分配机架</a-menu-item>
               <a-menu-item key="del">删除</a-menu-item>
@@ -473,7 +476,24 @@ export default {
         return false
       }
       if (key.key === "handAgent") {
-        this.handAgent();
+        this.doConfirm("重新安装 Worker", this.handAgent);
+        return false;
+      }
+      if(key.key === "handStartService") {
+        this.doConfirm("启动该主机服务", this.handStartService);
+        return false;
+      }
+      if(key.key === "handStopService") {
+        this.doConfirm("停止该主机服务", this.handStopCommand);
+        return false;
+      }
+      if(key.key === "handStartHost") {
+        // 启动主机 Worker
+        this.doConfirm("启动该主机 Worker", this.handStartHost)
+        return false;
+      } if (key.key === "handStopHost") {
+        // 停止主机 Worker
+        this.doConfirm("停止该主机 Worker", this.handStopHost);
         return false;
       }
       this.distributionRack();
@@ -491,9 +511,56 @@ export default {
             this.hostnames = [];
             this.$destroyAll();
             this.getHostListByPage();
+          } else {
+            this.$message.error(resp.msg);
           }
         }
       );
+    },
+    handStartHost() {
+      let params = {
+        clusterHostIds: this.hostnames.join(","),
+        commandType: "start",
+      };
+      this.$axiosPost(global.API.generateHostAgentCommand, params).then((resp) => {
+        if (resp.code === 200) {
+          this.$message.success("操作成功");
+        } else {
+          this.$message.error(resp.msg);
+        }
+      })
+    },
+    handStopHost() {
+      let params = {
+        clusterHostIds: this.hostnames.join(","),
+        commandType: "stop",
+      };
+      this.$axiosPost(global.API.generateHostAgentCommand, params).then((resp) => {
+        if (resp.code === 200) {
+          this.$message.success("操作成功");
+        } else {
+          this.$message.error(resp.msg);
+        }
+      })
+    },
+    handStartService() {
+      this.handCommand('start')
+    },
+    handStopCommand() {
+      this.handCommand('stop')
+    },
+    handCommand(op){
+      let params = {
+        clusterHostIds: this.hostnames.join(","),
+        commandType: op,
+      };
+      this.$axiosPost(global.API.generateHostServiceCommand, params).then((resp) => {
+        if (resp.code === 200) {
+          this.$message.success(op == 'start' ? "启动 Worker 服务成功" : "停止 Worker 服务成功");
+        } else {
+          this.$message.error(resp.msg);
+        }
+      })
     },
     delExample() {
       this.$confirm({
@@ -537,9 +604,54 @@ export default {
         closable: true,
       });
     },
+    doConfirm(title, callbackMethod) {
+      this.$confirm({
+        width: 450,
+        title: () => {
+          return (
+            <div style="font-size: 22px;">
+              <a-icon
+                type="question-circle"
+                style="color:#2F7FD1 !important;margin-right:10px"
+              />
+              提示
+            </div>
+          );
+        },
+        content: (
+          <div style="margin-top:20px">
+            <div style="padding:0 65px;font-size: 16px;color: #555555;">
+              { '确认要' + title + '吗？'}
+            </div>
+            <div style="margin-top:20px;text-align:right;padding:0 30px 30px 30px">
+              <a-button
+                style="margin-right:10px;"
+                type="primary"
+                onClick={() => {
+                  callbackMethod()
+                  this.$destroyAll();
+                }}
+              >
+                确定
+              </a-button>
+              <a-button
+                style="margin-right:10px;"
+                onClick={() => this.$destroyAll()}
+              >
+                取消
+              </a-button>
+            </div>
+          </div>
+        ),
+        icon: () => {
+          return <div />;
+        },
+        closable: true,
+      });
+    },
     confirmDelRack() {
       let params = {
-        hostId: this.selectedRowKeys.join(","),
+        hostIds: this.selectedRowKeys.join(","),
       };
       this.$axiosPost(global.API.deleteRack, params).then((res) => {
         if (res.code === 200) {

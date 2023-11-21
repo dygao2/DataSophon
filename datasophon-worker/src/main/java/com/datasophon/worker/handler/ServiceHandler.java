@@ -34,6 +34,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
 @Data
 public class ServiceHandler {
 
@@ -44,12 +45,13 @@ public class ServiceHandler {
 
     private Logger logger;
 
-    public ServiceHandler(String serviceName,String serviceRoleName) {
+    public ServiceHandler(String serviceName, String serviceRoleName) {
         this.serviceName = serviceName;
         this.serviceRoleName = serviceRoleName;
         String loggerName = String.format("%s-%s-%s", TaskConstants.TASK_LOG_LOGGER_NAME, serviceName, serviceRoleName);
         logger = LoggerFactory.getLogger(loggerName);
     }
+
     public ExecResult start(ServiceRoleRunner startRunner, ServiceRoleRunner statusRunner, String decompressPackageName,
                             RunAs runAs) {
         ExecResult statusResult = execRunner(statusRunner, decompressPackageName, null);
@@ -149,13 +151,13 @@ public class ServiceHandler {
             logger.info("do not use sh");
         } else {
             File shellFile = new File(Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName + Constants.SLASH + shell);
-            if(shellFile.exists()) {
+            if (shellFile.exists()) {
                 try {
                     // 读取第一行，检查采用的 shell 是哪个，bash、sh ？
                     final String firstLine = StringUtils.trimToEmpty(FileUtils.readFirstLine(shellFile));
-                    if(firstLine.contains("bash")) {
+                    if (firstLine.contains("bash")) {
                         command.add("bash");
-                    } else if(firstLine.contains("sh")) {
+                    } else if (firstLine.contains("sh")) {
                         command.add("sh");
                     } else {
                         command.add("sh");
@@ -172,7 +174,7 @@ public class ServiceHandler {
         command.addAll(args);
         logger.info("execute shell command : {}", command.toString());
         ExecResult execResult =
-                ShellUtils.execWithStatus(Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName, command, timeout,logger);
+                ShellUtils.execWithStatus(Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName, command, timeout, logger);
         return execResult;
     }
 

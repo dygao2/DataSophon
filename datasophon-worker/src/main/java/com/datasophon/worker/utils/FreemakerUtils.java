@@ -17,11 +17,12 @@
 
 package com.datasophon.worker.utils;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.StrUtil;
 import com.datasophon.common.Constants;
 import com.datasophon.common.model.AlertItem;
 import com.datasophon.common.model.Generators;
 import com.datasophon.common.model.ServiceConfig;
-
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
@@ -29,21 +30,18 @@ import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.StrUtil;
 
 public class FreemakerUtils {
 
@@ -74,12 +72,6 @@ public class FreemakerUtils {
         // 创建核心配置对象
         Configuration config = new Configuration(Configuration.getVersion());
         // 设置加载的目录
-        // ""代表当前包
-        // config.setClassForTemplateLoading(FreemakerUtils.class, "/templates");
-
-        /*
-         * 第三方的程序包，pacakge 下应包含：META/template 和其他应用必须的文件
-         */
         List<TemplateLoader> loaderList = new ArrayList<>();
         loaderList.add(new ClassTemplateLoader(FreemakerUtils.class, "/templates"));
         if (StringUtils.isNotBlank(extPath) && new File(extPath).exists()) {
@@ -119,41 +111,6 @@ public class FreemakerUtils {
         processOut(generators, template, data, decompressPackageName);
     }
 
-    public static void testGenerateConfigFile(Generators generators, List<ServiceConfig> configs,
-                                              String decompressPackageName) throws IOException, TemplateException {
-        // 1.加载模板
-        // 创建核心配置对象
-        Configuration config = new Configuration(Configuration.getVersion());
-        // 设置加载的目录
-        config.setClassForTemplateLoading(FreemakerUtils.class, "/templates"); // ""代表当前包
-
-        Map<String, Object> data = new HashMap<>();
-        // 得到模板对象
-        String configFormat = generators.getConfigFormat();
-        Template template = null;
-        if (Constants.XML.equals(configFormat)) {
-            template = config.getTemplate("xml.ftl");
-        }
-        if (Constants.PROPERTIES.equals(configFormat)) {
-            template = config.getTemplate("properties.ftl");
-        }
-        if (Constants.PROPERTIES2.equals(configFormat)) {
-            template = config.getTemplate("properties2.ftl");
-        }
-        if (Constants.PROMETHEUS.equals(configFormat)) {
-            template = config.getTemplate("alert.yml");
-        }
-        if (Constants.CUSTOM.equals(configFormat)) {
-            template = config.getTemplate(generators.getTemplateName());
-            data = configs.stream().filter(e -> "map".equals(e.getConfigType()))
-                    .collect(Collectors.toMap(key -> key.getName(), value -> value.getValue()));
-            configs = configs.stream().filter(e -> !"map".equals(e.getConfigType())).collect(Collectors.toList());
-        }
-
-        data.put("itemList", configs);
-        // 3.产生输出
-        testProcessOut(generators, template, data, decompressPackageName);
-    }
 
     public static void generatePromAlertFile(Generators generators, List<AlertItem> configs,
                                              String serviceName) throws IOException, TemplateException {
@@ -224,9 +181,4 @@ public class FreemakerUtils {
         out.close();
     }
 
-    private static void testProcessOut(Generators generators, Template template, Map<String, Object> data,
-                                       String decompressPackageName) throws IOException, TemplateException {
-        writeToTemplate(template, data,
-                "D:\\360downloads\\" + generators.getOutputDirectory() + Constants.SLASH + generators.getFilename());
-    }
 }

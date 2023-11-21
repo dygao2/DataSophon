@@ -22,8 +22,9 @@ import cn.hutool.core.io.StreamProgress;
 import cn.hutool.core.lang.Console;
 import cn.hutool.http.HttpUtil;
 import com.datasophon.common.Constants;
+import com.datasophon.common.cache.CacheUtils;
+import com.datasophon.common.command.InstallServiceRoleCommand;
 import com.datasophon.common.model.RunAs;
-import com.datasophon.common.utils.CompressUtils;
 import com.datasophon.common.utils.ExecResult;
 import com.datasophon.common.utils.FileUtils;
 import com.datasophon.common.utils.PropertyUtils;
@@ -31,13 +32,11 @@ import com.datasophon.common.utils.ShellUtils;
 import com.datasophon.worker.utils.TaskConstants;
 import lombok.Data;
 import org.apache.commons.lang.StringUtils;
-
-import java.io.File;
-import java.util.Objects;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Objects;
 
 @Data
@@ -59,19 +58,21 @@ public class InstallServiceHandler {
         logger = LoggerFactory.getLogger(loggerName);
     }
 
-    public ExecResult install(String packageName, String decompressPackageName, String packageMd5, RunAs runAs) {
+    public ExecResult install(InstallServiceRoleCommand command) {
         ExecResult execResult = new ExecResult();
         try {
             String destDir = Constants.INSTALL_PATH + Constants.SLASH + "DDP/packages" + Constants.SLASH;
+            String packageName = command.getPackageName();
             String packagePath = destDir + packageName;
 
-            Boolean needDownLoad = isNeedDownloadPkg(packagePath, packageMd5);
+            Boolean needDownLoad = !Objects.equals(PropertyUtils.getString(Constants.MASTER_HOST), CacheUtils.get(Constants.HOSTNAME))
+                    && isNeedDownloadPkg(packagePath, command.getPackageMd5());
 
             if (Boolean.TRUE.equals(needDownLoad)) {
                 downloadPkg(packageName, packagePath);
             }
 
-            boolean result = decompressPkg(packageName, decompressPackageName, runAs, packagePath);
+            boolean result = decompressPkg(packageName, command.getDecompressPackageName(), command.getRunAs(), packagePath);
             execResult.setExecResult(result);
         } catch (Exception e) {
             execResult.setExecOut(e.getMessage());
@@ -126,7 +127,7 @@ public class InstallServiceHandler {
 
     private boolean decompressPkg(String packageName, String decompressPackageName, RunAs runAs, String packagePath) {
         if (!FileUtil.exist(Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName)) {
-            Boolean decompressResult = CompressUtils.decompressTarGz(packagePath, Constants.INSTALL_PATH);
+            Boolean decompressResult = decompressTarGz(packagePath, Constants.INSTALL_PATH);
             if (Boolean.TRUE.equals(decompressResult)) {
                 if (Objects.nonNull(runAs)) {
                     ShellUtils.exceShell(" chown -R " + runAs.getUser() + ":" + runAs.getGroup() + " "
@@ -152,6 +153,19 @@ public class InstallServiceHandler {
             return true;
         }
     }
+
+    public Boolean decompressTarGz(String sourceTarGzFile, String targetDir) {
+        logger.info("Start to use tar -zxvf to decompress {}", sourceTarGzFile);
+        ArrayList<String> command = new ArrayList<>();
+        command.add("tar");
+        command.add("-zxvf");
+        command.add(sourceTarGzFile);
+        command.add("-C");
+        command.add(targetDir);
+        ExecResult execResult = ShellUtils.execWithStatus(targetDir, command, 120, logger);
+        return execResult.getExecResult();
+    }
+
 
     private void changeHadoopInstallPathPerm(String decompressPackageName) {
         ShellUtils.exceShell(

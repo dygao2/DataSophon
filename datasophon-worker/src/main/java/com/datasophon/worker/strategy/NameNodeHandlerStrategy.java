@@ -31,8 +31,8 @@ import java.util.ArrayList;
 
 public class NameNodeHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
 
-    public NameNodeHandlerStrategy(String serviceName,String serviceRoleName) {
-        super(serviceName,serviceRoleName);
+    public NameNodeHandlerStrategy(String serviceName, String serviceRoleName) {
+        super(serviceName, serviceRoleName);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class NameNodeHandlerStrategy extends AbstractHandlerStrategy implements 
                 commands.add(workPath + "/bin/hdfs");
                 commands.add("namenode");
                 commands.add("-bootstrapStandby");
-                ExecResult execResult = ShellUtils.execWithStatus(workPath, commands, 30L);
+                ExecResult execResult = ShellUtils.execWithStatus(workPath, commands, 30L, logger);
                 if (execResult.getExecResult()) {
                     logger.info("Namenode standby success");
                 } else {
@@ -63,7 +63,7 @@ public class NameNodeHandlerStrategy extends AbstractHandlerStrategy implements 
                 commands.add("smhadoop");
                 // 清空namenode元数据
                 FileUtil.del("/data/dfs/nn/current");
-                ExecResult execResult = ShellUtils.execWithStatus(workPath, commands, 180L);
+                ExecResult execResult = ShellUtils.execWithStatus(workPath, commands, 180L, logger);
                 if (execResult.getExecResult()) {
                     logger.info("Namenode format success");
                 } else {
@@ -78,7 +78,7 @@ public class NameNodeHandlerStrategy extends AbstractHandlerStrategy implements 
             commands.add("sh");
             commands.add(workPath + "/ranger-hdfs-plugin/enable-hdfs-plugin.sh");
             if (!FileUtil.exist(workPath + "/ranger-hdfs-plugin/success.id")) {
-                ExecResult execResult = ShellUtils.execWithStatus(workPath + "/ranger-hdfs-plugin", commands, 30L);
+                ExecResult execResult = ShellUtils.execWithStatus(workPath + "/ranger-hdfs-plugin", commands, 30L, logger);
                 if (execResult.getExecResult()) {
                     logger.info("Enable ranger hdfs plugin success");
                     // 写入ranger plugin集成成功标识

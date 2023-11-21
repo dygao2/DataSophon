@@ -18,6 +18,7 @@
 package com.datasophon.worker.strategy;
 
 import akka.actor.ActorRef;
+import cn.hutool.json.JSONUtil;
 import com.datasophon.common.Constants;
 import com.datasophon.common.cache.CacheUtils;
 import com.datasophon.common.command.OlapOpsType;
@@ -41,6 +42,7 @@ public class FEHandlerStrategy extends AbstractHandlerStrategy implements Servic
     @Override
     public ExecResult handler(ServiceRoleOperateCommand command) {
         ExecResult startResult = new ExecResult();
+        logger.info("FEHandlerStrategy start fe"+ JSONUtil.toJsonStr(command));
         ServiceHandler serviceHandler = new ServiceHandler(command.getServiceName(), command.getServiceRoleName());
         if (command.getCommandType() == CommandType.INSTALL_SERVICE) {
             if (command.isSlave()) {
@@ -53,7 +55,7 @@ public class FEHandlerStrategy extends AbstractHandlerStrategy implements Servic
                 ServiceRoleRunner startRunner = new ServiceRoleRunner();
                 startRunner.setProgram(command.getStartRunner().getProgram());
                 startRunner.setArgs(commands);
-                startRunner.setTimeout("60");
+                startRunner.setTimeout("600");
                 startResult = serviceHandler.start(startRunner, command.getStatusRunner(),
                         command.getDecompressPackageName(), command.getRunAs());
                 if (startResult.getExecResult()) {
@@ -62,15 +64,15 @@ public class FEHandlerStrategy extends AbstractHandlerStrategy implements Servic
                         OlapSqlExecCommand sqlExecCommand = new OlapSqlExecCommand();
                         sqlExecCommand.setFeMaster(command.getMasterHost());
                         sqlExecCommand.setHostName(CacheUtils.getString(Constants.HOSTNAME));
-                        sqlExecCommand.setOpsType(OlapOpsType.ADD_FE);
+                        sqlExecCommand.setOpsType(OlapOpsType.ADD_FE_FOLLOWER);
                         ActorUtils.getRemoteActor(command.getManagerHost(), "masterNodeProcessingActor")
                                 .tell(sqlExecCommand, ActorRef.noSender());
+                        logger.info("slave fe start success");
                     } catch (Exception e) {
-                        logger.info("add slave fe failed {}", ThrowableUtils.getStackTrace(e));
+                        logger.error("add slave fe failed {}", ThrowableUtils.getStackTrace(e));
                     }
-                    logger.info("slave fe start success");
                 } else {
-                    logger.info("slave fe start failed");
+                    logger.error("slave fe start failed");
                 }
             } else {
                 startResult = serviceHandler.start(command.getStartRunner(), command.getStatusRunner(),

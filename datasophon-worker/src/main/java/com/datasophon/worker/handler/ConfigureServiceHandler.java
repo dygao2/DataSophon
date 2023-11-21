@@ -51,13 +51,15 @@ public class ConfigureServiceHandler {
 
     private static final String RANGER_ADMIN = "RangerAdmin";
 
+    private static final String SH = "sh";
+
     private String serviceName;
 
     private String serviceRoleName;
 
     private Logger logger;
 
-    public ConfigureServiceHandler(String serviceName,String serviceRoleName) {
+    public ConfigureServiceHandler(String serviceName, String serviceRoleName) {
         this.serviceName = serviceName;
         this.serviceRoleName = serviceRoleName;
         String loggerName = String.format("%s-%s-%s", TaskConstants.TASK_LOG_LOGGER_NAME, serviceName, serviceRoleName);
@@ -102,6 +104,9 @@ public class ConfigureServiceHandler {
                     if (Constants.PATH.equals(config.getConfigType())) {
                         createPath(config, runAs);
                     }
+                    if (Constants.MV_PATH.equals(config.getConfigType())) {
+                        movePath(config, runAs);
+                    }
                     if (Constants.CUSTOM.equals(config.getConfigType())) {
                         addToCustomList(iterator, customConfList, config);
                     }
@@ -130,6 +135,17 @@ public class ConfigureServiceHandler {
                         config.setName("priority_networks");
                     }
 
+                    if("KyuubiServer".equals(serviceRoleName) && "sparkHome".equals(config.getName())){
+                        // add hive-site.xml link in kerberos module
+                        final String targetPath = Constants.INSTALL_PATH + File.separator + decompressPackageName+"/conf/hive-site.xml";
+                        if(!FileUtil.exist(targetPath)){
+                            logger.info("Add hive-site.xml link");
+                            ExecResult result = ShellUtils.exceShell("ln -s "+config.getValue()+"/conf/hive-site.xml "+targetPath);
+                            if(!result.getExecResult()){
+                                logger.warn("Add hive-site.xml link failed,msg: "+result.getExecErrOut());
+                            }
+                        }
+                    }
                 }
 
                 if (Objects.nonNull(myid) && StringUtils.isNotBlank(dataDir)) {
@@ -143,7 +159,7 @@ public class ConfigureServiceHandler {
                     customConfList.add(serviceConfig);
                 }
                 configs.addAll(customConfList);
-                if (configs.size() > 0) {
+                if (!configs.isEmpty()) {
                     // extra app, package: META, templates
                     File extTemplateDir =
                             new File(Constants.INSTALL_PATH + File.separator + decompressPackageName, "templates");
@@ -155,11 +171,11 @@ public class ConfigureServiceHandler {
                     } else {
                         FreemakerUtils.generateConfigFile(generators, configs, decompressPackageName);
                     }
-                }else{
+                } else if (!generators.getFilename().endsWith(SH)) {
                     String packagePath = Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName + Constants.SLASH;
                     String outputFile =
                             packagePath + generators.getOutputDirectory() + Constants.SLASH + generators.getFilename();
-                    FileUtil.writeUtf8String("",outputFile);
+                    FileUtil.writeUtf8String("", outputFile);
                 }
                 execResult.setExecOut("configure success");
                 logger.info("configure success");
@@ -186,7 +202,7 @@ public class ConfigureServiceHandler {
         globalCommand.add(
                 Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName + Constants.SLASH + "set_globals.sh");
         ShellUtils.execWithStatus(Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName, globalCommand,
-                300L);
+                300L, logger);
         if (execResult.getExecResult()) {
             logger.info("ranger admin setup success");
             return true;
@@ -197,12 +213,28 @@ public class ConfigureServiceHandler {
 
     private void createPath(ServiceConfig config, RunAs runAs) {
         String path = (String) config.getValue();
-        if (path.contains(Constants.COMMA)) {
-            for (String dir : path.split(Constants.COMMA)) {
+        if (StringUtils.isNotBlank(config.getSeparator()) && path.contains(config.getSeparator())) {
+            for (String dir : path.split(config.getSeparator())) {
                 mkdir(dir, runAs);
             }
         } else {
             mkdir(path, runAs);
+        }
+    }
+
+    private void movePath(ServiceConfig config, RunAs runAs) {
+        String oldPath = (String) config.getDefaultValue();
+        String newPath = (String) config.getValue();
+        if (FileUtil.exist(oldPath) && !FileUtil.exist(newPath)) {
+            if (StringUtils.isNotBlank(config.getSeparator()) && newPath.contains(config.getSeparator())) {
+                for (String dir : newPath.split(config.getSeparator())) {
+                    mkdir(dir, runAs);
+                }
+            } else {
+                mkdir(newPath, runAs);
+            }
+            FileUtil.move(new File(oldPath), new File(newPath), false);
+            logger.info("move path {} to {}", oldPath, newPath);
         }
     }
 
@@ -239,7 +271,7 @@ public class ConfigureServiceHandler {
         if (!FileUtil.exist(path)) {
             logger.info("create file path {}", path);
             FileUtil.mkdir(path);
-            ShellUtils.addChmod(path, "755");
+            ShellUtils.addChmod(path, "775");
             if (Objects.nonNull(runAs)) {
                 ShellUtils.addChown(path, runAs.getUser(), runAs.getGroup());
             }

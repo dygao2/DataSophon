@@ -9,13 +9,11 @@ security:
 # mysql
 spring:
   datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://ddp2:3306/datasophon?useUnicode=true&characterEncoding=utf-8
-    username: root
-    password: root
-    driver-class-name: com.mysql.jdbc.Driver
-  resources:
-    static-locations: classpath:/front/views/
+    url: jdbc:mysql://${datasource.ip:localhost}:${datasource.port:3306}/${datasource.database:datasophon}?&useUnicode=true&characterEncoding=utf-8
+    username: ${datasource.username:datasophon}
+    password: ${datasource.password:datasophon}
   #json格式化全局配置
   jackson:
     time-zone: GMT+8
@@ -28,12 +26,17 @@ spring:
   messages:
     basename: i18n/messages
     encoding: UTF-8
+  main:
+    allow-circular-references: true
+  web:
+    resources:
+      static-locations: classpath:/front/views/
 #mybatis
 mybatis-plus:
   mapper-locations: classpath*:/mapper/*.xml
   #实体扫描，多个package用逗号或者分号分隔
   typeAliasesPackage: com.datasophon.dao.entity
-  typeEnumsPackage: com.datasophon.dao.enums
+  typeEnumsPackage: com.datasophon.dao.enums,com.datasophon.domain.host.enums
   global-config:
     #数据库相关配置
     db-config:
@@ -53,3 +56,11 @@ mybatis-plus:
     call-setters-on-nulls: true
     jdbc-type-for-null: 'null'
 #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+logging:
+  config: classpath:logback-api.xml
+
+
+datasophon:
+  migration:
+    enable: true
+

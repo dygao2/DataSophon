@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.datasophon</groupId>
         <artifactId>datasophon</artifactId>
-        <version>1.1.1</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>datasophon-worker</artifactId>
@@ -102,27 +102,20 @@
         <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
-            <version>2.3.23</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>compile</scope>
-        </dependency>
+
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
     </dependencies>
     <build>
-        <testSourceDirectory>${project.basedir}/src/main/test</testSourceDirectory>
+        <testSourceDirectory>${project.basedir}/src/test</testSourceDirectory>
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>

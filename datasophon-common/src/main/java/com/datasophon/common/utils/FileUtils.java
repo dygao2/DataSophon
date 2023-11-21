@@ -20,7 +20,7 @@ package com.datasophon.common.utils;
 import com.google.common.io.CharStreams;
 import com.google.common.io.LineProcessor;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
 
@@ -56,7 +56,7 @@ public class FileUtils {
      * @return md5 value
      */
     public static String md5(File file) {
-        try (FileInputStream fileInputStream = new FileInputStream(file);) {
+        try (FileInputStream fileInputStream = new FileInputStream(file)) {
             MessageDigest MD5 = MessageDigest.getInstance("MD5");
 
             byte[] buffer = new byte[8192];
@@ -128,5 +128,29 @@ public class FileUtils {
             }
         });
         return firstLine;
+    }
+
+    /**
+     * 连接路径
+     * @param paths
+     * @return
+     */
+    public static String concatPath(String... paths) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < paths.length; i++) {
+            String path = paths[i];
+            if (StringUtils.isBlank(path)) {
+                continue;
+            }
+            path = StringUtils.appendIfMissing(path, "/");
+            if (i != 0) {
+                path = StringUtils.removeStart(path, "/");
+            }
+            if (i == paths.length - 1) {
+                path = StringUtils.removeEnd(path, "/");
+            }
+            stringBuilder.append(path);
+        }
+        return StringUtils.removeEnd(stringBuilder.toString(), "/");
     }
 }

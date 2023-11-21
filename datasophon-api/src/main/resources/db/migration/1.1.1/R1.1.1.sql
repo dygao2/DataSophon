@@ -1,0 +1,1 @@
+ALTER TABLE `t_ddh_cluster_service_instance_role_group` DROP COLUMN `need_restart`;

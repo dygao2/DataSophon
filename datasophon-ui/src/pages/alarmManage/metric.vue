@@ -37,6 +37,7 @@
         </a-col>
         <a-col :span="8" style="text-align: right">
           <a-button style="margin-right: 10px;" type="primary" @click="handleMenuStart">启用指标</a-button>
+          <a-button style="margin-right: 10px;" type="primary" @click="handleMenuStop">停用指标</a-button>
           <a-button style="margin-right: 10px;" type="primary" @click="addGroup({})">新建指标</a-button>
           <!-- <a-dropdown>
           <a-menu slot="overlay" @click="handleMenuClick">
@@ -193,6 +194,66 @@ export default {
     onSelectChange(selectedRowKeys, row) {
       this.selectedRowKeys = selectedRowKeys;
     },
+    handleMenuStop(){
+      if (this.selectedRowKeys.length < 1) {
+        this.$message.warning("请至少选择一个实例");
+        return false;
+      }
+      this.$confirm({
+        width: 450,
+        title: () => {
+          return (
+              <div style="font-size: 22px;">
+                <a-icon
+                    type="question-circle"
+                    style="color:#2F7FD1 !important;margin-right:10px"
+                />
+                提示
+              </div>
+          );
+        },
+        content: (
+            <div style="margin-top:20px">
+              <div style="padding:0 65px;font-size: 16px;color: #555555;">
+                确认禁用吗？
+              </div>
+              <div style="margin-top:20px;text-align:right;padding:0 30px 30px 30px">
+                <a-button
+                    style="margin-right:10px;"
+                    type="primary"
+                    onClick={() => this.quotaStop()}
+                >
+                  确定
+                </a-button>
+                <a-button
+                    style="margin-right:10px;"
+                    onClick={() => this.$destroyAll()}
+                >
+                  取消
+                </a-button>
+              </div>
+            </div>
+        ),
+        icon: () => {
+          return <div />;
+        },
+        closable: true,
+      });
+    },
+    quotaStop(){
+      let params = {
+        alertQuotaIds: this.selectedRowKeys.join(","),
+        clusterId: this.clusterId,
+      };
+      this.$axiosPost(global.API.quotaStop, params).then((res) => {
+        if (res.code === 200) {
+          this.$message.success("操作成功");
+          this.$destroyAll();
+          this.selectedRowKeys = [];
+          this.onSearch();
+        }
+      });
+    },
     handleMenuStart(){
       if (this.selectedRowKeys.length < 1) {
         this.$message.warning("请至少选择一个实例");
@@ -249,6 +310,7 @@ export default {
           this.$message.success("操作成功");
           this.$destroyAll();
           this.selectedRowKeys = [];
+          this.onSearch();
         }
       });
     },

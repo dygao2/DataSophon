@@ -37,9 +37,9 @@ public class ClusterGroupController {
      * 列表
      */
     @RequestMapping("/list")
-    public Result list(String groupName, Integer page, Integer pageSize) {
+    public Result list(String groupName, Integer clusterId, Integer page, Integer pageSize) {
 
-        return clusterGroupService.listPage(groupName, page, pageSize);
+        return clusterGroupService.listPage(groupName, clusterId, page, pageSize);
     }
 
     /**
@@ -59,6 +59,7 @@ public class ClusterGroupController {
     public Result save(Integer clusterId, String groupName) {
         return clusterGroupService.saveClusterGroup(clusterId, groupName);
     }
+
     /**
      * 删除用户组
      */

@@ -32,7 +32,7 @@
       class="p0-32-10-32"
     >
       <a-form-item label="集群管理员">
-          <a-select mode="multiple" v-decorator="['userIds', { rules: [{ required: true, message: '集群管理员不能为空!' }]}]"  placeholder="请选择集群管理员">
+          <a-select mode="multiple" v-decorator="['userIds', { rules: [{ required: false}]}]"  placeholder="请选择集群管理员">
                <a-select-option :value="item.id" v-for="(item,index) in userList" :key="index">{{item.username}}</a-select-option>
           </a-select>
       </a-form-item>
@@ -88,14 +88,18 @@ export default {
         console.log(values);
         if (!err) {
           const params = {
-            "userIds": values.userIds
+            "userIds": values.userIds || ""
           }
           if (JSON.stringify(this.detail) !== '{}') params.clusterId = this.detail.id
           this.loading = true;
-          this.$axiosPost(global.API.authCluster, params).then((res) => {  
+          this.$axiosPost(global.API.authCluster, params).then((res) => {
             this.loading = false;
             if (res.code === 200) {
-              this.$message.success('授权成功', 2)
+              if (params.userIds.length > 0) {
+                this.$message.success('授权成功', 2)
+              }else{
+                this.$message.success('取消授权成功', 2)
+              }
               this.$destroyAll();
               _this.callBack();
             }

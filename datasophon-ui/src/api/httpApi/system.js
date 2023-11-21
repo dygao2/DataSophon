@@ -55,4 +55,5 @@ export default {
   deleteMetric: path + '/cluster/alert/quota/delete', // 告警指标删除
   getAllAlertList: path + '/cluster/alert/history/getAllAlertList', // 查询所有告警
   quotaStart: path + '/cluster/alert/quota/start', // 启用告警指标
+  quotaStop: path + '/cluster/alert/quota/stop', // 禁用告警指标
 }

@@ -32,4 +32,6 @@ export default {
   updateRack: path + '/api/cluster/host/update', // 分配机架
   deleteRack: path + '/api/cluster/host/delete', // 分配机架
   getRoleListByHostname: path + '/api/cluster/host/getRoleListByHostname', // 根据主机查询角色列表
+  generateHostAgentCommand: path + '/host/install/generateHostAgentCommand', // 主机 Worker 管理
+  generateHostServiceCommand: path + '/host/install/generateHostServiceCommand', // 主机 Worker Service 管理
 }

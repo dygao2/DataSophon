@@ -51,5 +51,11 @@ DataSophon is a similar management platform. Unlike the Sophon, which aims to li
 # Questions
 For questions, bugs and supports please open an [issue](https://github.com/gaodayu168/datasophon/issues/new/choose), we'll reply you in time.
 
+# Communication and Contribution
 
+Welcome to join the community for communication and sharing, and also welcome you to contribute to the community.
+Thank you very much for your support here~
+WeChat community group (recommended): Scan the QR code to add WeChat, invite to join the group, and apply for a comment of "Datasophon".
+
+![img](website/static/img/weixing.png)
 

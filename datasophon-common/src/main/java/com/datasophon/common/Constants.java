@@ -88,6 +88,8 @@ public final class Constants {
     public static final String MULTIPLE = "multiple";
     public static final String CLUSTER_STATE = "cluster_state";
     public static final String PATH = "path";
+
+    public static final String MV_PATH = "mv_path";
     public static final String SERVICE_INSTANCE_ID = "service_instance_id";
     public static final String IS_ENABLED = "is_enabled";
     public static final String SORT_NUM = "sort_num";

@@ -25,7 +25,6 @@ import com.datasophon.common.command.OlapSqlExecCommand;
 import com.datasophon.common.command.ServiceRoleOperateCommand;
 import com.datasophon.common.enums.CommandType;
 import com.datasophon.common.utils.ExecResult;
-import com.datasophon.common.utils.ShellUtils;
 import com.datasophon.common.utils.ThrowableUtils;
 import com.datasophon.worker.handler.ServiceHandler;
 import com.datasophon.worker.utils.ActorUtils;
@@ -45,8 +44,7 @@ public class BEHandlerStrategy extends AbstractHandlerStrategy implements Servic
 
         if (command.getCommandType().equals(CommandType.INSTALL_SERVICE)) {
             logger.info("add  be to cluster");
-            ShellUtils.exceShell("ulimit -n 102400");
-            ShellUtils.exceShell("sysctl -w vm.max_map_count=2000000");
+
             startResult = serviceHandler.start(command.getStartRunner(), command.getStatusRunner(),
                     command.getDecompressPackageName(), command.getRunAs());
             if (startResult.getExecResult()) {
@@ -58,11 +56,11 @@ public class BEHandlerStrategy extends AbstractHandlerStrategy implements Servic
                     ActorUtils.getRemoteActor(command.getManagerHost(), "masterNodeProcessingActor")
                             .tell(sqlExecCommand, ActorRef.noSender());
                 } catch (Exception e) {
-                    logger.info("add backend failed {}", ThrowableUtils.getStackTrace(e));
+                    logger.error("add backend failed {}", ThrowableUtils.getStackTrace(e));
                 }
                 logger.info("slave be start success");
             } else {
-                logger.info("slave be start failed");
+                logger.error("slave be start failed");
             }
         } else {
             startResult = serviceHandler.start(command.getStartRunner(), command.getStatusRunner(),

@@ -16,12 +16,12 @@
             <div class="card-header flex-bewteen-container">
               <div class="flex-container">
                 <div :class="['colony-icon-warp', item.clusterStateCode === 2 ? 'running-status-bg' : 'configured-status-bg']">
-                  <svg-icon :class="['colony-icon', item.clusterStateCode === 2 ? 'running-status-color' : 'configured-status-color']" icon-class="colony"></svg-icon>
+                  <svg-icon :class="['colony-icon', item.clusterStateCode === 2 ? 'running-status-color' : item.clusterStateCode === 3 ? 'error-status-color' : 'configured-status-color']" icon-class="colony"></svg-icon>
                 </div>
                 <div class="colony-title">{{ item.clusterName }}</div>
               </div>
               <div :class="['colony-status']">
-                <svg-icon :class="['colony-status-icon', item.clusterStateCode === 2 ? 'running-status-color' : 'configured-status-color']" :icon-class="item.clusterStateCode === 2 ? 'running-status' : 'configured-status'"></svg-icon>
+                <svg-icon :class="['colony-status-icon', item.clusterStateCode === 2 ? 'running-status-color' : item.clusterStateCode === 3 ? 'error-status-color' : 'configured-status-color']" :icon-class="item.clusterStateCode === 2 ? 'running-status' : 'configured-status'"></svg-icon>
                 <span class="mgl5">{{item.clusterState}}</span>
               </div>
             </div>

@@ -41,11 +41,17 @@ public class ServiceRoleStrategyContext {
         map.put("KAdmin", new KAdminHandlerStrategy("KERBEROS", "KAdmin"));
         map.put("SRFE", new FEHandlerStrategy("STARROCKS", "SRFE"));
         map.put("DorisFE", new FEHandlerStrategy("DORIS", "DorisFE"));
+        map.put("DorisFEObserver", new FEObserverHandlerStrategy("DORIS", "DorisFEObserver"));
         map.put("ZkServer", new ZkServerHandlerStrategy("ZOOKEEPER", "ZkServer"));
         map.put("KafkaBroker", new KafkaHandlerStrategy("KAFKA", "KafkaBroker"));
         map.put("SRBE", new BEHandlerStrategy("STARROCKS", "SRBE"));
         map.put("DorisBE", new BEHandlerStrategy("DORIS", "DorisBE"));
         map.put("HistoryServer", new HistoryServerHandlerStrategy("YARN", "HistoryServer"));
+
+        // TEZ Server service
+        map.put("TezServer", new TezServerHandlerStrategy("TEZ", "TezServer"));
+        //kyuubi
+        map.put("KyuubiServer", new KyuubiServerHandlerStrategy("KYUUBI", "KyuubiServer"));
     }
 
     public static ServiceRoleStrategy getServiceRoleHandler(String type) {

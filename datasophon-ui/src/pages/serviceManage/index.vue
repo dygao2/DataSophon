@@ -48,7 +48,7 @@
         <a-icon type="down" />
       </div>
     </a-dropdown>
-    <div v-else class="webui" :style="{left: serviceName === 'YARN' ? '280px' : '200px'}">
+    <div v-else class="webui" :style="{left: getWebUIWidth(serviceName)}">
       WebUI
       <a-icon type="down" />
     </div>
@@ -90,6 +90,13 @@ export default {
     }
   },
   methods: {
+    getWebUIWidth (serviceName) {
+      if (serviceName === 'KRBCLIENT') {
+        return '136px'
+      } else {
+        return serviceName === 'YARN' ? '280px' : '200px'
+      }
+    },
     handleMenuClick(item) {
       let url = this.webUis[item.key].webUrl
       window.open(url)

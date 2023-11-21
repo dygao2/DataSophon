@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://${datasource.ip:localhost}:${datasource.port:3306}/${datasource.database:datasophon}?&allowMultiQueries=true&characterEncoding=utf-8
+    username: ${datasource.username:datasophon}
+    password: ${datasource.password:datasophon}
+
+server:
+  port: ${server.port:8081}
+  address: ${server.ip:0.0.0.0}

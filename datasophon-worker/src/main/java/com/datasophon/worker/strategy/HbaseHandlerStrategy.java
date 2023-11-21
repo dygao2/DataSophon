@@ -30,10 +30,10 @@ import com.datasophon.worker.utils.KerberosUtils;
 
 import java.util.ArrayList;
 
-public class HbaseHandlerStrategy extends  AbstractHandlerStrategy implements ServiceRoleStrategy {
+public class HbaseHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
 
-    public HbaseHandlerStrategy(String serviceName,String serviceRoleName) {
-        super(serviceName,serviceRoleName);
+    public HbaseHandlerStrategy(String serviceName, String serviceRoleName) {
+        super(serviceName, serviceRoleName);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class HbaseHandlerStrategy extends  AbstractHandlerStrategy implements Se
             if (!FileUtil.exist(Constants.INSTALL_PATH + Constants.SLASH + command.getDecompressPackageName()
                     + "/ranger-hbase-plugin/success.id")) {
                 ExecResult execResult = ShellUtils.execWithStatus(Constants.INSTALL_PATH + Constants.SLASH
-                        + command.getDecompressPackageName() + "/ranger-hbase-plugin", commands, 30L);
+                        + command.getDecompressPackageName() + "/ranger-hbase-plugin", commands, 30L, logger);
                 if (execResult.getExecResult()) {
                     logger.info("enable ranger hbase plugin success");
                     FileUtil.writeUtf8String("success", Constants.INSTALL_PATH + Constants.SLASH

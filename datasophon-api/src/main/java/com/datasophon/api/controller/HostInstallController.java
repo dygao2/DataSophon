@@ -131,4 +131,17 @@ public class HostInstallController {
         return installService.generateHostAgentCommand(clusterHostIds, commandType);
     }
 
+    /**
+     * 启动/停止 主机上服务启动
+     * @param clusterHostIds
+     * @param commandType
+     * @return
+     */
+    @PostMapping("/generateHostServiceCommand")
+    public Result generateHostServiceCommand(
+            @RequestParam String clusterHostIds,
+            @RequestParam String commandType) throws Exception {
+        return installService.generateHostServiceCommand(clusterHostIds, commandType);
+    }
+
 }

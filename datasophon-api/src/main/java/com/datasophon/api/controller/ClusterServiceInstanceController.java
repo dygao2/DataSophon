@@ -39,7 +39,7 @@ public class ClusterServiceInstanceController {
      */
     @RequestMapping("/list")
     public Result list(Integer clusterId) {
-        return clusterServiceInstanceService.listAll(clusterId);
+        return Result.success(clusterServiceInstanceService.listAll(clusterId));
     }
 
     /**

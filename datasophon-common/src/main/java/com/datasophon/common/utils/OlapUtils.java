@@ -34,23 +34,56 @@ public class OlapUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(OlapUtils.class);
 
-    public static void addFollower(String feMaster, String hostname) throws SQLException, ClassNotFoundException {
+    public static ExecResult addFollower(String feMaster, String hostname) {
+        ExecResult execResult = new ExecResult();
         String sql = "ALTER SYSTEM add FOLLOWER \"" + hostname + ":9010\";";
-        logger.info("sql is {}", sql);
-        executeSql(feMaster, hostname, sql);
+        logger.info("Add fe to cluster , the sql is {}", sql);
+        try {
+            executeSql(feMaster, hostname, sql);
+            execResult.setExecResult(true);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return execResult;
     }
 
-    public static void addBackend(String feMaster, String hostname) throws SQLException, ClassNotFoundException {
+    public static ExecResult addObserver(String feMaster, String hostname) {
+        ExecResult execResult = new ExecResult();
+        String sql = "ALTER SYSTEM add OBSERVER \"" + hostname + ":9010\";";
+        logger.info("Add fe to cluster , the sql is {}", sql);
+        try {
+            executeSql(feMaster, hostname, sql);
+            execResult.setExecResult(true);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return execResult;
+    }
+
+    public static ExecResult addBackend(String feMaster, String hostname) {
+        ExecResult execResult = new ExecResult();
         String sql = "ALTER SYSTEM add BACKEND  \"" + hostname + ":9050\";";
-        logger.info("sql is {}", sql);
-        executeSql(feMaster, hostname, sql);
+        logger.info("Add be to cluster , the sql is {}", sql);
+
+        try {
+            executeSql(feMaster, hostname, sql);
+            execResult.setExecResult(true);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return execResult;
     }
 
     private static void executeSql(String feMaster, String hostname,
                                    String sql) throws ClassNotFoundException, SQLException {
         Connection connection = getConnection(feMaster);
         Statement statement = connection.createStatement();
-        logger.info("generate be {} to cluster", hostname);
         if (Objects.nonNull(connection) && Objects.nonNull(statement)) {
             statement.executeUpdate(sql);
         }
@@ -64,6 +97,19 @@ public class OlapUtils {
                         + feMaster
                         + " -uroot -P9030 -e"
                         + " 'ALTER SYSTEM add FOLLOWER  \""
+                        + hostname
+                        + ":9010\"';";
+        // logger.info("sqlCommand is {}", sqlCommand);
+        return ShellUtils.exceShell(sqlCommand);
+    }
+
+    public static ExecResult addObserverBySqlClient(String feMaster,
+                                                    String hostname) {
+        String sqlCommand =
+                "mysql -h"
+                        + feMaster
+                        + " -uroot -P9030 -e"
+                        + " 'ALTER SYSTEM add OBSERVER  \""
                         + hostname
                         + ":9010\"';";
         // logger.info("sqlCommand is {}", sqlCommand);
@@ -88,7 +134,7 @@ public class OlapUtils {
         String password = "";
         String url = "jdbc:mysql://" + feMaster + ":9030";
         // 加载驱动
-        Class.forName("com.mysql.jdbc.Driver");
+        Class.forName("com.mysql.cj.jdbc.Driver");
         return DriverManager.getConnection(url, username, password);
     }
 

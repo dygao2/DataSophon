@@ -206,10 +206,6 @@ fi
 (( CYGWIN )) && LOG_DIR=$(cygpath --path --mixed "${r"${LOG_DIR}"}")
 KAFKA_LOG4J_OPTS="-Dkafka.logs.dir=$LOG_DIR $KAFKA_LOG4J_OPTS"
 
-# Generic jvm settings you want to add
-if [ -z "$KAFKA_OPTS" ]; then
-  KAFKA_OPTS="-javaagent:$base_dir/jmx/jmx_prometheus_javaagent-0.16.1.jar=9991:$base_dir/jmx/kafka-2_0_0.yml"
-fi
 
 # Set Debug options if enabled
 if [ "x$KAFKA_DEBUG" != "x" ]; then
@@ -238,11 +234,6 @@ else
   JAVA="$JAVA_HOME/bin/java"
 fi
 
-# Memory options
-if [ -z "$KAFKA_HEAP_OPTS" ]; then
-  KAFKA_HEAP_OPTS="-Xmx${kafkaHeapSize}G -Xms${kafkaHeapSize}G"
-fi
-KAFKA_HEAP_OPTS="-Xmx${kafkaHeapSize}G -Xms${kafkaHeapSize}G"
 # JVM performance options
 if [ -z "$KAFKA_JVM_PERFORMANCE_OPTS" ]; then
   KAFKA_JVM_PERFORMANCE_OPTS="-server  -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent -Djava.awt.headless=true <#if javaSecurityKrb5Conf??>-Djava.security.krb5.conf=${javaSecurityKrb5Conf}</#if> <#if javaSecurityAuthLoginConfig??>-Djava.security.auth.login.config=${javaSecurityAuthLoginConfig}</#if>"

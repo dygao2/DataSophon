@@ -68,6 +68,10 @@ public class Result extends HashMap<String, Object> {
         return this.get(Constants.DATA);
     }
 
+    public boolean isSuccess() {
+        return this.getCode() == 200;
+    }
+
     public static Result success(Object data) {
         Result result = new Result();
         result.put(Constants.CODE, 200);

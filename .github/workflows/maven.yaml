@@ -42,4 +42,4 @@ jobs:
           ./mvnw -Pgoogle-mirror -B clean install \
                  -Dmaven.test.skip=true \
                  --no-snapshot-updates \
-                 -pl !datasophon-ui,!datasophon-api -am
+                 -pl !datasophon-ui,!datasophon-api,!datasophon-service -am

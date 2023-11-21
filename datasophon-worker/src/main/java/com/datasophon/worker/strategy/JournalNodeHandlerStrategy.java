@@ -31,8 +31,8 @@ import java.util.ArrayList;
 
 public class JournalNodeHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
 
-    public JournalNodeHandlerStrategy(String serviceName,String serviceRoleName) {
-        super(serviceName,serviceRoleName);
+    public JournalNodeHandlerStrategy(String serviceName, String serviceRoleName) {
+        super(serviceName, serviceRoleName);
     }
 
     @Override
@@ -46,10 +46,10 @@ public class JournalNodeHandlerStrategy extends AbstractHandlerStrategy implemen
             String hadoopConfDir =
                     Constants.INSTALL_PATH + Constants.SLASH + command.getDecompressPackageName() + "/etc/hadoop/";
             if (!FileUtil.exist(hadoopConfDir + "ssl-server.xml")) {
-                ShellUtils.exceShell("cp " + hadoopConfDir + "ssl-server.xml.example ssl-server.xml");
+                ShellUtils.exceShell("cp " + hadoopConfDir + "ssl-server.xml.template " + hadoopConfDir + "ssl-server.xml");
             }
             if (!FileUtil.exist(hadoopConfDir + "ssl-client.xml")) {
-                ShellUtils.exceShell("cp " + hadoopConfDir + "ssl-client.xml.example ssl-client.xml");
+                ShellUtils.exceShell("cp " + hadoopConfDir + "ssl-client.xml.template " + hadoopConfDir + "ssl-client.xml");
             }
             if (!FileUtil.exist("/etc/security/keytab/jn.service.keytab")) {
                 KerberosUtils.downloadKeytabFromMaster("jn/" + hostname, "jn.service.keytab");
@@ -59,7 +59,7 @@ public class JournalNodeHandlerStrategy extends AbstractHandlerStrategy implemen
                 commands.add("sh");
                 commands.add("keystore.sh");
                 commands.add(hostname);
-                ExecResult execResult = ShellUtils.execWithStatus(Constants.WORKER_SCRIPT_PATH, commands, 30L);
+                ExecResult execResult = ShellUtils.execWithStatus(Constants.WORKER_SCRIPT_PATH, commands, 30L, logger);
                 if (!execResult.getExecResult()) {
                     logger.info("generate keystore file failed");
                     return execResult;

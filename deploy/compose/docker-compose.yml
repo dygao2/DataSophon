@@ -1,0 +1,36 @@
+version: '3'
+services:
+  datasophon:
+    #restart: always
+    image: datasophon/datasophon:1.1.3
+    container_name: datasophon  #指定容器名
+    depends_on:
+      - mysql
+    ports:
+      - "8081:8081"
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - ./datasophon.conf:/datasophon/conf/datasophon.conf
+  mysql:
+    container_name: db
+    image: mysql:8
+    privileged: true
+    environment:
+      - TZ=Asia/Shanghai
+      - LANG=C.UTF-8
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=datasophon
+      - MYSQL_USER=datasophon
+      - MYSQL_PASSWORD=datasophon
+    volumes:
+      - ./mysql/init/:/docker-entrypoint-initdb.d/
+    #  - ./docker/mysql/db:/var/lib/mysql
+    #  - ./docker/mysql/conf/my.cnf:/etc/my.cnf
+    ports:
+      - "3306:3306"
+    command: [
+        '--character-set-server=utf8mb4',
+        '--collation-server=utf8mb4_general_ci'
+    ]
+    #restart: always

@@ -40,3 +40,5 @@ test/coverage
 
 front/
 node/
+
+*.flattened-pom.xml

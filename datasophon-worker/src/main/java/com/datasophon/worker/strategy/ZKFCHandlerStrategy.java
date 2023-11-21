@@ -28,8 +28,8 @@ import java.util.ArrayList;
 
 public class ZKFCHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
 
-    public ZKFCHandlerStrategy(String serviceName,String serviceRoleName) {
-        super(serviceName,serviceRoleName);
+    public ZKFCHandlerStrategy(String serviceName, String serviceRoleName) {
+        super(serviceName, serviceRoleName);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class ZKFCHandlerStrategy extends AbstractHandlerStrategy implements Serv
             commands.add(workPath + "/bin/hdfs");
             commands.add("zkfc");
             commands.add("-formatZK");
-            ExecResult execResult = ShellUtils.execWithStatus(workPath, commands, 300L);
+            ExecResult execResult = ShellUtils.execWithStatus(workPath, commands, 300L, logger);
             if (execResult.getExecResult()) {
                 logger.info("zkfc format success");
                 startResult = serviceHandler.start(command.getStartRunner(), command.getStatusRunner(),

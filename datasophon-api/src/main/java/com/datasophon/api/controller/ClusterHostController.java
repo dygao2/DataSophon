@@ -17,13 +17,15 @@
 
 package com.datasophon.api.controller;
 
-import com.datasophon.api.service.ClusterHostService;
+import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.common.Constants;
 import com.datasophon.common.utils.Result;
-import com.datasophon.dao.entity.ClusterHostEntity;
+import com.datasophon.dao.entity.ClusterHostDO;
 
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
+@Slf4j
 @RestController
 @RequestMapping("api/cluster/host")
 public class ClusterHostController {
@@ -44,8 +47,8 @@ public class ClusterHostController {
      */
     @RequestMapping("/all")
     public Result all(Integer clusterId) {
-        List<ClusterHostEntity> list =
-                clusterHostService.list(new QueryWrapper<ClusterHostEntity>().eq(Constants.CLUSTER_ID, clusterId)
+        List<ClusterHostDO> list =
+                clusterHostService.list(new QueryWrapper<ClusterHostDO>().eq(Constants.CLUSTER_ID, clusterId)
                         .eq(Constants.MANAGED, 1)
                         .orderByAsc(Constants.HOSTNAME));
         return Result.success(list);
@@ -85,7 +88,7 @@ public class ClusterHostController {
      */
     @RequestMapping("/info/{id}")
     public Result info(@PathVariable("id") Integer id) {
-        ClusterHostEntity clusterHost = clusterHostService.getById(id);
+        ClusterHostDO clusterHost = clusterHostService.getById(id);
 
         return Result.success().put(Constants.DATA, clusterHost);
     }
@@ -94,7 +97,7 @@ public class ClusterHostController {
      * 保存
      */
     @RequestMapping("/save")
-    public Result save(@RequestBody ClusterHostEntity clusterHost) {
+    public Result save(@RequestBody ClusterHostDO clusterHost) {
         clusterHostService.save(clusterHost);
 
         return Result.success();
@@ -104,7 +107,7 @@ public class ClusterHostController {
      * 修改
      */
     @RequestMapping("/update")
-    public Result update(@RequestBody ClusterHostEntity clusterHost) {
+    public Result update(@RequestBody ClusterHostDO clusterHost) {
         clusterHostService.updateById(clusterHost);
 
         return Result.success();
@@ -114,10 +117,16 @@ public class ClusterHostController {
      * 删除
      */
     @RequestMapping("/delete")
-    public Result delete(Integer hostId) {
-
-        return clusterHostService.deleteHost(hostId);
-
+    public Result delete(String hostIds) {
+        if(StringUtils.isBlank(hostIds)) {
+            return Result.error("请选择移除的主机!");
+        }
+        try {
+            return clusterHostService.deleteHosts(hostIds);
+        } catch (Exception e) {
+            log.warn("移除主机异常.", e);
+            return Result.error("移除主机异常, Cause: " + e.getMessage());
+        }
     }
 
 }

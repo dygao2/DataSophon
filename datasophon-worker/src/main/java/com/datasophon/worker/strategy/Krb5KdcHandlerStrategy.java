@@ -30,8 +30,8 @@ import java.util.ArrayList;
 
 public class Krb5KdcHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
 
-    public Krb5KdcHandlerStrategy(String serviceName,String serviceRoleName) {
-        super(serviceName,serviceRoleName);
+    public Krb5KdcHandlerStrategy(String serviceName, String serviceRoleName) {
+        super(serviceName, serviceRoleName);
     }
 
 
@@ -44,7 +44,7 @@ public class Krb5KdcHandlerStrategy extends AbstractHandlerStrategy implements S
             ArrayList<String> commands = new ArrayList<>();
             commands.add("sh");
             commands.add(Constants.WORKER_SCRIPT_PATH + "create_kdb.sh");
-            ExecResult execResult = ShellUtils.execWithStatus(Constants.INSTALL_PATH, commands, 180L);
+            ExecResult execResult = ShellUtils.execWithStatus(Constants.INSTALL_PATH, commands, 180L, logger);
             if (execResult.getExecResult()) {
                 logger.info("init kdc database success");
                 startResult = serviceHandler.start(command.getStartRunner(), command.getStatusRunner(),

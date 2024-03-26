@@ -42,7 +42,14 @@ public class FlinkHandlerStrategy extends ServiceHandlerAbstract implements Serv
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
         ClusterInfoEntity clusterInfo = ProcessUtils.getClusterInfo(clusterId);
         boolean enableJM2HA = false;
+        boolean enableKerberos = false;
         Map<String, ServiceConfig> map = ProcessUtils.translateToMap(list);
+        for (ServiceConfig serviceConfig : list) {
+            if ("enableKerberos".equals(serviceConfig.getName())) {
+                enableKerberos = isEnableKerberos(clusterId, globalVariables, enableKerberos, serviceConfig, "FLINK");
+            }
+        }
+
         for (ServiceConfig config : list) {
             if ("enableJMHA".equals(config.getName())) {
                 enableJM2HA = isEnableHA(clusterId, globalVariables, enableJM2HA, config, "FLINK");
@@ -50,12 +57,21 @@ public class FlinkHandlerStrategy extends ServiceHandlerAbstract implements Serv
         }
         String key = clusterInfo.getClusterFrame() + Constants.UNDERLINE + "FLINK" + Constants.CONFIG;
         List<ServiceConfig> configs = ServiceConfigMap.get(key);
-        ArrayList<ServiceConfig> kbConfigs = new ArrayList<>();
+        ArrayList<ServiceConfig> haConfigs = new ArrayList<>();
         if (enableJM2HA) {
-            addConfigWithHA(globalVariables, map, configs, kbConfigs);
+            addConfigWithHA(globalVariables, map, configs, haConfigs);
         } else {
             removeConfigWithHA(list, map, configs);
         }
+
+        ArrayList<ServiceConfig> kbConfigs = new ArrayList<>();
+        if (enableKerberos) {
+            addConfigWithKerberos(globalVariables, map, configs, kbConfigs);
+        } else {
+            removeConfigWithKerberos(list, map, configs);
+        }
+
+        list.addAll(haConfigs);
         list.addAll(kbConfigs);
     }
 

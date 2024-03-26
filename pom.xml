@@ -37,7 +37,7 @@
     </modules>
 
     <properties>
-        <revision>1.2.0</revision>
+        <revision>1.2.1</revision>
         <akka.version>2.4.20</akka.version>
         <commons.httpclient>3.0.1</commons.httpclient>
         <commons.lang>2.6</commons.lang>

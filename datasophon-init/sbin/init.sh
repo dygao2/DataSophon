@@ -342,6 +342,8 @@ initSingleNode() {
 
   pssh -h ${INIT_BIN_PATH}/tmp_scp_host_info.txt -t ${smallTimeOut} -i bash ${INIT_BIN_PATH}/init-libtool.sh >>${initLogDir}/installSingleNodeLibtool_$(date +%Y%m%d).log
 
+  pssh -h ${INIT_BIN_PATH}/tmp_scp_host_info.txt -t ${smallTimeOut} -i bash ${INIT_BIN_PATH}/init-lsof.sh >>${initLogDir}/installSingleNodeLsof_$(date +%Y%m%d).log
+
   pssh -h ${INIT_BIN_PATH}/tmp_scp_host_info.txt -i bash ${INIT_BIN_PATH}/init-krb5-devel.sh >>${initLogDir}/installSingleNodeKrb5Devel_$(date +%Y%m%d).log
   checkSingleNodeKrb5Devel
 

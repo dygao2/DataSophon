@@ -540,12 +540,29 @@ public class ProcessUtils {
      * @Description: 生成configFileMap
      */
     public static void generateConfigFileMap(Map<Generators, List<ServiceConfig>> configFileMap,
-                                             ClusterServiceRoleGroupConfig config) {
+                                             ClusterServiceRoleGroupConfig config,Integer clusterId) {
         Map<JSONObject, JSONArray> map = JSONObject.parseObject(config.getConfigFileJson(), Map.class);
         for (JSONObject fileJson : map.keySet()) {
             Generators generators = fileJson.toJavaObject(Generators.class);
             List<ServiceConfig> serviceConfigs = map.get(fileJson).toJavaList(ServiceConfig.class);
+            //replace variable
+            replaceVariable(serviceConfigs,clusterId);
             configFileMap.put(generators, serviceConfigs);
+        }
+    }
+
+    private static void replaceVariable(List<ServiceConfig> serviceConfigs,Integer clusterId) {
+        Map<String, String> globalVariables = GlobalVariables.get(clusterId);
+        for (ServiceConfig serviceConfig : serviceConfigs) {
+            if(Constants.INPUT.equals(serviceConfig.getType())){
+                String name = PlaceholderUtils.replacePlaceholders(serviceConfig.getName(), globalVariables,
+                        Constants.REGEX_VARIABLE);
+                serviceConfig.setName(name);
+
+                String value = PlaceholderUtils.replacePlaceholders((String) serviceConfig.getValue(), globalVariables,
+                        Constants.REGEX_VARIABLE);
+                serviceConfig.setValue(value);
+            }
         }
     }
 

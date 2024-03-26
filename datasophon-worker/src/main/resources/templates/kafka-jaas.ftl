@@ -7,10 +7,9 @@ KafkaServer {
 };
 KafkaClient {
  com.sun.security.auth.module.Krb5LoginModule required
- useKeyTab=true
+ useKeyTab=false
  useTicketCache=true
- keyTab="/etc/security/keytab/kafka.service.keytab"
- principal="kafka/${kafkaHost}@${kafkaRealm}";
+ debug=true;
 };
 Client {
  com.sun.security.auth.module.Krb5LoginModule required

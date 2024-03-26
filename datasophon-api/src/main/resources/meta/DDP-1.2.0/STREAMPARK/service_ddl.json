@@ -2,18 +2,18 @@
   "name": "STREAMPARK",
   "label": "StreamPark",
   "description": "流处理极速开发框架,流批一体&湖仓一体的云原生平台,一站式流处理计算平台",
-  "version": "2.1.1",
+  "version": "1.2.3",
   "sortNum": 13,
   "dependencies":[],
-  "packageName": "streampark-2.1.1.tar.gz",
-  "decompressPackageName": "streampark-2.1.1",
+  "packageName": "streampark-1.2.3.tar.gz",
+  "decompressPackageName": "streampark-1.2.3",
   "roles": [
     {
       "name": "StreamPark",
       "label": "StreamPark",
       "roleType": "master",
       "cardinality": "1",
-      "logFile": "logs/streampark.out",
+      "logFile": "logs/streamx.out",
       "jmxPort": 10086,
       "startRunner": {
         "timeout": "60",
@@ -29,16 +29,17 @@
       },
       "statusRunner": {
         "timeout": "60",
-        "program": "bin/streampark.sh",
+        "program": "bin/streamx.sh",
         "args": [
           "status"
         ]
       },
       "restartRunner": {
         "timeout": "60",
-        "program": "bin/streampark.sh",
+        "program": "control.sh",
         "args": [
-          "restart"
+          "restart",
+          "api-server"
         ]
       },
       "externalLink": {
@@ -60,9 +61,7 @@
           "username",
           "password",
           "serverPort",
-          "hadoopUserName",
-          "workspaceLocal",
-          "workspaceRemote"
+          "hadoopUserName"
         ]
       }
     ]
@@ -127,30 +126,6 @@
       "configurableInWizard": true,
       "hidden": false,
       "defaultValue": "root"
-    },
-    {
-      "name": "workspaceLocal",
-      "label": "StreamPark本地工作空间目录",
-      "description": "自行创建,用于存放项目源码,构建的目录等",
-      "configType": "map",
-      "required": true,
-      "type": "input",
-      "value": "",
-      "configurableInWizard": true,
-      "hidden": false,
-      "defaultValue": "/data/streampark/workspace"
-    },
-    {
-      "name": "workspaceRemote",
-      "label": "StreamPark HDFS工作空间目录",
-      "description": "HDFS工作空间目录",
-      "configType": "map",
-      "required": true,
-      "type": "input",
-      "value": "",
-      "configurableInWizard": true,
-      "hidden": false,
-      "defaultValue": "hdfs://nameservice1/streampark"
     }
   ]
 }

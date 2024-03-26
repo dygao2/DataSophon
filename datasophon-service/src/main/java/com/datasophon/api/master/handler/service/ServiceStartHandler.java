@@ -67,6 +67,15 @@ public class ServiceStartHandler extends ServiceHandler {
         logger.info("{} enable kerberos is {}", serviceRoleInfo.getParentName(), enableKerberos);
         serviceRoleOperateCommand.setEnableKerberos(enableKerberos);
         if (serviceRoleInfo.getRoleType() == ServiceRoleType.CLIENT) {
+
+            if(serviceRoleInfo.getName().equals("FlinkClient") && enableKerberos){
+                logger.info("when serviceRoleInfo name is FlinkClient ,start to startActor!");
+                ActorSelection startActors = ActorUtils.actorSystem.actorSelection(
+                        "akka.tcp://datasophon@" + serviceRoleInfo.getHostname() + ":2552/user/worker/startServiceActor");
+                Timeout timeouts = new Timeout(Duration.create(180, TimeUnit.SECONDS));
+                Await.result(Patterns.ask(startActors, serviceRoleOperateCommand, timeouts),timeouts.duration());
+            }
+
             ExecResult execResult = new ExecResult();
             execResult.setExecResult(true);
             if (Objects.nonNull(getNext())) {

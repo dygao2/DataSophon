@@ -48,6 +48,7 @@ public class FrameInfoServiceImpl extends ServiceImpl<FrameInfoMapper, FrameInfo
 
         Set<Integer> frameInfoIds = frameInfoEntities.stream().map(FrameInfoEntity::getId).collect(Collectors.toSet());
         Map<Integer, List<FrameServiceEntity>> frameServiceGroupBys = frameServiceService.lambdaQuery()
+                .select(FrameServiceEntity::getId, FrameServiceEntity::getFrameId, FrameServiceEntity::getFrameCode, FrameServiceEntity::getServiceName, FrameServiceEntity::getServiceVersion, FrameServiceEntity::getServiceDesc)
                 .in(FrameServiceEntity::getFrameId, frameInfoIds)
                 .list()
                 .stream()

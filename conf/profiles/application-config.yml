@@ -9,3 +9,8 @@ spring:
 server:
   port: ${server.port:8081}
   address: ${server.ip:0.0.0.0}
+
+
+datasophon:
+  migration:
+    enable: true

@@ -1,0 +1,355 @@
+{
+  "name": "KYUUBI",
+  "label": "Kyuubi",
+  "description": "统一多租户JDBC网关",
+  "version": "1.7.3",
+  "sortNum": 30,
+  "dependencies":[],
+  "packageName": "kyuubi-1.7.3.tar.gz",
+  "decompressPackageName": "kyuubi-1.7.3",
+  "roles": [
+    {
+      "name": "KyuubiServer",
+      "label": "KyuubiServer",
+      "roleType": "master",
+      "runAs": {
+        "user": "kyuubi",
+        "group": "hadoop"
+      },
+      "cardinality": "1+",
+      "jmxPort": "10019",
+      "logFile": "logs/kyuubi-server-${host}.out",
+      "startRunner": {
+        "timeout": "60",
+        "program": "bin/kyuubi",
+        "args": [
+          "start"
+        ]
+      },
+      "stopRunner": {
+        "timeout": "600",
+        "program": "bin/kyuubi",
+        "args": [
+          "stop"
+        ]
+      },
+      "statusRunner": {
+        "timeout": "60",
+        "program": "bin/kyuubi",
+        "args": [
+          "status"
+        ]
+      },
+      "restartRunner": {
+        "timeout": "60",
+        "program": "bin/kyuubi",
+        "args": [
+          "restart"
+        ]
+      }
+    },
+    {
+      "name": "KyuubiClient",
+      "label": "KyuubiClient",
+      "roleType": "client",
+      "cardinality": "1+",
+      "logFile": "",
+      "runAs": {
+        "user": "kyuubi",
+        "group": "hadoop"
+      }
+    }
+  ],
+  "configWriter": {
+    "generators": [
+      {
+        "filename": "kyuubi-defaults.conf",
+        "configFormat": "properties2",
+        "outputDirectory": "conf",
+        "includeParams": [
+          "kyuubi.ha.zookeeper.namespace",
+          "kyuubi.ha.zookeeper.quorum",
+          "kyuubi.session.idle.timeout",
+          "kyuubi.session.engine.idle.timeout",
+          "kyuubi.session.engine.initialize.timeout",
+          "spark.master",
+          "kyuubi.metrics.reporters",
+          "kyuubi.metrics.prometheus.port",
+          "kyuubi.session.engine.spark.showProgress",
+          "kyuubi.metrics.enabled",
+          "enableKerberos",
+          "kyuubi.kinit.principal",
+          "kyuubi.kinit.keytab",
+          "kyuubi.authentication",
+          "custom.kyuubi-defaults.conf"
+        ]
+      },
+      {
+        "filename": "kyuubi-env.sh",
+        "configFormat": "custom",
+        "outputDirectory": "conf",
+        "templateName": "kyuubi-env.ftl",
+        "includeParams": [
+          "javaHome",
+          "sparkHome",
+          "hadoopConfDir",
+          "kyuubiServerHeapSize",
+          "kyuubiClientHeapSize",
+          "custom.kyuubi-env.sh"
+        ]
+      }
+    ]
+  },
+  "parameters": [
+    {
+      "name": "kyuubi.ha.zookeeper.quorum",
+      "label": "zookeeper服务信息",
+      "description": "zookeeper服务信息",
+      "required": true,
+      "type": "input",
+      "value": "",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": ""
+    },
+    {
+      "name": "kyuubi.ha.zookeeper.namespace",
+      "label": "zookeeper目录",
+      "description": "zookeeper目录",
+      "required": true,
+      "type": "input",
+      "value": "",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": ""
+    },
+    {
+      "name": "kyuubi.session.idle.timeout",
+      "label": "会话超时时间",
+      "description": "会话超时时间",
+      "required": true,
+      "type": "input",
+      "value": "",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": "PT6H"
+    },
+    {
+      "name": "kyuubi.session.engine.idle.timeout",
+      "label": "引擎超时时间",
+      "description": "引擎超时时间",
+      "required": true,
+      "type": "input",
+      "value": "",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": "PT30M"
+    },
+    {
+      "name": "spark.master",
+      "label": "配置spark为onYarn模式",
+      "description": "配置spark为onYarn模式",
+      "required": true,
+      "type": "input",
+      "value": "yarn",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": "yarn"
+    },
+    {
+      "name": "kyuubi.metrics.reporters",
+      "label": "监控输出格式",
+      "description": "监控输出格式",
+      "required": true,
+      "type": "input",
+      "value": "PROMETHEUS",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": "PROMETHEUS"
+    },
+    {
+      "name":   "kyuubi.metrics.prometheus.port",
+      "label": "监控服务端口",
+      "description": "监控服务端口",
+      "required": true,
+      "type": "input",
+      "value": "10019",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": "10019"
+    },
+    {
+      "name": "kyuubi.session.engine.initialize.timeout",
+      "label": "引擎启动超时时间",
+      "description": "引擎启动超时时间",
+      "required": true,
+      "type": "input",
+      "value": "",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": "PT3M"
+    },
+    {
+      "name": "kyuubi.session.engine.spark.showProgress",
+      "label": "spark任务进度显示",
+      "description": "spark任务进度显示",
+      "required": true,
+      "type": "switch",
+      "value": false,
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": false
+    },
+    {
+      "name": "kyuubi.metrics.enabled",
+      "label": "服务监控指标",
+      "description": "服务监控指标",
+      "required": true,
+      "type": "switch",
+      "value": true,
+      "configurableInWizard": false,
+      "hidden": false,
+      "defaultValue": true
+    },
+    {
+      "name": "javaHome",
+      "label": "java安装路径",
+      "description": "java安装路径",
+      "configType": "map",
+      "required": true,
+      "type": "input",
+      "value": "/usr/local/jdk1.8.0_333",
+      "configurableInWizard": false,
+      "hidden": false,
+      "defaultValue": "/usr/local/jdk1.8.0_333"
+    },
+    {
+      "name": "sparkHome",
+      "label": "spark安装目录",
+      "description": "spark安装目录",
+      "configType": "map",
+      "required": true,
+      "type": "input",
+      "value": "/opt/datasophon/spark-3.1.3/",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": "/opt/datasophon/spark-3.1.3/"
+    },
+    {
+      "name": "hadoopConfDir",
+      "label": "hadoop配置目录",
+      "description": "hadoop配置目录",
+      "configType": "map",
+      "required": true,
+      "type": "input",
+      "value": "/opt/datasophon/hadoop-3.3.3/etc/hadoop",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": "/opt/datasophon/hadoop-3.3.3/etc/hadoop"
+    },
+    {
+      "name": "kyuubiServerHeapSize",
+      "label": "KyuubiServerjvm内存",
+      "description": "KyuubiServerjvm内存",
+      "configType": "map",
+      "required": true,
+      "minValue": 0,
+      "maxValue": 32,
+      "type": "slider",
+      "value": "",
+      "unit": "GB",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": "4"
+    },
+    {
+      "name": "kyuubiClientHeapSize",
+      "label": "KyuubiClientjvm内存",
+      "description": "KyuubiClientjvm内存",
+      "configType": "map",
+      "required": true,
+      "minValue": 0,
+      "maxValue": 32,
+      "type": "slider",
+      "value": "",
+      "unit": "GB",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": "2"
+    },
+    {
+      "name": "enableKerberos",
+      "label": "开启Kerberos认证",
+      "description": "开启Kerberos认证",
+      "required": false,
+      "type": "switch",
+      "value": false,
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": false
+    },
+    {
+      "name": "kyuubi.authentication",
+      "label": "Kyuubi服务认证方式",
+      "description": "",
+      "configWithKerberos": true,
+      "required": false,
+      "configType": "kb",
+      "type": "input",
+      "value": "KERBEROS",
+      "configurableInWizard": true,
+      "hidden": true,
+      "defaultValue": "KERBEROS"
+    },
+    {
+      "name": "kyuubi.kinit.principal",
+      "label": "Kyuubi服务的Kerberos主体",
+      "description": "",
+      "configWithKerberos": true,
+      "required": false,
+      "configType": "kb",
+      "type": "input",
+      "value":  "kyuubi/${host}@${realm}",
+      "configurableInWizard": true,
+      "hidden": true,
+      "defaultValue": "kyuubi/${host}@${realm}"
+    },
+    {
+      "name": "kyuubi.kinit.keytab",
+      "label": "Kyuubi服务的Kerberos密钥文件路径",
+      "description": "",
+      "configWithKerberos": true,
+      "required": false,
+      "configType": "kb",
+      "type": "input",
+      "value": "/etc/security/keytab/kyuubi.service.keytab",
+      "configurableInWizard": true,
+      "hidden": true,
+      "defaultValue": "/etc/security/keytab/kyuubi.service.keytab"
+    },
+    {
+      "name": "custom.kyuubi-env.sh",
+      "label": "自定义配置kyuubi-env.sh",
+      "description": "自定义配置",
+      "configType": "custom",
+      "required": false,
+      "type": "multipleWithKey",
+      "value": [],
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": ""
+    },
+    {
+      "name": "custom.kyuubi-defaults.conf",
+      "label": "自定义配置kyuubi-defaults.conf",
+      "description": "自定义配置",
+      "configType": "custom",
+      "required": false,
+      "type": "multipleWithKey",
+      "value": [],
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": ""
+    }
+  ]
+}

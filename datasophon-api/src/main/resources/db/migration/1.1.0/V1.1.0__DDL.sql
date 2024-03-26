@@ -68,7 +68,7 @@ CREATE TABLE `t_ddh_cluster_alert_history`  (
   `alert_target_name` varchar(32)  DEFAULT NULL COMMENT '告警指标',
   `alert_info` varchar(1024)  DEFAULT NULL COMMENT '告警详情',
   `alert_advice` varchar(1024)  DEFAULT NULL COMMENT '告警建议',
-  `hostname` varchar(32)  DEFAULT NULL COMMENT '主机',
+  `hostname` varchar(255)  DEFAULT NULL COMMENT '主机',
   `alert_level` int(11) DEFAULT NULL COMMENT '告警级别 1：警告2：异常',
   `is_enabled` int(11) DEFAULT NULL COMMENT '是否处理 1:未处理2：已处理',
   `service_role_instance_id` int(11) DEFAULT NULL COMMENT '集群服务角色实例id',
@@ -85,7 +85,7 @@ CREATE TABLE `t_ddh_cluster_alert_history`  (
 
 CREATE TABLE `t_ddh_cluster_alert_quota`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `alert_quota_name` varchar(32)  DEFAULT NULL COMMENT '告警指标名称',
+  `alert_quota_name` varchar(255)  DEFAULT NULL COMMENT '告警指标名称',
   `service_category` varchar(32)  DEFAULT NULL COMMENT '服务分类',
   `alert_expr` varchar(1024)  DEFAULT NULL COMMENT '告警指标表达式',
   `alert_level` int(11) DEFAULT NULL COMMENT '告警级别 1:警告2：异常',
@@ -145,7 +145,7 @@ CREATE TABLE `t_ddh_cluster_group`  (
 CREATE TABLE `t_ddh_cluster_host`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `hostname` varchar(32)  DEFAULT NULL COMMENT '主机名',
+  `hostname` varchar(255)  DEFAULT NULL COMMENT '主机名',
   `ip` varchar(32)  DEFAULT NULL COMMENT 'IP',
   `rack` varchar(32)  DEFAULT NULL COMMENT '机架',
   `core_num` int(11) DEFAULT NULL COMMENT '核数',
@@ -255,7 +255,7 @@ CREATE TABLE `t_ddh_cluster_service_command`  (
 -- ----------------------------
 CREATE TABLE `t_ddh_cluster_service_command_host`  (
   `command_host_id` varchar(128)  NOT NULL DEFAULT '1' COMMENT '主键',
-  `hostname` varchar(32)  DEFAULT NULL COMMENT '主机',
+  `hostname` varchar(255)  DEFAULT NULL COMMENT '主机',
   `command_state` int(11) DEFAULT NULL COMMENT '命令状态 1：正在运行2：成功3：失败4、取消',
   `command_progress` int(11) DEFAULT NULL COMMENT '命令进度',
   `command_id` varchar(128)  DEFAULT NULL COMMENT '操作指令id',
@@ -273,7 +273,7 @@ CREATE TABLE `t_ddh_cluster_service_command_host_command`  (
   `command_state` int(11) DEFAULT NULL COMMENT '指令状态',
   `command_progress` int(11) DEFAULT NULL COMMENT '指令进度',
   `command_host_id` varchar(128)  DEFAULT NULL COMMENT '主机id',
-  `hostname` varchar(128)  DEFAULT NULL COMMENT '主机',
+  `hostname` varchar(255)  DEFAULT NULL COMMENT '主机',
   `service_role_name` varchar(128)  DEFAULT NULL COMMENT '服务角色名称',
   `service_role_type` int(2) DEFAULT NULL COMMENT '服务角色类型',
   `command_id` varchar(128)  DEFAULT NULL COMMENT '指令id',
@@ -354,7 +354,7 @@ CREATE TABLE `t_ddh_cluster_service_role_group_config`  (
 CREATE TABLE `t_ddh_cluster_service_role_instance`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `service_role_name` varchar(32)  DEFAULT NULL COMMENT '服务角色名称',
-  `hostname` varchar(32)  DEFAULT NULL COMMENT '主机',
+  `hostname` varchar(255)  DEFAULT NULL COMMENT '主机',
   `service_role_state` int(2) DEFAULT NULL COMMENT '服务角色状态 1:正在运行2：停止',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',

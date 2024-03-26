@@ -84,4 +84,22 @@ public enum HostUtils {
         }
     }
 
+    public static String getLocalIp() {
+        try {
+            InetAddress ip = InetAddress.getLocalHost();
+            return ip.getHostAddress();
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String getLocalHostName() {
+        try {
+            InetAddress ip = InetAddress.getLocalHost();
+            return ip.getHostName();
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

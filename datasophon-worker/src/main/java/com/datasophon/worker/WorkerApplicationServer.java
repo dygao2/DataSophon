@@ -109,6 +109,7 @@ public class WorkerApplicationServer {
         userMap.put("mapred", HADOOP);
         userMap.put("hbase", HADOOP);
         userMap.put("kyuubi",HADOOP);
+        userMap.put("flink", HADOOP);
         userMap.put("elastic", "elastic");
     }
 
@@ -150,7 +151,11 @@ public class WorkerApplicationServer {
                 system.actorSelection(
                         "akka.tcp://datasophon@" + masterHost + ":2551/user/workerStartActor");
         ExecResult result = ShellUtils.exceShell(workDir + "/script/host-info-collect.sh");
-        logger.info("host info collect result:{}", result);
+        if(!result.getExecResult()){
+            logger.error("host info collect error:{}",result.getExecErrOut());
+        }else {
+            logger.info("host info collect success:{}",result.getExecOut());
+        }
         StartWorkerMessage startWorkerMessage =
                 JSONObject.parseObject(result.getExecOut(), StartWorkerMessage.class);
         startWorkerMessage.setCpuArchitecture(cpuArchitecture);

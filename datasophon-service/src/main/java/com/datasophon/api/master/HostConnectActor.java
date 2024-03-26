@@ -25,6 +25,7 @@ import com.datasophon.common.command.HostCheckCommand;
 import com.datasophon.common.model.CheckResult;
 import com.datasophon.common.model.HostInfo;
 
+import com.datasophon.common.utils.HostUtils;
 import org.apache.sshd.client.session.ClientSession;
 
 import scala.Option;
@@ -48,22 +49,33 @@ public class HostConnectActor extends UntypedActor {
     @Override
     public void onReceive(Object message) throws Throwable {
         if (message instanceof HostCheckCommand) {
+            String localIp = HostUtils.getLocalIp();
+            String localHostName = HostUtils.getLocalHostName();
+            logger.info("datasophon manager install hostname and ip :"+localHostName+",",localIp);
             HostCheckCommand hostCheckCommand = (HostCheckCommand) message;
             HostInfo hostInfo = hostCheckCommand.getHostInfo();
             logger.info("start host check:{}", hostInfo.getHostname());
-            ClientSession session =
-                    MinaUtils.openConnection(
-                            hostInfo.getHostname(), hostInfo.getSshPort(), hostInfo.getSshUser());
-            if (ObjectUtil.isNotNull(session)) {
+            if(hostInfo.getIp().equals(localIp)){
+                logger.info("datasophon manager node doesn't need to be checked");
                 hostInfo.setCheckResult(
                         new CheckResult(
                                 Status.CHECK_HOST_SUCCESS.getCode(),
                                 Status.CHECK_HOST_SUCCESS.getMsg()));
-            } else {
-                hostInfo.setCheckResult(
-                        new CheckResult(
-                                Status.CONNECTION_FAILED.getCode(),
-                                Status.CONNECTION_FAILED.getMsg()));
+            }else {
+                ClientSession session =
+                        MinaUtils.openConnection(
+                                hostInfo.getHostname(), hostInfo.getSshPort(), hostInfo.getSshUser());
+                if (ObjectUtil.isNotNull(session)) {
+                    hostInfo.setCheckResult(
+                            new CheckResult(
+                                    Status.CHECK_HOST_SUCCESS.getCode(),
+                                    Status.CHECK_HOST_SUCCESS.getMsg()));
+                } else {
+                    hostInfo.setCheckResult(
+                            new CheckResult(
+                                    Status.CONNECTION_FAILED.getCode(),
+                                    Status.CONNECTION_FAILED.getMsg()));
+                }
                 MinaUtils.closeConnection(session);
             }
             logger.info("end host check:{}", hostInfo.getHostname());

@@ -1,0 +1,68 @@
+{
+  "name": "ICEBERG",
+  "label": "Iceberg",
+  "description": "适用于庞大数据集分析的开放式数据表格式",
+  "version": "1.4.0",
+  "sortNum": 31,
+  "dependencies":[],
+  "packageName": "iceberg-1.4.0.tar.gz",
+  "decompressPackageName": "iceberg-1.4.0",
+  "roles": [
+    {
+      "name": "IcebergClient",
+      "label": "IcebergClient",
+      "roleType": "client",
+      "cardinality": "1+",
+      "logFile": "iceberg.log"
+    }
+  ],
+  "configWriter": {
+    "generators": [
+      {
+        "filename": "config.properties",
+        "configFormat": "properties",
+        "outputDirectory": "",
+        "includeParams": [
+          "hiveEnableIceberg",
+          "spark3EnableIceberg",
+          "flinkEnableIceberg"
+        ]
+      }
+    ]
+  },
+  "parameters": [
+    {
+      "name": "hiveEnableIceberg",
+      "label": "hive集成iceberg",
+      "description": "hive集成iceberg",
+      "required": true,
+      "type": "switch",
+      "value": true,
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": true
+    },
+    {
+      "name": "spark3EnableIceberg",
+      "label": "spark3集成iceberg",
+      "description": "spark3集成iceberg",
+      "required": true,
+      "type": "switch",
+      "value": true,
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": true
+    },
+    {
+      "name": "flinkEnableIceberg",
+      "label": "flink集成iceberg",
+      "description": "flink集成iceberg",
+      "required": true,
+      "type": "switch",
+      "value": true,
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": true
+    }
+  ]
+}

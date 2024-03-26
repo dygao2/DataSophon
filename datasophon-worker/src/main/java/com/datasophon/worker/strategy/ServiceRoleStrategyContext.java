@@ -52,6 +52,8 @@ public class ServiceRoleStrategyContext {
         map.put("TezServer", new TezServerHandlerStrategy("TEZ", "TezServer"));
         //kyuubi
         map.put("KyuubiServer", new KyuubiServerHandlerStrategy("KYUUBI", "KyuubiServer"));
+        //flink
+        map.put("FlinkClient", new FlinkHandlerStrategy("FLINK", "FlinkClient"));
     }
 
     public static ServiceRoleStrategy getServiceRoleHandler(String type) {

@@ -94,7 +94,7 @@ public abstract class ServiceHandlerAbstract {
             config.setRequired(true);
             config.setHidden(false);
             if (Constants.INPUT.equals(config.getType())) {
-                String value = PlaceholderUtils.replacePlaceholders((String) serviceConfig.getValue(), globalVariables,
+                String value = PlaceholderUtils.replacePlaceholders((String) config.getValue(), globalVariables,
                         Constants.REGEX_VARIABLE);
                 config.setValue(value);
             }

@@ -19,6 +19,9 @@
 
 package com.datasophon.api.strategy;
 
+import akka.actor.ActorRef;
+import akka.pattern.Patterns;
+import akka.util.Timeout;
 import com.datasophon.api.load.GlobalVariables;
 import com.datasophon.api.load.ServiceConfigMap;
 import com.datasophon.api.master.ActorUtils;
@@ -34,7 +37,9 @@ import com.datasophon.common.utils.ExecResult;
 import com.datasophon.dao.entity.ClusterInfoEntity;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
 import com.datasophon.dao.entity.ClusterYarnScheduler;
-
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
@@ -43,13 +48,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import akka.actor.ActorRef;
-import akka.pattern.Patterns;
-import akka.util.Timeout;
 
 public class RMHandlerStrategy extends ServiceHandlerAbstract implements ServiceRoleStrategy {
 
@@ -120,23 +118,33 @@ public class RMHandlerStrategy extends ServiceHandlerAbstract implements Service
 
     @Override
     public void handlerServiceRoleCheck(
-                                        ClusterServiceRoleInstanceEntity roleInstanceEntity,
-                                        Map<String, ClusterServiceRoleInstanceEntity> map) {
+            ClusterServiceRoleInstanceEntity roleInstanceEntity,
+            Map<String, ClusterServiceRoleInstanceEntity> map) {
 
         Map<String, String> globalVariable = GlobalVariables.get(roleInstanceEntity.getClusterId());
-        String rm2 = globalVariable.get("${rm2}");
-        String commandLine =
-                globalVariable.get("${HADOOP_HOME}") + "/bin/yarn rmadmin -getServiceState rm1";
-
-        if (rm2.equals(roleInstanceEntity.getHostname())) {
-            commandLine =
-                    globalVariable.get("${HADOOP_HOME}") + "/bin/yarn rmadmin -getServiceState rm2";
-        }
+        String commandLine = getRMStateCommand(globalVariable,roleInstanceEntity.getHostname());
         getRMState(roleInstanceEntity, commandLine);
     }
 
+    private String getRMStateCommand(Map<String, String> globalVariable,String hostName) {
+
+        String commandLine = null;
+        String yarnAclAdminUser = globalVariable.get("${yarn.admin.acl}");
+        String rm2 = globalVariable.get("${rm2}");
+        String curRm = rm2.equals(hostName) ? "rm2" : "rm1";
+
+        if (StringUtils.isNotEmpty(yarnAclAdminUser)) {
+            commandLine = String.format("sudo -u %s %s/bin/yarn rmadmin -getServiceState %s",
+                    yarnAclAdminUser, globalVariable.get("${HADOOP_HOME}"),curRm);
+        } else {
+            commandLine = String.format("%s/bin/yarn rmadmin -getServiceState %s",
+                     globalVariable.get("${HADOOP_HOME}"),curRm);
+        }
+        return commandLine;
+    }
+
     private void getRMState(
-                            ClusterServiceRoleInstanceEntity roleInstanceEntity, String commandLine) {
+            ClusterServiceRoleInstanceEntity roleInstanceEntity, String commandLine) {
         ClusterServiceRoleInstanceWebuisService webuisService =
                 SpringTool.getApplicationContext()
                         .getBean(ClusterServiceRoleInstanceWebuisService.class);
@@ -149,7 +157,7 @@ public class RMHandlerStrategy extends ServiceHandlerAbstract implements Service
         try {
             ExecResult execResult = (ExecResult) Await.result(execFuture, timeout.duration());
             if (execResult.getExecResult()) {
-                if (ACTIVE.equals(execResult.getExecOut())) {
+                if (execResult.getExecOut().contains(ACTIVE)) {
                     webuisService.updateWebUiToActive(roleInstanceEntity.getId());
                 } else {
                     webuisService.updateWebUiToStandby(roleInstanceEntity.getId());

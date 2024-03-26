@@ -99,6 +99,7 @@ export default {
         pageSize: 1000,
         page: 1,
         groupName: "",
+        clusterId: localStorage.getItem("clusterId")
       };
       this.$axiosPost('/ddh/cluster/group/list', params).then((res) => {
         this.loading = false;
@@ -111,7 +112,6 @@ export default {
       this.form.validateFields((err, values) => {
         console.log(values);
         if (!err) {
-          debugger
           const params = {
             clusterId:localStorage.getItem("clusterId"),
             username: values.username,

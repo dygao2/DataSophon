@@ -90,6 +90,9 @@ public class HiveServer2HandlerStrategy extends AbstractHandlerStrategy implemen
             String hadoopHome = PropertyUtils.getString("HADOOP_HOME");
             ShellUtils.exceShell("sudo -u hdfs " + hadoopHome + "/bin/hdfs dfs -mkdir -p /user/hive/warehouse");
             ShellUtils.exceShell("sudo -u hdfs " + hadoopHome + "/bin/hdfs dfs -mkdir -p /tmp/hive");
+            ShellUtils.exceShell("sudo -u hdfs " + hadoopHome + "/bin/hdfs dfs -mkdir -p /tmp/hadoop-yarn/staging/history/done");
+            ShellUtils.exceShell("sudo -u hdfs " + hadoopHome + "/bin/hdfs dfs -chown -R hdfs:hadoop /tmp");
+            ShellUtils.exceShell("sudo -u hdfs " + hadoopHome + "/bin/hdfs dfs -chmod -R 775 /tmp");
             ShellUtils
                     .exceShell("sudo -u hdfs " + hadoopHome + "/bin/hdfs dfs -chown hive:hadoop /user/hive/warehouse");
             ShellUtils.exceShell("sudo -u hdfs " + hadoopHome + "/bin/hdfs dfs -chown hive:hadoop /tmp/hive");

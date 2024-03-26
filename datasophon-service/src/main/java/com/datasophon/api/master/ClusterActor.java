@@ -34,7 +34,11 @@ import com.datasophon.common.model.Generators;
 import com.datasophon.common.model.ServiceConfig;
 import com.datasophon.common.utils.ExecResult;
 import com.datasophon.common.utils.Result;
-import com.datasophon.dao.entity.*;
+import com.datasophon.dao.entity.ClusterHostDO;
+import com.datasophon.dao.entity.ClusterInfoEntity;
+import com.datasophon.dao.entity.ClusterServiceInstanceEntity;
+import com.datasophon.dao.entity.ClusterServiceRoleGroupConfig;
+import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
 import com.datasophon.dao.enums.ClusterState;
 import com.datasophon.dao.enums.ServiceRoleState;
 import org.slf4j.Logger;
@@ -44,7 +48,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 
@@ -107,7 +110,7 @@ public class ClusterActor extends UntypedActor {
                             String hostname = roleInstance.getHostname();
                             ClusterServiceRoleGroupConfig config = clusterServiceRoleGroupConfigService.getConfigByRoleGroupId(roleInstance.getRoleGroupId());
                             Map<Generators, List<ServiceConfig>> configFileMap = new ConcurrentHashMap<>();
-                            ProcessUtils.generateConfigFileMap(configFileMap, config);
+                            ProcessUtils.generateConfigFileMap(configFileMap, config, clusterId);
                             for (Map.Entry<Generators, List<ServiceConfig>> configFile : configFileMap.entrySet()) {
                                 List<ServiceConfig> serviceConfigs = configFile.getValue().stream()
                                         .filter(c -> Constants.PATH.equals(c.getConfigType()))
@@ -119,8 +122,7 @@ public class ClusterActor extends UntypedActor {
                                                     c.setValue(newPath);
                                                     c.setConfigType(Constants.MV_PATH);
                                                 }
-                                            }
-                                            else if(Constants.MULTIPLE.equals(c.getType())){
+                                            } else if (Constants.MULTIPLE.equals(c.getType())) {
                                                 JSONArray value = (JSONArray) c.getValue();
                                                 List<String> oldPaths = value.toJavaList(String.class);
                                                 List<String> newPaths = oldPaths.stream().map(path -> !path.contains(DEPRECATED) ?

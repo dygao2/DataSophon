@@ -34,6 +34,23 @@
             // { validator: checkName }
             { initialValue: item.value+'',rules: [{ required: item.required, message: `${item.label}不能为空!` }] },
           ]" placeholder="请输入" />
+            <a-input
+              v-if="item.type === 'password'"
+              type="password"
+              v-decorator="[
+                `${item.name}`,
+                // { validator: checkName }
+                {
+                  initialValue: item.value + '',
+                  rules: [
+                    {
+                      required: item.required,
+                      message: `${item.label}不能为空!`,
+                    },
+                  ],
+                },
+              ]"
+            />
             <a-slider v-if="item.type==='slider'" :marks="marks(item)" :min="item.minValue" :max="item.maxValue" style="width: 96%;display: inline-block" v-decorator="[`${item.name}`,{initialValue: item.value? Number(item.value) : 0}]" />
             <a-switch v-if="item.type==='switch'" v-decorator="[`${item.name}`, { valuePropName: 'checked', initialValue: item.value }]"></a-switch>
             <a-select v-if="item.type==='select'" v-decorator="[

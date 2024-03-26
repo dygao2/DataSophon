@@ -26,7 +26,7 @@ if [ -z "${r"${HIVE_HOME"}}" ]; then
   export HIVE_HOME="$(cd "`dirname "$0"`"/..; pwd)"
 fi
 
-// add hive depends tez support 
+# add hive depends tez support
 export TEZ_JARS="/opt/datasophon/tez"
 if [ -d "$TEZ_JARS" ]; then
   for f in $TEZ_JARS/*.jar; do

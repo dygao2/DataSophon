@@ -171,5 +171,9 @@ scrape_configs:
     file_sd_configs:
      - files:
        - configs/dinky.json
+  - job_name: 'kyuubi'
+    file_sd_configs:
+    - files:
+      - configs/kyuubiserver.json
 
 

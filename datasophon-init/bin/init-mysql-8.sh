@@ -1,6 +1,7 @@
 #!/bin/bash
 
 num1="$1"
+ios=$2
 if [ $UID -ne 0 ]; then
   echo Non root user. Please run as root.
   exit 1
@@ -83,6 +84,19 @@ else
   rpm -qa | grep ncurses-devel
   if [ "$?" == "0" ]; then
     echo "ncurses-devel install successfully"
+  fi
+fi
+
+if [ "${ios}" == "centos7" ]; then
+  rpm -qa | grep libaio
+  if [ "$?" == "0" ]; then
+    echo "libaio exists"
+  else
+    yum -y install libaio
+    rpm -qa | grep libaio
+    if [ "$?" == "0" ]; then
+      echo "libaio install successfully"
+    fi
   fi
 fi
 

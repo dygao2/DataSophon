@@ -130,6 +130,7 @@ init.os=openEuler
   Centos7、Centos8操作系统镜像中的repo中已经存在对应的rpm格式的pssh包了,目前openEuler22.03中还没有pssh相关的安装包, 其它版本pssh的rpm包下载工具地址：http://rpmfind.net/linux/rpm2html/search.php?query=pssh，可以根据操作系统和python版本进行适配 ；
     ```
 
+* Mysql数据库默认为 `mysql-community-8.0.28.el8.x86_64` 如需修改可以在 https://dev.mysql.com/downloads/mysql/ 自行下载,并修改 `init-mysql-8.sh` 内的路径 
 
 
 ## 四、首次全量初始化操作
@@ -150,7 +151,7 @@ PS:执行完毕之后如果服务器的终端未关闭，可能会出现一些�
 当执行完 bash init.sh initAll 之后，会看到有下面输出很多的日志，因为需要配置本地离线yum源以及安装mysql8等整个过程需要一定的时间，可以查看log目录下的安装日志  
 其中mysql初始化的数据库默认为datasophon，初始化过程中会自动创建用户"datasophon"密码为"datasophon"     
 
-#### 当前初始化模块支持的操作系统版本为：CentOS-8.5.2111-x86_64、openEuler-22.03
+#### 当前初始化模块支持的操作系统版本为：CentOS-7.9 CentOS-8.5.2111-x86_64、openEuler-22.03
 #### 当前初始化模块自动安装配置的mysql为：mysql-community-8.0.28
 
 

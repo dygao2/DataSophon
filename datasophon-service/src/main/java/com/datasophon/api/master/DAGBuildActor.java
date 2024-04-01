@@ -105,6 +105,7 @@ public class DAGBuildActor extends UntypedActor {
                         serviceRoleInfo.setDecompressPackageName(serviceEntity.getDecompressPackageName());
                         serviceRoleInfo.setCommandType(commandType);
                         serviceRoleInfo.setServiceInstanceId(command.getServiceInstanceId());
+                        serviceRoleInfo.setFrameCode(serviceEntity.getFrameCode());
 
                         ServiceRoleStrategy serviceRoleHandler =
                                 ServiceRoleStrategyContext.getServiceRoleHandler(serviceRoleInfo.getName());
@@ -136,8 +137,7 @@ public class DAGBuildActor extends UntypedActor {
 
             if (commandType == CommandType.STOP_SERVICE) {
                 logger.info("reverse dag");
-                DAGGraph<String, ServiceNode, String> reverseDagGraph = dag.getReverseDagGraph(dag);
-                dag = reverseDagGraph;
+                dag = dag.getReverseDagGraph(dag);
             }
 
             Map<String, String> errorTaskList = new ConcurrentHashMap<>();

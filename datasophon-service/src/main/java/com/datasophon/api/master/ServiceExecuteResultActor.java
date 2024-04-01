@@ -54,7 +54,7 @@ public class ServiceExecuteResultActor extends UntypedActor {
             ActorRef submitTaskNodeActor = ActorUtils.getLocalActor(SubmitTaskNodeActor.class,
                     ActorUtils.getActorRefName(SubmitTaskNodeActor.class));
             String node = result.getServiceName();
-            ServiceNode servicNode = dag.getNode(node);
+            ServiceNode serviceNode = dag.getNode(node);
             if (result.getServiceRoleType().equals(ServiceRoleType.MASTER)) {
                 if (result.getServiceExecuteState().equals(ServiceExecuteState.ERROR)) {
                     // move to error list
@@ -64,18 +64,18 @@ public class ServiceExecuteResultActor extends UntypedActor {
                     completeTaskList.put(node, "");
                     // cancel all next node
                     logger.info("{} master roles failed , cancel all next node by commandId {}", node,
-                            servicNode.getCommandId());
+                            serviceNode.getCommandId());
                     List<String> commandIds = new ArrayList<String>();
-                    commandIds.add(servicNode.getCommandId());
+                    commandIds.add(serviceNode.getCommandId());
                     listCancelCommand(dag, node, commandIds);
                     ProcessUtils.updateCommandStateToFailed(commandIds);
                 } else if (result.getServiceExecuteState().equals(ServiceExecuteState.SUCCESS)) {
                     // submit worker node
-                    ServiceNode serviceNode = dag.getNode(node);
-                    List<ServiceRoleInfo> elseRoles = serviceNode.getElseRoles();
-                    if (elseRoles.size() > 0) {
+                    ServiceNode serviceNode2 = dag.getNode(node);
+                    List<ServiceRoleInfo> elseRoles = serviceNode2.getElseRoles();
+                    if (!elseRoles.isEmpty()) {
                         logger.info("start to submit worker/client roles");
-                        for (ServiceRoleInfo elseRole : serviceNode.getElseRoles()) {
+                        for (ServiceRoleInfo elseRole : serviceNode2.getElseRoles()) {
                             ActorRef serviceActor = ActorUtils.getLocalActor(WorkerServiceActor.class,
                                     result.getClusterCode() + "-serviceActor-" + node + "-" + elseRole.getHostname());
                             ProcessUtils.buildExecuteServiceRoleCommand(
@@ -88,7 +88,7 @@ public class ServiceExecuteResultActor extends UntypedActor {
                                     readyToSubmitTaskList,
                                     completeTaskList,
                                     node,
-                                    serviceNode.getElseRoles(),
+                                    serviceNode2.getElseRoles(),
                                     elseRole,
                                     serviceActor,
                                     ServiceRoleType.WORKER);

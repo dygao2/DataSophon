@@ -62,12 +62,14 @@ public class ServiceInstallHandler extends ServiceHandler {
             return execResult;
         }
         InstallServiceRoleCommand installServiceRoleCommand = new InstallServiceRoleCommand();
+        installServiceRoleCommand.setFrameCode(serviceRoleInfo.getFrameCode());
         installServiceRoleCommand.setServiceName(serviceRoleInfo.getParentName());
         installServiceRoleCommand.setServiceRoleName(serviceRoleInfo.getName());
         installServiceRoleCommand.setServiceRoleType(serviceRoleInfo.getRoleType());
         installServiceRoleCommand.setDecompressPackageName(serviceRoleInfo.getDecompressPackageName());
         installServiceRoleCommand.setRunAs(serviceRoleInfo.getRunAs());
         installServiceRoleCommand.setServiceRoleType(serviceRoleInfo.getRoleType());
+        installServiceRoleCommand.setResourceStrategies(serviceRoleInfo.getResourceStrategies());
 
         String md5 ;
         if ("aarch64".equals(hostEntity.getCpuArchitecture()) && FileUtil.exist(Constants.MASTER_MANAGE_PACKAGE_PATH

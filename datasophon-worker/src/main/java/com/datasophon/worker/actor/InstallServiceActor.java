@@ -40,7 +40,7 @@ public class InstallServiceActor extends UntypedActor {
         if (msg instanceof InstallServiceRoleCommand) {
             InstallServiceRoleCommand command = (InstallServiceRoleCommand) msg;
             ExecResult installResult = new ExecResult();
-            InstallServiceHandler serviceHandler = new InstallServiceHandler(command.getServiceName(), command.getServiceRoleName());
+            InstallServiceHandler serviceHandler = new InstallServiceHandler(command.getFrameCode(), command.getServiceName(), command.getServiceRoleName());
 
             logger.info("Start install package {}", command.getPackageName());
             if (command.getDecompressPackageName().contains("kerberos")) {
@@ -49,12 +49,12 @@ public class InstallServiceActor extends UntypedActor {
                 commands.add("install");
                 commands.add("-y");
                 if (ServiceRoleType.MASTER == command.getServiceRoleType()) {
-                    logger.info("Start to {}", commands.toString());
+                    logger.info("Start to {}", commands);
                     commands.add("krb5-server");
                     commands.add("krb5-workstation");
                     commands.add("krb5-libs");
                 } else {
-                    logger.info("Start to {}", commands.toString());
+                    logger.info("Start to {}", commands);
                     commands.add("krb5-workstation");
                     commands.add("krb5-libs");
                 }
@@ -68,8 +68,7 @@ public class InstallServiceActor extends UntypedActor {
                 String appHome = Constants.INSTALL_PATH + Constants.SLASH + command.getDecompressPackageName();
                 String appLinkHome = Constants.INSTALL_PATH + Constants.SLASH + StringUtils.lowerCase(command.getServiceName());
                 if (!new File(appLinkHome).exists()) {
-                    ShellUtils
-                            .exceShell("ln -s " + appHome + " " + appLinkHome);
+                    ShellUtils.exceShell("ln -s " + appHome + " " + appLinkHome);
                     logger.info("Create symbolic dir: {}", appLinkHome);
                 }
             }

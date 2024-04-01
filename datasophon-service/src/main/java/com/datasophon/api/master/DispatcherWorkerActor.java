@@ -72,7 +72,7 @@ public class DispatcherWorkerActor extends UntypedActor {
                 MinaUtils.openConnection(
                         hostInfo.getHostname(), hostInfo.getSshPort(), hostInfo.getSshUser());
         DispatcherWorkerHandlerChain handlerChain = new DispatcherWorkerHandlerChain();
-        if(hostInfo.getIp().equals(localIp)){
+        if(localIp.equals(hostInfo.getIp())){
             String currDir = System.getProperty("user.dir");
             String executeShellPath = currDir+ Constants.SHELL_SCRIPT_PATH + Constants.SLASH+Constants.DISPATCHER_WORK;
             logger.info("start dispatcher manage node host agent,execute shell path :{}", executeShellPath);

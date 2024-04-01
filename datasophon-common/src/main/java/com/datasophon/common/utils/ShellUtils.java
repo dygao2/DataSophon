@@ -18,6 +18,7 @@
 package com.datasophon.common.utils;
 
 import com.datasophon.common.Constants;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,7 +86,7 @@ public class ShellUtils {
 
         } catch (Exception e) {
             result.setExecOut(e.getMessage());
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         return result;
     }
@@ -136,7 +137,7 @@ public class ShellUtils {
             return result;
         } catch (Exception e) {
             result.setExecErrOut(e.getMessage());
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         return result;
     }
@@ -161,7 +162,7 @@ public class ShellUtils {
             return result;
         } catch (Exception e) {
             result.setExecErrOut(e.getMessage());
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         return result;
     }
@@ -242,7 +243,7 @@ public class ShellUtils {
                 errput = stringBuffer.toString();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         closeQuietly(reader);
         return errput;
@@ -254,7 +255,7 @@ public class ShellUtils {
                 reader.close();
             }
         } catch (IOException ioe) {
-            ioe.printStackTrace();
+            logger.error(ioe.getMessage(), ioe);
         }
     }
 

@@ -1,4 +1,4 @@
-package com.datasophon.common.strategy.resource;
+package com.datasophon.worker.strategy.resource;
 
 
 import cn.hutool.core.io.FileUtil;

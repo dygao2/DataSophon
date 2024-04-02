@@ -1,9 +1,10 @@
-package com.datasophon.common.strategy.resource;
+package com.datasophon.worker.strategy.resource;
 
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.http.HttpUtil;
 import com.datasophon.common.Constants;
+import com.datasophon.common.utils.FileUtils;
 import com.datasophon.common.utils.PropertyUtils;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,10 +23,18 @@ public class DownloadStrategy extends ResourceStrategy {
 
     private String to;
 
+    private String md5;
 
     @Override
     public void exec() {
+        File file = new File(basePath + Constants.SLASH + to);
+        if (file.exists() && FileUtils.md5(file).equals(md5)) {
+            log.info("resource {}  existed", to);
+            return;
+        }
+
         log.info("start to download resource : {}", from);
+
         String masterHost = PropertyUtils.getString(Constants.MASTER_HOST);
         String masterPort = PropertyUtils.getString(Constants.MASTER_WEB_PORT);
         String params = HttpUtil.toParams(MapUtil.<String, Object>builder("frameCode", frameCode)
@@ -35,7 +44,7 @@ public class DownloadStrategy extends ResourceStrategy {
 
         String url = "http://" + masterHost + ":" + masterPort
                 + "/ddh/service/install/downloadResource?" + params;
-        HttpUtil.downloadFile(url, new File(basePath + Constants.SLASH + to), 300);
+        HttpUtil.downloadFile(url, file, 300);
 
         log.info("end to download resource {} to {} ", from, to);
     }

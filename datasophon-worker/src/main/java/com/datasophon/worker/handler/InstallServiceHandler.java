@@ -28,14 +28,11 @@ import com.datasophon.common.Constants;
 import com.datasophon.common.cache.CacheUtils;
 import com.datasophon.common.command.InstallServiceRoleCommand;
 import com.datasophon.common.model.RunAs;
-import com.datasophon.common.strategy.resource.DownloadStrategy;
-import com.datasophon.common.strategy.resource.EmptyStrategy;
-import com.datasophon.common.strategy.resource.ReplaceStrategy;
-import com.datasophon.common.strategy.resource.ResourceStrategy;
 import com.datasophon.common.utils.ExecResult;
 import com.datasophon.common.utils.FileUtils;
 import com.datasophon.common.utils.PropertyUtils;
 import com.datasophon.common.utils.ShellUtils;
+import com.datasophon.worker.strategy.resource.*;
 import com.datasophon.worker.utils.TaskConstants;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -98,6 +95,12 @@ public class InstallServiceHandler {
                                 break;
                             case DownloadStrategy.DOWNLOAD_TYPE:
                                 rs = BeanUtil.mapToBean(strategy, DownloadStrategy.class, true, CopyOptions.create().ignoreError());
+                                break;
+                            case AppendLineStrategy.APPEND_LINE_TYPE:
+                                rs = BeanUtil.mapToBean(strategy, AppendLineStrategy.class, true, CopyOptions.create().ignoreError());
+                                break;
+                            case LinkStrategy.LINK_TYPE:
+                                rs = BeanUtil.mapToBean(strategy, LinkStrategy.class, true, CopyOptions.create().ignoreError());
                                 break;
                             default:
                                 rs = new EmptyStrategy();

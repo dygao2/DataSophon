@@ -18,7 +18,8 @@
       "resourceStrategies":[{
         "type": "download",
         "from": "script/status_fe.sh",
-        "to": "fe/bin/status_fe.sh"
+        "to": "fe/bin/status_fe.sh",
+        "md5": "ef6dc272d7f5e577ce866ae843f53236"
       }],
       "startRunner": {
         "timeout": "600",
@@ -87,7 +88,8 @@
       "resourceStrategies":[{
         "type": "download",
         "from": "script/status_be.sh",
-        "to": "be/bin/status_be.sh"
+        "to": "be/bin/status_be.sh",
+        "md5": "cb2df48c72383f61613660da7e942ef7"
       }, {
         "type": "replace",
         "source": "be/bin/start_be.sh",

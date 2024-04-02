@@ -5,8 +5,8 @@
   "version": "3.1.8",
   "sortNum": 14,
   "dependencies":["ZOOKEEPER"],
-  "packageName": "dolphinscheduler-3.1.8.tar.gz",
-  "decompressPackageName": "dolphinscheduler-3.1.8",
+  "packageName": "apache-dolphinscheduler-3.1.8-bin.tar.gz",
+  "decompressPackageName": "apache-dolphinscheduler-3.1.8-bin",
   "roles": [
     {
       "name": "ApiServer",
@@ -14,7 +14,22 @@
       "roleType": "master",
       "cardinality": "1",
       "logFile": "api-server/logs/dolphinscheduler-api.log",
-      "jmxPort": 12356,
+      "jmxPort": 12345,
+      "resourceStrategies":[{
+        "type": "download",
+        "from": "script/control_ds.sh",
+        "to": "bin/control_ds.sh",
+        "md5": "069991e599422ce2264d7cb7964e9394"
+      },{
+        "type": "link",
+        "source": "/opt/datasophon/datasophon-worker/lib/mysql-connector-java-8.0.28.jar",
+        "target": "api-server/libs/mysql-connector-java-8.0.28.jar"
+      },{
+        "type": "append_line",
+        "source": "bin/dolphinscheduler-daemon.sh",
+        "line": 132,
+        "text": "      exit 1"
+      }],
       "startRunner": {
         "timeout": "60",
         "program": "bin/dolphinscheduler-daemon.sh",
@@ -41,7 +56,7 @@
       },
       "restartRunner": {
         "timeout": "60",
-        "program": "control.sh",
+        "program": "bin/control_ds.sh",
         "args": [
           "restart",
           "api-server"
@@ -59,7 +74,22 @@
       "roleType": "master",
       "cardinality": "1+",
       "logFile": "master-server/logs/dolphinscheduler-master.log",
-      "jmxPort": 12357,
+      "jmxPort": 5679,
+      "resourceStrategies":[{
+        "type": "download",
+        "from": "script/control_ds.sh",
+        "to": "bin/control_ds.sh",
+        "md5": "069991e599422ce2264d7cb7964e9394"
+      },{
+        "type": "link",
+        "source": "/opt/datasophon/datasophon-worker/lib/mysql-connector-java-8.0.28.jar",
+        "target": "master-server/libs/mysql-connector-java-8.0.28.jar"
+      },{
+        "type": "append_line",
+        "source": "bin/dolphinscheduler-daemon.sh",
+        "line": 132,
+        "text": "      exit 1"
+      }],
       "startRunner": {
         "timeout": "60",
         "program": "bin/dolphinscheduler-daemon.sh",
@@ -86,7 +116,7 @@
       },
       "restartRunner": {
         "timeout": "60",
-        "program": "control.sh",
+        "program": "bin/control_ds.sh",
         "args": [
           "restart",
           "master-server"
@@ -99,7 +129,22 @@
       "roleType": "worker",
       "cardinality": "1+",
       "logFile": "worker-server/logs/dolphinscheduler-worker.log",
-      "jmxPort": 12358,
+      "jmxPort": 1235,
+      "resourceStrategies":[{
+        "type": "download",
+        "from": "script/control_ds.sh",
+        "to": "bin/control_ds.sh",
+        "md5": "069991e599422ce2264d7cb7964e9394"
+      },{
+        "type": "link",
+        "source": "/opt/datasophon/datasophon-worker/lib/mysql-connector-java-8.0.28.jar",
+        "target": "worker-server/libs/mysql-connector-java-8.0.28.jar"
+      },{
+        "type": "append_line",
+        "source": "bin/dolphinscheduler-daemon.sh",
+        "line": 132,
+        "text": "      exit 1"
+      }],
       "startRunner": {
         "timeout": "60",
         "program": "bin/dolphinscheduler-daemon.sh",
@@ -126,7 +171,7 @@
       },
       "restartRunner": {
         "timeout": "60",
-        "program": "control.sh",
+        "program": "bin/control_ds.sh",
         "args": [
           "restart",
           "worker-server"
@@ -139,7 +184,22 @@
       "roleType": "master",
       "cardinality": "1",
       "logFile": "alert-server/logs/dolphinscheduler-alert.log",
-      "jmxPort": 12359,
+      "jmxPort": 50053,
+      "resourceStrategies":[{
+        "type": "download",
+        "from": "script/control_ds.sh",
+        "to": "bin/control_ds.sh",
+        "md5": "069991e599422ce2264d7cb7964e9394"
+      },{
+        "type": "link",
+        "source": "/opt/datasophon/datasophon-worker/lib/mysql-connector-java-8.0.28.jar",
+        "target": "alert-server/libs/mysql-connector-java-8.0.28.jar"
+      },{
+        "type": "append_line",
+        "source": "bin/dolphinscheduler-daemon.sh",
+        "line": 132,
+        "text": "      exit 1"
+      }],
       "startRunner": {
         "timeout": "60",
         "program": "bin/dolphinscheduler-daemon.sh",
@@ -166,7 +226,7 @@
       },
       "restartRunner": {
         "timeout": "60",
-        "program": "control.sh",
+        "program": "bin/control_ds.sh",
         "args": [
           "restart",
           "alert-server"

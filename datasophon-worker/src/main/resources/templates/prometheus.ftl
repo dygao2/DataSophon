@@ -122,7 +122,6 @@ scrape_configs:
      - files:
        - configs/trinoworker.json
   - job_name: 'StarRocks'
-    metrics_path: '/metrics'
     file_sd_configs:
      - files:
        - configs/starrocks.json
@@ -148,18 +147,22 @@ scrape_configs:
      - files:
        - configs/esexporter.json
   - job_name: 'apiserver'
+    metrics_path: '/dolphinscheduler/actuator/prometheus'
     file_sd_configs:
      - files:
        - configs/apiserver.json
   - job_name: 'masterserver'
+    metrics_path: '/actuator/prometheus'
     file_sd_configs:
      - files:
        - configs/masterserver.json
   - job_name: 'workerserver'
+    metrics_path: '/actuator/prometheus'
     file_sd_configs:
      - files:
        - configs/workerserver.json
   - job_name: 'alertserver'
+    metrics_path: '/actuator/prometheus'
     file_sd_configs:
      - files:
        - configs/alertserver.json

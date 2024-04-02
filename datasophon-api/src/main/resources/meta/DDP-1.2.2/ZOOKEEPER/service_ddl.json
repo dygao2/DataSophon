@@ -2,11 +2,11 @@
   "name": "ZOOKEEPER",
   "label": "ZooKeeper",
   "description": "分布式协调系统",
-  "version": "3.5.10",
+  "version": "3.8.4",
   "sortNum": 3,
   "dependencies":[],
-  "packageName": "zookeeper-3.5.10.tar.gz",
-  "decompressPackageName": "zookeeper-3.5.10",
+  "packageName": "apache-zookeeper-3.8.4-bin.tar.gz",
+  "decompressPackageName": "apache-zookeeper-3.8.4-bin",
   "roles": [
     {
       "name": "ZkServer",
@@ -14,7 +14,7 @@
       "roleType": "master",
       "cardinality": "1+",
       "logFile": "logs/zookeeper-root-server-${host}.out",
-      "jmxPort": 2191,
+      "jmxPort": 7000,
       "startRunner": {
         "timeout": "60",
         "program": "bin/zkServer.sh",
@@ -31,10 +31,9 @@
       },
       "statusRunner": {
         "timeout": "60",
-        "program": "bin/zkStatus.sh",
+        "program": "bin/zkServer.sh",
         "args": [
-          "status",
-          "zookeeper"
+          "status"
         ]
       },
       "restartRunner": {
@@ -59,6 +58,7 @@
           "tickTime",
           "initLimit",
           "syncLimit",
+          "metricsProvider.className",
           "server.1",
           "server.2",
           "server.3",
@@ -262,6 +262,17 @@
       "configurableInWizard": true,
       "hidden": true,
       "defaultValue": "-Djava.security.auth.login.config=${ZOOKEEPER_HOME}/conf/jaas.conf"
+    },
+    {
+      "name": "metricsProvider.className",
+      "label": "metricsProvider.className",
+      "description": "",
+      "required": true,
+      "type": "input",
+      "value": "org.apache.zookeeper.metrics.prometheus.PrometheusMetricsProvider",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": "org.apache.zookeeper.metrics.prometheus.PrometheusMetricsProvider"
     },
     {
       "name": "server.1",

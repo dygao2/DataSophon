@@ -67,8 +67,8 @@
                     <nodeVersion>${build.node.version}</nodeVersion>
                     <npmVersion>${build.npm.version}</npmVersion>
 
-                    <nodeDownloadRoot>https://npm.taobao.org/mirrors/node/</nodeDownloadRoot>
-                    <npmDownloadRoot>https://registry.npm.taobao.org/npm/-/</npmDownloadRoot>
+                    <nodeDownloadRoot>https://npmmirror.com/mirrors/node/</nodeDownloadRoot>
+                    <npmDownloadRoot>https://registry.npmmirror.com/npm/-/</npmDownloadRoot>
                 </configuration>
                 <executions>
                     <execution>
@@ -85,7 +85,7 @@
                         </goals>
                         <phase>generate-resources</phase>
                         <configuration>
-                            <arguments>install --registry=https://registry.npm.taobao.org --sass-binary-site=https://npm.taobao.org/mirrors/node-sass</arguments>
+                            <arguments>install --registry=https://registry.npmmirror.com --sass-binary-site=https://npmmirror.com/mirrors/node-sass</arguments>
                         </configuration>
                     </execution>
                     <execution>

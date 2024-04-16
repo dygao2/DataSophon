@@ -189,11 +189,11 @@ initALL() {
 
   #初始化安装MySQL8数据库
   echo "installMySQL8 start_time:$(date '+%Y%m%d %H:%M:%S')" >>${initLogDir}/installMySQL8_$(date +%Y%m%d).log
-  bash ${INIT_BIN_PATH}/init-mysql-8.sh $mysqlPassword >>${initLogDir}/installMySQL8_$(date +%Y%m%d).log
-  echo "installAllPerlJSON end_time:$(date '+%Y%m%d %H:%M:%S')" >>${initLogDir}/installMySQL8_$(date +%Y%m%d).log
+  bash ${INIT_BIN_PATH}/init-mysql-8.sh $mysqlPassword ${initOS} >>${initLogDir}/installMySQL8_$(date +%Y%m%d).log
+  echo "installMySQL8 end_time:$(date '+%Y%m%d %H:%M:%S')" >>${initLogDir}/installMySQL8_$(date +%Y%m%d).log
 
-  #Configure Mysql and DataSophon data(当前在项目启动时会初始化表和数据,此步骤暂时省略)
-  #initMysqlDataSophon
+  #Configure Mysql and DataSophon Database
+  initMysqlDataSophon
 
   initMysqlDevel
 

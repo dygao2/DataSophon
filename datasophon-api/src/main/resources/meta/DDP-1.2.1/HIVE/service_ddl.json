@@ -440,10 +440,10 @@
       "configWithKerberos": true,
       "required": false,
       "type": "input",
-      "value": "hive/${host}@${realm}",
+      "value": "hive/_HOST@${realm}",
       "configurableInWizard": true,
       "hidden": true,
-      "defaultValue": "hive/${host}@${realm}"
+      "defaultValue": "hive/_HOST@${realm}"
     },
     {
       "name": "hive.metastore.kerberos.keytab.file",

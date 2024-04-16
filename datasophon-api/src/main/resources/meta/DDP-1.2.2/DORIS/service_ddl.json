@@ -2,11 +2,11 @@
   "name": "DORIS",
   "label": "Doris",
   "description": "简单易用、高性能和统一的分析数据库",
-  "version": "1.2.6",
+  "version": "2.0.7",
   "sortNum": 20,
   "dependencies":[],
-  "packageName": "doris-1.2.6.tar.gz",
-  "decompressPackageName": "doris-1.2.6",
+  "packageName": "apache-doris-2.0.7-bin-x64.tar.gz",
+  "decompressPackageName": "apache-doris-2.0.7-bin-x64",
   "roles": [
     {
       "name": "DorisFE",
@@ -15,6 +15,12 @@
       "cardinality": "1+",
       "logFile": "fe/log/fe.log",
       "jmxPort": 18030,
+      "resourceStrategies":[{
+        "type": "download",
+        "from": "script/status_fe.sh",
+        "to": "fe/bin/status_fe.sh",
+        "md5": "ef6dc272d7f5e577ce866ae843f53236"
+      }],
       "startRunner": {
         "timeout": "600",
         "program": "fe/bin/start_fe.sh",
@@ -79,6 +85,17 @@
       "cardinality": "1+",
       "logFile": "be/log/be.INFO",
       "jmxPort": 18040,
+      "resourceStrategies":[{
+        "type": "download",
+        "from": "script/status_be.sh",
+        "to": "be/bin/status_be.sh",
+        "md5": "cb2df48c72383f61613660da7e942ef7"
+      }, {
+        "type": "replace",
+        "source": "be/bin/start_be.sh",
+        "regex":"\/bin\/limit3",
+        "replacement": "/usr/bin/ulimit"
+      }],
       "startRunner": {
         "timeout": "600",
         "program": "be/bin/start_be.sh",

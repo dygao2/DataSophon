@@ -146,6 +146,16 @@
         ]
       },
       {
+        "filename": "kafka-client-jaas.conf",
+        "configFormat": "custom",
+        "outputDirectory": "config",
+        "templateName": "kafka-client-jaas.ftl",
+        "includeParams": [
+          "kafkaHost",
+          "kafkaRealm"
+        ]
+      },
+      {
         "filename": "kafka-client.properties",
         "configFormat": "custom",
         "outputDirectory": "config",

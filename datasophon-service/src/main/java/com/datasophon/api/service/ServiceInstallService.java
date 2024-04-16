@@ -43,6 +43,9 @@ public interface ServiceInstallService {
 
     void downloadPackage(String packageName, HttpServletResponse response) throws IOException;
 
+    void downloadResource(String frameCode, String serviceRoleName,
+                          String resource, HttpServletResponse response) throws IOException;
+
     Result getServiceRoleHostMapping(Integer clusterId);
 
     Result checkServiceDependency(Integer clusterId, String serviceIds);

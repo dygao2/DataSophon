@@ -28,6 +28,9 @@ import lombok.Data;
 public class BaseCommand implements Serializable {
 
     private static final long serialVersionUID = -1495156573211152639L;
+
+    private String frameCode;
+
     private String serviceName;
 
     private String serviceRoleName;

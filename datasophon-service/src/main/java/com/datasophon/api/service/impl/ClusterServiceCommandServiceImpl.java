@@ -220,13 +220,13 @@ public class ClusterServiceCommandServiceImpl
         List<ClusterServiceCommandEntity> list = new ArrayList<>();
         List<ClusterServiceCommandHostEntity> commandHostList = new ArrayList<>();
         List<ClusterServiceCommandHostCommandEntity> hostCommandList = new ArrayList<>();
-        List<String> commandIds = new ArrayList<String>();
+        List<String> commandIds = new ArrayList<>();
         for (String serviceInstanceId : serviceInstanceIds) {
             int id = Integer.parseInt(serviceInstanceId);
             // 查询服务对应的服务角色实例
             List<ClusterServiceRoleInstanceEntity> roleInstanceList =
                     roleInstanceService.getServiceRoleInstanceListByServiceId(id);
-            if (Objects.isNull(roleInstanceList) || roleInstanceList.size() == 0) {
+            if (Objects.isNull(roleInstanceList) || roleInstanceList.isEmpty()) {
                 continue;
             }
             ClusterServiceInstanceEntity serviceInstance = serviceInstanceService.getById(id);
@@ -253,7 +253,7 @@ public class ClusterServiceCommandServiceImpl
                 map.put(roleInstance.getHostname(), commandHost);
             }
         }
-        if (list.size() > 0) {
+        if (!list.isEmpty()) {
             commandService.saveBatch(list);
             commandHostService.saveBatch(commandHostList);
             hostCommandService.saveBatch(hostCommandList);
@@ -282,7 +282,7 @@ public class ClusterServiceCommandServiceImpl
         List<ClusterServiceCommandEntity> list = new ArrayList<>();
         List<ClusterServiceCommandHostEntity> commandHostList = new ArrayList<>();
         List<ClusterServiceCommandHostCommandEntity> hostCommandList = new ArrayList<>();
-        List<String> commandIds = new ArrayList<String>();
+        List<String> commandIds = new ArrayList<>();
 
         ClusterServiceInstanceEntity serviceInstance = serviceInstanceService.getById(serviceInstanceId);
         ClusterServiceCommandEntity commandEntity =

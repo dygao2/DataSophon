@@ -56,6 +56,8 @@ public class ServiceRoleInfo implements Serializable, Comparable<ServiceRoleInfo
 
     private String parentName;
 
+    private String frameCode;
+
     private String packageName;
 
     private String decompressPackageName;
@@ -65,6 +67,8 @@ public class ServiceRoleInfo implements Serializable, Comparable<ServiceRoleInfo
     private String logFile;
 
     private String jmxPort;
+
+    private List<Map<String, Object>> resourceStrategies;
 
     private boolean isSlave = false;
 

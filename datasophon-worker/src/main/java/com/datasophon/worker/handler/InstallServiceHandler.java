@@ -102,6 +102,9 @@ public class InstallServiceHandler {
                             case LinkStrategy.LINK_TYPE:
                                 rs = BeanUtil.mapToBean(strategy, LinkStrategy.class, true, CopyOptions.create().ignoreError());
                                 break;
+                            case ShellStrategy.SHELL_TYPE:
+                                rs = BeanUtil.mapToBean(strategy, ShellStrategy.class, true, CopyOptions.create().ignoreError());
+                                break;
                             default:
                                 rs = new EmptyStrategy();
                         }

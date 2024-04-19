@@ -2,13 +2,13 @@
   "name": "HDFS",
   "label": "HDFS",
   "description": "分布式大数据存储",
-  "version": "3.3.3",
+  "version": "3.3.6",
   "sortNum": 1,
   "dependencies": [
     "ZOOKEEPER"
   ],
-  "packageName": "hadoop-3.3.3.tar.gz",
-  "decompressPackageName": "hadoop-3.3.3",
+  "packageName": "hadoop-3.3.6.tar.gz",
+  "decompressPackageName": "hadoop-3.3.6",
   "roles": [
     {
       "name": "JournalNode",
@@ -22,6 +22,20 @@
       "sortNum": 1,
       "logFile": "${hadoopLogDir}/hadoop-hdfs-journalnode-${host}.log",
       "jmxPort": 27003,
+      "resourceStrategies":[{
+        "type": "download",
+        "from": "script/control_hadoop.sh",
+        "to": "control_hadoop.sh",
+        "md5": "63f20147a32a82d18e26ac08e329539b"
+      },{
+        "type": "link",
+        "source": "/opt/datasophon/datasophon-worker/jmx/jmx_prometheus_javaagent-0.16.1.jar",
+        "target": "jmx/jmx_prometheus_javaagent-0.16.1.jar"
+      },{
+        "type": "link",
+        "source": "/opt/datasophon/datasophon-worker/jmx/jmx_exporter_config.yaml",
+        "target": "jmx/prometheus_config.yml"
+      }],
       "startRunner": {
         "timeout": "60",
         "program": "control_hadoop.sh",
@@ -59,6 +73,20 @@
       "sortNum": 2,
       "logFile": "${hadoopLogDir}/hadoop-hdfs-namenode-${host}.log",
       "jmxPort": "27001",
+      "resourceStrategies":[{
+        "type": "download",
+        "from": "script/control_hadoop.sh",
+        "to": "control_hadoop.sh",
+        "md5": "63f20147a32a82d18e26ac08e329539b"
+      },{
+        "type": "link",
+        "source": "/opt/datasophon/datasophon-worker/jmx/jmx_prometheus_javaagent-0.16.1.jar",
+        "target": "jmx/jmx_prometheus_javaagent-0.16.1.jar"
+      },{
+        "type": "link",
+        "source": "/opt/datasophon/datasophon-worker/jmx/jmx_exporter_config.yaml",
+        "target": "jmx/prometheus_config.yml"
+      }],
       "startRunner": {
         "timeout": "60",
         "program": "control_hadoop.sh",
@@ -109,6 +137,20 @@
       "sortNum": 5,
       "logFile": "${hadoopLogDir}/hadoop-hdfs-datanode-${host}.log",
       "jmxPort": "27002",
+      "resourceStrategies":[{
+        "type": "download",
+        "from": "script/control_hadoop.sh",
+        "to": "control_hadoop.sh",
+        "md5": "63f20147a32a82d18e26ac08e329539b"
+      },{
+        "type": "link",
+        "source": "/opt/datasophon/datasophon-worker/jmx/jmx_prometheus_javaagent-0.16.1.jar",
+        "target": "jmx/jmx_prometheus_javaagent-0.16.1.jar"
+      },{
+        "type": "link",
+        "source": "/opt/datasophon/datasophon-worker/jmx/jmx_exporter_config.yaml",
+        "target": "jmx/prometheus_config.yml"
+      }],
       "startRunner": {
         "timeout": "60",
         "program": "control_hadoop.sh",
@@ -146,6 +188,20 @@
       "sortNum": 3,
       "logFile": "${hadoopLogDir}/hadoop-hdfs-zkfc-${host}.log",
       "jmxPort": 27004,
+      "resourceStrategies":[{
+        "type": "download",
+        "from": "script/control_hadoop.sh",
+        "to": "control_hadoop.sh",
+        "md5": "63f20147a32a82d18e26ac08e329539b"
+      },{
+        "type": "link",
+        "source": "/opt/datasophon/datasophon-worker/jmx/jmx_prometheus_javaagent-0.16.1.jar",
+        "target": "jmx/jmx_prometheus_javaagent-0.16.1.jar"
+      },{
+        "type": "link",
+        "source": "/opt/datasophon/datasophon-worker/jmx/jmx_exporter_config.yaml",
+        "target": "jmx/prometheus_config.yml"
+      }],
       "startRunner": {
         "timeout": "60",
         "program": "control_hadoop.sh",
@@ -183,6 +239,12 @@
       "sortNum": 4,
       "logFile": "${hadoopLogDir}/hadoop-hdfs-httpfs-${host}.log",
       "jmxPort": "",
+      "resourceStrategies":[{
+        "type": "download",
+        "from": "script/control_hadoop.sh",
+        "to": "control_hadoop.sh",
+        "md5": "63f20147a32a82d18e26ac08e329539b"
+      }],
       "startRunner": {
         "timeout": "60",
         "program": "control_hadoop.sh",
@@ -880,7 +942,7 @@
       "value": "",
       "configurableInWizard": true,
       "hidden": false,
-      "defaultValue": "${INSTALL_PATH}/hadoop-3.3.3/etc/hadoop/whitelist"
+      "defaultValue": "${HADOOP_HOME}/etc/hadoop/whitelist"
     },
     {
       "name": "dfs.hosts.exclude",
@@ -891,7 +953,7 @@
       "value": "",
       "configurableInWizard": true,
       "hidden": false,
-      "defaultValue": "${INSTALL_PATH}/hadoop-3.3.3/etc/hadoop/blacklist"
+      "defaultValue": "${HADOOP_HOME}/etc/hadoop/blacklist"
     },
     {
       "name": "hadoop.security.authentication",

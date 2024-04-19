@@ -30,3 +30,8 @@ export HDFS_JOURNALNODE_OPTS="$HDFS_JOURNALNODE_OPTS -javaagent:${hadoopHome}/jm
 export HDFS_ZKFC_OPTS="$HDFS_ZKFC_OPTS -javaagent:${hadoopHome}/jmx/jmx_prometheus_javaagent-0.16.1.jar=27004:${hadoopHome}/jmx/prometheus_config.yml"
 
 
+export YARN_RESOURCEMANAGER_OPTS="$YARN_RESOURCEMANAGER_OPTS -javaagent:${hadoopHome}/jmx/jmx_prometheus_javaagent-0.16.1.jar=9323:${hadoopHome}/jmx/prometheus_config.yml"
+
+export YARN_NODEMANAGER_OPTS="$YARN_NODEMANAGER_OPTS -javaagent:${hadoopHome}/jmx/jmx_prometheus_javaagent-0.16.1.jar=9324:${hadoopHome}/jmx/prometheus_config.yml"
+
+export MAPRED_HISTORYSERVER_OPTS="$MAPRED_HISTORYSERVER_OPTS -javaagent:${hadoopHome}/jmx/jmx_prometheus_javaagent-0.16.1.jar=9325:${hadoopHome}/jmx/prometheus_config.yml"

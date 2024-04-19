@@ -58,8 +58,8 @@ start(){
   fi
   if [ $command = "hiveserver2" ]
   then
-      /opt/datasophon/hadoop-3.3.3/bin/hdfs dfs -mkdir -p /user/hive/warehouse
-      /opt/datasophon/hadoop-3.3.3/bin/hdfs dfs -chmod g+w /user/hive/warehouse
+      /opt/datasophon/hadoop/bin/hdfs dfs -mkdir -p /user/hive/warehouse
+      /opt/datasophon/hadoop/bin/hdfs dfs -chmod g+w /user/hive/warehouse
   fi
   echo starting $command, logging to $log
   echo "nohup $cmd > $log 2>&1 &"

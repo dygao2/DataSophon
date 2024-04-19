@@ -149,7 +149,7 @@ public class LoadServiceMeta implements ApplicationRunner {
         PackageUtils.putServicePackageName(
                 frameCode, serviceName, serviceInfo.getDecompressPackageName());
 
-        putServiceHomeToVariable(
+        putServiceHomeToVariable(frameCode,
                 clusters, serviceName, serviceInfo.getDecompressPackageName());
         // save service and service config
         FrameServiceEntity serviceEntity =
@@ -167,17 +167,19 @@ public class LoadServiceMeta implements ApplicationRunner {
     }
 
 
-    private void putServiceHomeToVariable(
+    private void putServiceHomeToVariable(String frameCode,
             List<ClusterInfoEntity> clusters, String serviceName,
             String decompressPackageName) {
         for (ClusterInfoEntity cluster : clusters) {
-            Map<String, String> globalVariables = GlobalVariables.get(cluster.getId());
-            if (HDFS.equals(serviceName)) {
-                serviceName = HADOOP;
+            if(cluster.getClusterFrame().equals(frameCode)) {
+                Map<String, String> globalVariables = GlobalVariables.get(cluster.getId());
+                if (HDFS.equals(serviceName)) {
+                    serviceName = HADOOP;
+                }
+                globalVariables.put(
+                        "${" + serviceName + "_HOME}",
+                        Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName);
             }
-            globalVariables.put(
-                    "${" + serviceName + "_HOME}",
-                    Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName);
         }
     }
 

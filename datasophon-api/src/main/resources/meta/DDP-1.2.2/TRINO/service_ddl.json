@@ -255,10 +255,10 @@
       "configType": "custom",
       "required": false,
       "type": "multipleWithKey",
-      "value": [{"connector.name":"carbondata"},{"hive.metastore.uri":"thrift://${metastoreHost}:9083"},{"hive.config.resources":"${INSTALL_PATH}/hadoop-3.3.3/etc/hadoop/core-site.xml,${INSTALL_PATH}/hadoop-3.3.3/etc/hadoop/hdfs-site.xml"}],
+      "value": [{"connector.name":"carbondata"},{"hive.metastore.uri":"thrift://${metastoreHost}:9083"},{"hive.config.resources":"${INSTALL_PATH}/hadoop/etc/hadoop/core-site.xml,${INSTALL_PATH}/hadoop/etc/hadoop/hdfs-site.xml"}],
       "configurableInWizard": true,
       "hidden": false,
-      "defaultValue": [{"connector.name":"carbondata"},{"hive.metastore.uri":"thrift://${metastoreHost}:9083"},{"hive.config.resources":"${INSTALL_PATH}/hadoop-3.3.3/etc/hadoop/core-site.xml,${INSTALL_PATH}/hadoop-3.3.3/etc/hadoop/hdfs-site.xml"}]
+      "defaultValue": [{"connector.name":"carbondata"},{"hive.metastore.uri":"thrift://${metastoreHost}:9083"},{"hive.config.resources":"${INSTALL_PATH}/hadoop/etc/hadoop/core-site.xml,${INSTALL_PATH}/hadoop/etc/hadoop/hdfs-site.xml"}]
     },
     {
       "name": "custom.hive.properties",
@@ -267,10 +267,10 @@
       "configType": "custom",
       "required": false,
       "type": "multipleWithKey",
-      "value": [{"connector.name":"hive"},{"hive.metastore.uri":"thrift://${metastoreHost}:9083"},{"hive.config.resources":"${INSTALL_PATH}/hadoop-3.3.3/etc/hadoop/core-site.xml,${INSTALL_PATH}/hadoop-3.3.3/etc/hadoop/hdfs-site.xml"}],
+      "value": [{"connector.name":"hive"},{"hive.metastore.uri":"thrift://${metastoreHost}:9083"},{"hive.config.resources":"${INSTALL_PATH}/hadoop/etc/hadoop/core-site.xml,${INSTALL_PATH}/hadoop/etc/hadoop/hdfs-site.xml"}],
       "configurableInWizard": true,
       "hidden": false,
-      "defaultValue": [{"connector.name":"hive"},{"hive.metastore.uri":"thrift://${metastoreHost}:9083"},{"hive.config.resources":"${INSTALL_PATH}/hadoop-3.3.3/etc/hadoop/core-site.xml,${INSTALL_PATH}/hadoop-3.3.3/etc/hadoop/hdfs-site.xml"}]
+      "defaultValue": [{"connector.name":"hive"},{"hive.metastore.uri":"thrift://${metastoreHost}:9083"},{"hive.config.resources":"${INSTALL_PATH}/hadoop/etc/hadoop/core-site.xml,${INSTALL_PATH}/hadoop/etc/hadoop/hdfs-site.xml"}]
     }
   ]
 }

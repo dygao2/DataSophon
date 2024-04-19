@@ -2,11 +2,11 @@
   "name": "YARN",
   "label": "YARN",
   "description": "分布式资源调度与管理平台",
-  "version": "3.3.3",
+  "version": "3.3.6",
   "sortNum": 2,
   "dependencies":["HDFS"],
-  "packageName": "hadoop-3.3.3.tar.gz",
-  "decompressPackageName": "hadoop-3.3.3",
+  "packageName": "hadoop-3.3.6.tar.gz",
+  "decompressPackageName": "hadoop-3.3.6",
   "roles": [
     {
       "name": "ResourceManager",
@@ -20,6 +20,12 @@
       "sortNum": 1,
       "logFile": "logs/hadoop-yarn-resourcemanager-${host}.log",
       "jmxPort": 9323,
+      "resourceStrategies":[{
+        "type": "download",
+        "from": "etc/hadoop/fair-scheduler.xml",
+        "to": "etc/hadoop/fair-scheduler.xml",
+        "md5": "de1428bdcb0c92a51354e46de3099f62"
+      }],
       "startRunner": {
         "timeout": "60",
         "program": "control_hadoop.sh",
@@ -404,7 +410,7 @@
       "value":"",
       "configurableInWizard": true,
       "hidden": false,
-      "defaultValue": "${INSTALL_PATH}/hadoop-3.3.3/etc/hadoop/fair-scheduler.xml"
+      "defaultValue": "${HADOOP_HOME}/etc/hadoop/fair-scheduler.xml"
     },
     {
       "name": "yarn.scheduler.fair.preemption",

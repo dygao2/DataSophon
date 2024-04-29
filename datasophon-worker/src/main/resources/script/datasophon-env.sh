@@ -3,7 +3,8 @@ CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
 export JAVA_HOME CLASSPATH
 
 export KYUUBI_HOME=/opt/datasophon/kyuubi-1.7.3
-export SPARK_HOME=/opt/datasophon/spark-3.1.3
+# export SPARK_HOME=/opt/datasophon/spark-3.1.3
+export SPARK_HOME=/opt/datasophon/spark2
 export PYSPARK_ALLOW_INSECURE_GATEWAY=1
 export HIVE_HOME=/opt/datasophon/hive-3.1.0
 

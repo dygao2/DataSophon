@@ -17,7 +17,7 @@
 #
 
 usage="Usage: start.sh (start|stop|restart) <command> "
-
+source /opt/datasophon/datasophon-worker/script/datasophon-env.sh
 # if no args specified, show usage
 if [ $# -le 1 ]; then
   echo $usage

@@ -27,8 +27,10 @@
     <artifactId>datasophon-ui</artifactId>
 
     <properties>
-        <build.node.version>v12.16.3</build.node.version>
-        <build.npm.version>6.14.4</build.npm.version>
+<!--        <build.node.version>v12.16.3</build.node.version>-->
+        <build.node.version>v16.19.0</build.node.version>
+<!--        <build.npm.version>6.14.4</build.npm.version>-->
+        <build.npm.version>9.8.1</build.npm.version>
         <deployed.dir>.deployed</deployed.dir>
         <dist.dir>dist</dist.dir>
         <nodemodules.dir>node_modules</nodemodules.dir>
@@ -68,7 +70,9 @@
                     <npmVersion>${build.npm.version}</npmVersion>
 
                     <nodeDownloadRoot>https://npm.taobao.org/mirrors/node/</nodeDownloadRoot>
+<!--                    <nodeDownloadRoot>https://mirrors.huaweicloud.com/repository/node/</nodeDownloadRoot>-->
                     <npmDownloadRoot>https://registry.npm.taobao.org/npm/-/</npmDownloadRoot>
+<!--                    <npmDownloadRoot>https://mirrors.huaweicloud.com/repository/npm/</npmDownloadRoot>-->
                 </configuration>
                 <executions>
                     <execution>
@@ -85,7 +89,8 @@
                         </goals>
                         <phase>generate-resources</phase>
                         <configuration>
-                            <arguments>install --registry=https://registry.npm.taobao.org --sass-binary-site=https://npm.taobao.org/mirrors/node-sass</arguments>
+                            <arguments>install</arguments>
+<!--                            <arguments>install &#45;&#45;registry=https://registry.npm.taobao.org &#45;&#45;sass-binary-site=https://npm.taobao.org/mirrors/node-sass</arguments>-->
                         </configuration>
                     </execution>
                     <execution>

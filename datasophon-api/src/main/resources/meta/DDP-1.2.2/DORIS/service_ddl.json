@@ -90,11 +90,6 @@
         "from": "script/status_be.sh",
         "to": "be/bin/status_be.sh",
         "md5": "cb2df48c72383f61613660da7e942ef7"
-      }, {
-        "type": "replace",
-        "source": "be/bin/start_be.sh",
-        "regex":"\/bin\/limit3",
-        "replacement": "/usr/bin/ulimit"
       }],
       "startRunner": {
         "timeout": "600",

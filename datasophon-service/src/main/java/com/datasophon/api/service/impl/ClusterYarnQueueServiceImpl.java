@@ -123,7 +123,7 @@ public class ClusterYarnQueueServiceImpl extends ServiceImpl<ClusterYarnQueueMap
             serviceRoleInfo.setName("ResourceManager");
             serviceRoleInfo.setParentName("YARN");
             serviceRoleInfo.setConfigFileMap(configFileMap);
-            serviceRoleInfo.setDecompressPackageName("hadoop-3.3.3");
+            serviceRoleInfo.setDecompressPackageName("hadoop-3.3.6");
             serviceRoleInfo.setHostname(roleInstanceEntity.getHostname());
             ServiceConfigureHandler configureHandler = new ServiceConfigureHandler();
             ExecResult execResult = configureHandler.handlerRequest(serviceRoleInfo);
@@ -139,7 +139,7 @@ public class ClusterYarnQueueServiceImpl extends ServiceImpl<ClusterYarnQueueMap
         ExecuteCmdCommand command = new ExecuteCmdCommand();
         Timeout timeout = new Timeout(Duration.create(180, TimeUnit.SECONDS));
         ArrayList<String> commands = new ArrayList<>();
-        commands.add(Constants.INSTALL_PATH + "/hadoop-3.3.3/bin/yarn");
+        commands.add(Constants.INSTALL_PATH + "/hadoop-3.3.6/bin/yarn");
         commands.add("rmadmin");
         commands.add("-refreshQueues");
         command.setCommands(commands);

@@ -102,6 +102,9 @@ public class InstallServiceHandler {
                             case LinkStrategy.LINK_TYPE:
                                 rs = BeanUtil.mapToBean(strategy, LinkStrategy.class, true, CopyOptions.create().ignoreError());
                                 break;
+                            case ShellStrategy.SHELL_TYPE:
+                                rs = BeanUtil.mapToBean(strategy, ShellStrategy.class, true, CopyOptions.create().ignoreError());
+                                break;
                             default:
                                 rs = new EmptyStrategy();
                         }
@@ -114,10 +117,12 @@ public class InstallServiceHandler {
                 }
 
                 if (Objects.nonNull(command.getRunAs())) {
-                    ShellUtils.exceShell(" chown -R " + command.getRunAs().getUser() + ":" + command.getRunAs().getGroup() + " "
+                    ExecResult chownResult = ShellUtils.exceShell(" chown -R " + command.getRunAs().getUser() + ":" + command.getRunAs().getGroup() + " "
                             + Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName);
+                    logger.info("chown {} {}", decompressPackageName, chownResult.getExecResult() ? "success" : "fail");
                 }
-                ShellUtils.exceShell(" chmod -R 775 " + Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName);
+                ExecResult chmodResult = ShellUtils.exceShell(" chmod -R 775 " + Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName);
+                logger.info("chmod {} {}", decompressPackageName, chmodResult.getExecResult() ? "success" : "fail");
                 if (decompressPackageName.contains(Constants.PROMETHEUS)) {
                     String alertPath = Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName
                             + Constants.SLASH + "alert_rules";
@@ -204,9 +209,9 @@ public class InstallServiceHandler {
     private void changeHadoopInstallPathPerm(String decompressPackageName) {
         ShellUtils.exceShell(
                 " chown -R  root:hadoop " + Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName);
-        ShellUtils.exceShell(" chmod 755 " + Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName);
+        ShellUtils.exceShell(" chmod 775 " + Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName);
         ShellUtils.exceShell(
-                " chmod -R 755 " + Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName + "/etc");
+                " chmod -R 775 " + Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName + "/etc");
         ShellUtils.exceShell(" chmod 6050 " + Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName
                 + "/bin/container-executor");
         ShellUtils.exceShell(" chmod 400 " + Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName
@@ -215,5 +220,6 @@ public class InstallServiceHandler {
                 + "/logs/userlogs");
         ShellUtils.exceShell(
                 " chmod 775 " + Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName + "/logs/userlogs");
+        ShellUtils.exceShell(" ln -s " + Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName + " " + Constants.INSTALL_PATH + Constants.SLASH + "hadoop");
     }
 }

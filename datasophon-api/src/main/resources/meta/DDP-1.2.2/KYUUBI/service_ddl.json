@@ -242,10 +242,10 @@
       "configType": "map",
       "required": true,
       "type": "input",
-      "value": "/opt/datasophon/hadoop-3.3.3/etc/hadoop",
+      "value": "/opt/datasophon/hadoop/etc/hadoop",
       "configurableInWizard": true,
       "hidden": false,
-      "defaultValue": "/opt/datasophon/hadoop-3.3.3/etc/hadoop"
+      "defaultValue": "/opt/datasophon/hadoop/etc/hadoop"
     },
     {
       "name": "kyuubiServerHeapSize",

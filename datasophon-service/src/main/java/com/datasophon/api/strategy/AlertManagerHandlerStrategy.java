@@ -17,6 +17,7 @@
 
 package com.datasophon.api.strategy;
 
+import cn.hutool.http.HttpUtil;
 import com.datasophon.api.utils.ProcessUtils;
 import com.datasophon.common.model.ServiceConfig;
 import com.datasophon.common.model.ServiceRoleInfo;
@@ -26,17 +27,15 @@ import com.datasophon.dao.enums.AlertLevel;
 import java.util.List;
 import java.util.Map;
 
-import cn.hutool.http.HttpUtil;
-
 public class AlertManagerHandlerStrategy implements ServiceRoleStrategy {
 
     @Override
-    public void handler(Integer clusterId, List<String> hosts) {
+    public void handler(Integer clusterId, List<String> hosts, String serviceName) {
 
     }
 
     @Override
-    public void handlerConfig(Integer clusterId, List<ServiceConfig> list) {
+    public void handlerConfig(Integer clusterId, List<ServiceConfig> list, String serviceName) {
 
     }
 

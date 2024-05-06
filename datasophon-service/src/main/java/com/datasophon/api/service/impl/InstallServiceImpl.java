@@ -106,14 +106,14 @@ public class InstallServiceImpl implements InstallService {
      */
     @Override
     public Result analysisHostList(
-                                   Integer clusterId,
-                                   String hosts,
-                                   String sshUser,
-                                   Integer sshPort,
-                                   Integer page,
-                                   Integer pageSize) {
+            Integer clusterId,
+            String hosts,
+            String sshUser,
+            Integer sshPort,
+            Integer page,
+            Integer pageSize) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
-        ProcessUtils.generateClusterVariable(globalVariables, clusterId, SSHUSER, sshUser);
+        ProcessUtils.generateClusterVariable(globalVariables, clusterId, null, SSHUSER, sshUser);
 
         List<HostInfo> list = new ArrayList<>();
         hosts = hosts.replace(" ", "");
@@ -199,7 +199,7 @@ public class InstallServiceImpl implements InstallService {
     }
 
     public HostInfo createHostInfo(
-                                   String host, Integer sshPort, String sshUser, String clusterCode) {
+            String host, Integer sshPort, String sshUser, String clusterCode) {
         HostInfo hostInfo = new HostInfo();
 
         hostInfo.setHostname(HostUtils.getHostName(host));
@@ -248,7 +248,7 @@ public class InstallServiceImpl implements InstallService {
 
     @Override
     public Result rehostCheck(
-                              Integer clusterId, String hostnames, String sshUser, Integer sshPort) {
+            Integer clusterId, String hostnames, String sshUser, Integer sshPort) {
         // 开启主机校验
         ClusterInfoEntity clusterInfo = clusterInfoService.getById(clusterId);
         String clusterCode = clusterInfo.getClusterCode();
@@ -271,7 +271,7 @@ public class InstallServiceImpl implements InstallService {
 
     @Override
     public Result dispatcherHostAgentList(
-                                          Integer clusterId, Integer installStateCode, Integer page, Integer pageSize) {
+            Integer clusterId, Integer installStateCode, Integer page, Integer pageSize) {
 
         ClusterInfoEntity clusterInfo = clusterInfoService.getById(clusterId);
         String clusterCode = clusterInfo.getClusterCode();
@@ -380,7 +380,7 @@ public class InstallServiceImpl implements InstallService {
             HostInfo value = hostInfoEntry.getValue();
             if (Objects.isNull(value.getCheckResult())
                     || (Objects.nonNull(value.getCheckResult())
-                            && value.getCheckResult().getCode() != 10001)) {
+                    && value.getCheckResult().getCode() != 10001)) {
                 return Result.success().put("hostCheckCompleted", false);
             }
         }
@@ -389,7 +389,7 @@ public class InstallServiceImpl implements InstallService {
 
     @Override
     public Result cancelDispatcherHostAgent(
-                                            Integer clusterId, String hostname, Integer installStateCode) {
+            Integer clusterId, String hostname, Integer installStateCode) {
 
         return null;
     }
@@ -430,7 +430,7 @@ public class InstallServiceImpl implements InstallService {
             MinaUtils.execCmdWithResult(session, "service datasophon-worker " + commandType);
             logger.info("hostAgent command:{}", "service datasophon-worker " + commandType);
             if (ObjectUtil.isNotEmpty(session)) {
-                    session.close();
+                session.close();
             }
         }
         return Result.success();
@@ -456,7 +456,7 @@ public class InstallServiceImpl implements InstallService {
         CommandType serviceCommandType = "start".equalsIgnoreCase(commandType) ? CommandType.START_SERVICE : CommandType.STOP_SERVICE;
         for (ClusterHostDO clusterHostDO : clusterHostList) {
             WorkerServiceMessage serviceMessage = new WorkerServiceMessage(
-                clusterHostDO.getHostname(), clusterHostDO.getClusterId(), serviceCommandType);
+                    clusterHostDO.getHostname(), clusterHostDO.getClusterId(), serviceCommandType);
             try {
                 ActorRef actor =
                         ActorUtils.getLocalActor(WorkerStartActor.class, "workerStartActor");

@@ -46,18 +46,18 @@ import java.util.concurrent.TimeUnit;
 public class ElasticSearchHandlerStrategy implements ServiceRoleStrategy {
 
     @Override
-    public void handler(Integer clusterId, List<String> hosts) {
+    public void handler(Integer clusterId, List<String> hosts, String serviceName) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
 
-        ProcessUtils.generateClusterVariable(globalVariables, clusterId, "${initMasterNodes}", String.join(",", hosts));
+        ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${initMasterNodes}", String.join(",", hosts));
         String join = String.join(":9300,", hosts);
         String seedHosts = join + ":9300";
-        ProcessUtils.generateClusterVariable(globalVariables, clusterId, "${seedHosts}", seedHosts);
+        ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${seedHosts}", seedHosts);
 
     }
 
     @Override
-    public void handlerConfig(Integer clusterId, List<ServiceConfig> list) {
+    public void handlerConfig(Integer clusterId, List<ServiceConfig> list, String serviceName) {
 
     }
 

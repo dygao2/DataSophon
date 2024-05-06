@@ -25,6 +25,7 @@ import com.datasophon.api.load.GlobalVariables;
 import com.datasophon.api.service.*;
 import com.datasophon.common.Constants;
 import com.datasophon.common.model.SimpleServiceConfig;
+import com.datasophon.common.utils.CollectionUtils;
 import com.datasophon.common.utils.PlaceholderUtils;
 import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.*;
@@ -46,9 +47,9 @@ import java.util.stream.Collectors;
 @Transactional
 public class ClusterServiceInstanceServiceImpl
         extends
-            ServiceImpl<ClusterServiceInstanceMapper, ClusterServiceInstanceEntity>
+        ServiceImpl<ClusterServiceInstanceMapper, ClusterServiceInstanceEntity>
         implements
-            ClusterServiceInstanceService {
+        ClusterServiceInstanceService {
 
     @Autowired
     private ClusterServiceInstanceMapper serviceInstanceMapper;
@@ -76,6 +77,9 @@ public class ClusterServiceInstanceServiceImpl
 
     @Autowired
     private ClusterServiceRoleInstanceWebuisService webuisService;
+
+    @Autowired
+    private ClusterVariableService variableService;
 
     @Override
     public ClusterServiceInstanceEntity getServiceInstanceByClusterIdAndServiceName(Integer clusterId,
@@ -243,6 +247,15 @@ public class ClusterServiceInstanceServiceImpl
 
         // del service instance
         this.removeById(serviceInstanceId);
+        // del variable
+        roleGroups.forEach(roleGroup -> {
+            List<ClusterVariable> variables = variableService.getVariables(roleGroup.getClusterId(), roleGroup.getServiceName());
+            if (CollectionUtils.isNotEmpty(variables)) {
+                Map<String, String> variablesMap = GlobalVariables.get(roleGroup.getClusterId());
+                variables.forEach(var -> variablesMap.remove(var.getVariableName()));
+                variableService.removeByIds(variables.stream().map(ClusterVariable::getId).collect(Collectors.toList()));
+            }
+        });
         return Result.success();
     }
 
@@ -256,6 +269,6 @@ public class ClusterServiceInstanceServiceImpl
     public boolean hasRunningRoleInstance(Integer serviceInstanceId) {
         List<ClusterServiceRoleInstanceEntity> list =
                 roleInstanceService.getRunningServiceRoleInstanceListByServiceId(serviceInstanceId);
-      return !list.isEmpty();
+        return !list.isEmpty();
     }
 }

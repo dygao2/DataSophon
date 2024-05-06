@@ -56,18 +56,18 @@ public class RMHandlerStrategy extends ServiceHandlerAbstract implements Service
     private static final String ACTIVE = "active";
 
     @Override
-    public void handler(Integer clusterId, List<String> hosts) {
+    public void handler(Integer clusterId, List<String> hosts, String serviceName) {
 
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
 
-        ProcessUtils.generateClusterVariable(globalVariables, clusterId, "${rm1}", hosts.get(0));
-        ProcessUtils.generateClusterVariable(globalVariables, clusterId, "${rm2}", hosts.get(1));
+        ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${rm1}", hosts.get(0));
+        ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${rm2}", hosts.get(1));
         ProcessUtils.generateClusterVariable(
-                globalVariables, clusterId, "${rmHost}", String.join(",", hosts));
+                globalVariables, clusterId, serviceName, "${rmHost}", String.join(",", hosts));
     }
 
     @Override
-    public void handlerConfig(Integer clusterId, List<ServiceConfig> list) {
+    public void handlerConfig(Integer clusterId, List<ServiceConfig> list, String serviceName) {
         ClusterYarnSchedulerService schedulerService =
                 SpringTool.getApplicationContext().getBean(ClusterYarnSchedulerService.class);
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
@@ -122,11 +122,11 @@ public class RMHandlerStrategy extends ServiceHandlerAbstract implements Service
             Map<String, ClusterServiceRoleInstanceEntity> map) {
 
         Map<String, String> globalVariable = GlobalVariables.get(roleInstanceEntity.getClusterId());
-        String commandLine = getRMStateCommand(globalVariable,roleInstanceEntity.getHostname());
+        String commandLine = getRMStateCommand(globalVariable, roleInstanceEntity.getHostname());
         getRMState(roleInstanceEntity, commandLine);
     }
 
-    private String getRMStateCommand(Map<String, String> globalVariable,String hostName) {
+    private String getRMStateCommand(Map<String, String> globalVariable, String hostName) {
 
         String commandLine = null;
         String yarnAclAdminUser = globalVariable.get("${yarn.admin.acl}");
@@ -135,10 +135,10 @@ public class RMHandlerStrategy extends ServiceHandlerAbstract implements Service
 
         if (StringUtils.isNotEmpty(yarnAclAdminUser)) {
             commandLine = String.format("sudo -u %s %s/bin/yarn rmadmin -getServiceState %s",
-                    yarnAclAdminUser, globalVariable.get("${HADOOP_HOME}"),curRm);
+                    yarnAclAdminUser, globalVariable.get("${HADOOP_HOME}"), curRm);
         } else {
             commandLine = String.format("%s/bin/yarn rmadmin -getServiceState %s",
-                     globalVariable.get("${HADOOP_HOME}"),curRm);
+                    globalVariable.get("${HADOOP_HOME}"), curRm);
         }
         return commandLine;
     }

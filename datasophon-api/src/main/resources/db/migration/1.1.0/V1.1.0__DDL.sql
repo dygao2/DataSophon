@@ -353,7 +353,7 @@ CREATE TABLE `t_ddh_cluster_service_role_group_config`  (
 
 CREATE TABLE `t_ddh_cluster_service_role_instance`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `service_role_name` varchar(32)  DEFAULT NULL COMMENT '服务角色名称',
+  `service_role_name` varchar(128)  DEFAULT NULL COMMENT '服务角色名称',
   `hostname` varchar(255)  DEFAULT NULL COMMENT '主机',
   `service_role_state` int(2) DEFAULT NULL COMMENT '服务角色状态 1:正在运行2：停止',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
@@ -413,7 +413,7 @@ CREATE TABLE `t_ddh_cluster_variable`  (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `cluster_id` int(10) DEFAULT NULL,
   `variable_name` varchar(255)  DEFAULT NULL,
-  `variable_value` varchar(255)  DEFAULT NULL,
+  `variable_value` varchar(600)  DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) AUTO_INCREMENT = 1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT = DYNAMIC;
 
@@ -493,7 +493,7 @@ CREATE TABLE `t_ddh_frame_info`  (
 CREATE TABLE `t_ddh_frame_service`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `frame_id` int(11) DEFAULT NULL COMMENT '版本id',
-  `service_name` varchar(32)  DEFAULT NULL COMMENT '服务名称',
+  `service_name` varchar(128)  DEFAULT NULL COMMENT '服务名称',
   `label` varchar(255)  DEFAULT NULL,
   `service_version` varchar(32)  DEFAULT NULL COMMENT '服务版本',
   `service_desc` varchar(1024)  DEFAULT NULL COMMENT '服务描述',
@@ -518,7 +518,7 @@ CREATE TABLE `t_ddh_frame_service`  (
 CREATE TABLE `t_ddh_frame_service_role`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `service_id` int(11) DEFAULT NULL COMMENT '服务id',
-  `service_role_name` varchar(32)  DEFAULT NULL COMMENT '角色名称',
+  `service_role_name` varchar(128)  DEFAULT NULL COMMENT '角色名称',
   `service_role_type` int(11) DEFAULT NULL COMMENT '角色类型 1:master2:worker3:client',
   `cardinality` varchar(32)  DEFAULT NULL,
   `service_role_json` text  NULL,

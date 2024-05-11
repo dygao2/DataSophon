@@ -27,6 +27,7 @@
           "SPARK_DIST_CLASSPATH",
           "HADOOP_CONF_DIR",
           "YARN_CONF_DIR",
+          "SPARK_HISTORY_OPTS",
           "custom.spark.env.sh"
         ]
       },
@@ -35,6 +36,10 @@
         "configFormat": "properties2",
         "outputDirectory": "conf",
         "includeParams": [
+          "spark.eventLog.enabled",
+          "spark.eventLog.dir",
+          "spark.eventLog.compress",
+          "spark.yarn.historyServer.address",
           "custom.spark.defaults.conf"
         ]
       }
@@ -64,7 +69,8 @@
       "configurableInWizard": true,
       "hidden": false,
       "defaultValue": "${HADOOP_HOME}/etc/hadoop"
-    },{
+    },
+    {
       "name": "YARN_CONF_DIR",
       "label": "Yarn配置文件目录",
       "description": "",
@@ -77,6 +83,17 @@
       "defaultValue": "${HADOOP_HOME}/etc/hadoop"
     },
     {
+      "name": "SPARK_HISTORY_OPTS",
+      "label": "HISTORY启动参数",
+      "description": "",
+      "required": true,
+      "type": "input",
+      "value": "",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": "\"-Dspark.history.ui.port=18080 -Dspark.history.fs.update.interval=10s -Dspark.history.retainedApplications=100 -Dspark.history.fs.logDirectory=hdfs://nameserver1:8020/tmp/spark-logs -Dspark.history.fs.cleaner.enabled=true -Dspark.history.fs.cleaner.interval=1h -Dspark.history.fs.cleaner.maxAge=2d\""
+    },
+    {
       "name": "custom.spark.env.sh",
       "label": "自定义配置spark-env.sh",
       "description": "自定义配置spark-env.sh",
@@ -87,6 +104,50 @@
       "configurableInWizard": true,
       "hidden": false,
       "defaultValue": ""
+    },
+    {
+      "name": "spark.eventLog.enabled",
+      "label": "是否记录Spark事件",
+      "description": "",
+		  "required": true,
+		  "type": "input",
+		  "value": "",
+		  "configurableInWizard": true,
+		  "hidden": false,
+		  "defaultValue": true
+    },
+    {
+      "name": "spark.eventLog.dir",
+      "label": "保存日志相关信息的路径",
+      "description": "",
+      "required": true,
+      "type": "input",
+      "value": "",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": "hdfs://nameserver1:8020/tmp/spark-logs"
+    },
+    {
+      "name": "spark.eventLog.compress",
+      "label": "是否压缩记录Spark事件",
+      "description": "",
+      "required": true,
+      "type": "input",
+      "value": "",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": true
+    },
+    {
+      "name": "spark.yarn.historyServer.address",
+      "label": "sparkhistoryServer地址",
+      "description": "",
+      "required": true,
+      "type": "input",
+      "value": "",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": "${sparkhistoryServer}:18080"
     },
     {
       "name": "custom.spark.defaults.conf",

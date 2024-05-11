@@ -204,6 +204,9 @@
         "configFormat": "xml",
         "outputDirectory": "etc/hadoop/",
         "includeParams": [
+          "mapreduce.framework.name",
+          "mapreduce.jobhistory.address",
+          "mapreduce.jobhistory.webapp.address",
           "mapreduce.jobhistory.keytab",
           "mapreduce.jobhistory.principal",
           "mapreduce.cluster.local.dir",
@@ -759,6 +762,39 @@
       "configurableInWizard": true,
       "hidden": true,
       "defaultValue": "/etc/security/keytab/nm.service.keytab"
+    },
+    {
+      "name": "mapreduce.framework.name",
+      "label": "指定mapreduce使用yarn资源管理器",
+      "description": "",
+      "required": true,
+      "type": "input",
+      "value": "",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": "yarn"
+    },
+    {
+      "name": "mapreduce.jobhistory.address",
+      "label": "配置作业历史服务器的地址",
+      "description": "",
+      "required": true,
+      "type": "input",
+      "value": "",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": "${historyserverHost}:10020"
+    },
+    {
+      "name": "mapreduce.jobhistory.webapp.address",
+      "label": "配置作业历史服务器的http地址",
+      "description": "",
+      "required": true,
+      "type": "input",
+      "value": "",
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": "${historyserverHost}:19888"
     },
     {
       "name": "mapreduce.jobhistory.principal",

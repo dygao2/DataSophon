@@ -18,6 +18,7 @@
 package com.datasophon.worker.strategy;
 
 import akka.actor.ActorRef;
+import cn.hutool.core.net.NetUtil;
 import com.datasophon.common.Constants;
 import com.datasophon.common.cache.CacheUtils;
 import com.datasophon.common.command.OlapOpsType;
@@ -51,7 +52,8 @@ public class BEHandlerStrategy extends AbstractHandlerStrategy implements Servic
                 try {
                     OlapSqlExecCommand sqlExecCommand = new OlapSqlExecCommand();
                     sqlExecCommand.setFeMaster(command.getMasterHost());
-                    sqlExecCommand.setHostName(CacheUtils.getString(Constants.HOSTNAME));
+                    // 使用IP 否则应用侧使用时需要设置host
+                    sqlExecCommand.setHostName(NetUtil.getLocalhostStr());
                     sqlExecCommand.setOpsType(OlapOpsType.ADD_BE);
                     ActorUtils.getRemoteActor(command.getManagerHost(), "masterNodeProcessingActor")
                             .tell(sqlExecCommand, ActorRef.noSender());

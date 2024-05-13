@@ -18,6 +18,7 @@
 package com.datasophon.worker.strategy;
 
 import akka.actor.ActorRef;
+import cn.hutool.core.net.NetUtil;
 import cn.hutool.json.JSONUtil;
 import com.datasophon.common.Constants;
 import com.datasophon.common.cache.CacheUtils;
@@ -63,7 +64,7 @@ public class FEHandlerStrategy extends AbstractHandlerStrategy implements Servic
                     try {
                         OlapSqlExecCommand sqlExecCommand = new OlapSqlExecCommand();
                         sqlExecCommand.setFeMaster(command.getMasterHost());
-                        sqlExecCommand.setHostName(CacheUtils.getString(Constants.HOSTNAME));
+                        sqlExecCommand.setHostName(NetUtil.getLocalhostStr());
                         sqlExecCommand.setOpsType(OlapOpsType.ADD_FE_FOLLOWER);
                         ActorUtils.getRemoteActor(command.getManagerHost(), "masterNodeProcessingActor")
                                 .tell(sqlExecCommand, ActorRef.noSender());

@@ -17,12 +17,11 @@
 
 package com.datasophon.dao.entity;
 
-import java.io.Serializable;
-
-import lombok.Data;
-
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
+import java.io.Serializable;
 
 @Data
 @TableName("t_ddh_cluster_variable")
@@ -31,21 +30,26 @@ public class ClusterVariable implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 
+     *
      */
     @TableId
     private Integer id;
     /**
-     * 
+     *
      */
     private Integer clusterId;
     /**
-     * 
+     *
      */
     private String variableName;
     /**
-     * 
+     *
      */
     private String variableValue;
+
+    /**
+     *
+     */
+    private String serviceName;
 
 }

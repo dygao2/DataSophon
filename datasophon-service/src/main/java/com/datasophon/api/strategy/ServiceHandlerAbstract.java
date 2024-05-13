@@ -114,10 +114,10 @@ public abstract class ServiceHandlerAbstract {
                                     ServiceConfig config, String serviceName) {
         if ((Boolean) config.getValue()) {
             enableKerberos = true;
-            ProcessUtils.generateClusterVariable(globalVariables, clusterId, "${enable" + serviceName + "Kerberos}",
+            ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${enable" + serviceName + "Kerberos}",
                     "true");
         } else {
-            ProcessUtils.generateClusterVariable(globalVariables, clusterId, "${enable" + serviceName + "Kerberos}",
+            ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${enable" + serviceName + "Kerberos}",
                     "false");
         }
         return enableKerberos;
@@ -127,9 +127,9 @@ public abstract class ServiceHandlerAbstract {
                               ServiceConfig config, String serviceName) {
         if ((Boolean) config.getValue()) {
             enableHA = true;
-            ProcessUtils.generateClusterVariable(globalVariables, clusterId, "${enable" + serviceName + "HA}", "true");
+            ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${enable" + serviceName + "HA}", "true");
         } else {
-            ProcessUtils.generateClusterVariable(globalVariables, clusterId, "${enable" + serviceName + "HA}", "false");
+            ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${enable" + serviceName + "HA}", "false");
         }
         return enableHA;
     }

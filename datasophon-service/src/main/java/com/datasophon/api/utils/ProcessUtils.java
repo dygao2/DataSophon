@@ -386,17 +386,19 @@ public class ProcessUtils {
     }
 
     public static void generateClusterVariable(Map<String, String> globalVariables, Integer clusterId,
-                                               String variableName, String value) {
+                                               String serviceName,String variableName, String value) {
         ClusterVariableService variableService =
                 SpringTool.getApplicationContext().getBean(ClusterVariableService.class);
         ClusterVariable clusterVariable = variableService.getVariableByVariableName(variableName, clusterId);
         if (Objects.nonNull(clusterVariable)) {
             logger.info("update variable {} value {} to {}", variableName, clusterVariable.getVariableValue(), value);
+            clusterVariable.setServiceName(serviceName);
             clusterVariable.setVariableValue(value);
             variableService.updateById(clusterVariable);
         } else {
             ClusterVariable newClusterVariable = new ClusterVariable();
             newClusterVariable.setClusterId(clusterId);
+            newClusterVariable.setServiceName(serviceName);
             newClusterVariable.setVariableName(variableName);
             newClusterVariable.setVariableValue(value);
             variableService.save(newClusterVariable);

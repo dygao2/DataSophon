@@ -26,9 +26,9 @@ import java.util.Map;
 
 public interface ServiceRoleStrategy {
 
-    void handler(Integer clusterId, List<String> hosts);
+    void handler(Integer clusterId, List<String> hosts, String serviceName);
 
-    void handlerConfig(Integer clusterId, List<ServiceConfig> list);
+    void handlerConfig(Integer clusterId, List<ServiceConfig> list, String serviceName);
 
     void getConfig(Integer clusterId, List<ServiceConfig> list);
 

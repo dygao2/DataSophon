@@ -83,7 +83,7 @@ public class InstallServiceHandler {
                 downloadPkg(packageName, packagePath);
             }
 
-            boolean result = decompressPkg(packageName, decompressPackageName, command.getRunAs(), destDir);
+            boolean result = decompressPkg(packageName, decompressPackageName, destDir);
             if (result) {
                 if (CollUtil.isNotEmpty(command.getResourceStrategies())) {
                     for (Map<String, Object> strategy : command.getResourceStrategies()) {
@@ -185,7 +185,7 @@ public class InstallServiceHandler {
         logger.info("download package {} success", packageName);
     }
 
-    private boolean decompressPkg(String packageName, String decompressPackageName, RunAs runAs, String destDir) {
+    private boolean decompressPkg(String packageName, String decompressPackageName, String destDir) {
         boolean decompressResult = true;
         if (!FileUtil.exist(Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName)) {
             return decompressTarGz(destDir + packageName, Constants.INSTALL_PATH);

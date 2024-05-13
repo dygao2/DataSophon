@@ -2,11 +2,11 @@
   "name": "HIVE",
   "label": "Hive",
   "description": "离线数据仓库",
-  "version": "3.1.0",
+  "version": "3.1.3",
   "sortNum": 5,
   "dependencies":["HDFS"],
-  "packageName": "hive-3.1.0.tar.gz",
-  "decompressPackageName": "hive-3.1.0",
+  "packageName": "apache-hive-3.1.3-bin.tar.gz",
+  "decompressPackageName": "apache-hive-3.1.3-bin",
   "roles": [
     {
       "name": "HiveServer2",
@@ -20,6 +20,27 @@
       "logFile": "logs/hiveserver2.out",
       "jmxPort": 11000,
       "sortNum": 1,
+      "resourceStrategies":[{
+        "type": "sh",
+        "commands": [["mkdir", "logs"]]
+      },{
+        "type": "download",
+        "from": "script/control_hive.sh",
+        "to": "control_hive.sh",
+        "md5": "11f36c034dbbca447fc6b16308169572"
+      },{
+        "type": "link",
+        "source": "/opt/datasophon/datasophon-worker/jmx/jmx_prometheus_javaagent-0.16.1.jar",
+        "target": "jmx/jmx_prometheus_javaagent-0.16.1.jar"
+      },{
+        "type": "link",
+        "source": "/opt/datasophon/datasophon-worker/jmx/jmx_exporter_config.yaml",
+        "target": "jmx/hiveserver2.yaml"
+      },{
+        "type": "link",
+        "source": "/opt/datasophon/datasophon-worker/lib/mysql-connector-java-8.0.28.jar",
+        "target": "lib/mysql-connector-java-8.0.28.jar"
+      }],
       "startRunner": {
         "timeout": "60",
         "program": "control_hive.sh",
@@ -70,6 +91,27 @@
       "logFile": "logs/hivemetastore.out",
       "jmxPort": 12000,
       "sortNum": 2,
+      "resourceStrategies":[{
+        "type": "sh",
+        "commands": [["mkdir", "logs"]]
+      },{
+        "type": "download",
+        "from": "script/control_hive.sh",
+        "to": "control_hive.sh",
+        "md5": "11f36c034dbbca447fc6b16308169572"
+      },{
+        "type": "link",
+        "source": "/opt/datasophon/datasophon-worker/jmx/jmx_prometheus_javaagent-0.16.1.jar",
+        "target": "jmx/jmx_prometheus_javaagent-0.16.1.jar"
+      },{
+        "type": "link",
+        "source": "/opt/datasophon/datasophon-worker/jmx/jmx_exporter_config.yaml",
+          "target": "jmx/metastore.yaml"
+      },{
+        "type": "link",
+        "source": "/opt/datasophon/datasophon-worker/lib/mysql-connector-java-8.0.28.jar",
+        "target": "lib/mysql-connector-java-8.0.28.jar"
+      }],
       "startRunner": {
         "timeout": "60",
         "program": "control_hive.sh",

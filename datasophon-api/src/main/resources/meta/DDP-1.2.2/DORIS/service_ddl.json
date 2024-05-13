@@ -94,7 +94,7 @@
         "type": "replace",
         "source": "be/bin/start_be.sh",
         "regex":"\/bin\/limit3",
-        "replacement": "/usr/bin/ulimit"
+        "replacement": "ulimit"
       }],
       "startRunner": {
         "timeout": "600",

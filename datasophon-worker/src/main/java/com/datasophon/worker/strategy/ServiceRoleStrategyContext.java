@@ -56,7 +56,7 @@ public class ServiceRoleStrategyContext {
         map.put("FlinkClient", new FlinkHandlerStrategy("FLINK", "FlinkClient"));
 
         //DolphinScheduler
-        map.put("MasterServer", new DSMasterHandlerStrategy("USCHEDULER", "MasterServer2"));
+        map.put("MasterServer", new DSMasterHandlerStrategy("DS", "MasterServer"));
 
     }
 

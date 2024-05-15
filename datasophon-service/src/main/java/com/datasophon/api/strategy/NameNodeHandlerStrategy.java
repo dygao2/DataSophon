@@ -57,16 +57,16 @@ public class NameNodeHandlerStrategy extends ServiceHandlerAbstract implements S
     private static final String ACTIVE = "active";
 
     @Override
-    public void handler(Integer clusterId, List<String> hosts) {
+    public void handler(Integer clusterId, List<String> hosts, String serviceName) {
 
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
 
-        ProcessUtils.generateClusterVariable(globalVariables, clusterId, "${nn1}", hosts.get(0));
-        ProcessUtils.generateClusterVariable(globalVariables, clusterId, "${nn2}", hosts.get(1));
+        ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${nn1}", hosts.get(0));
+        ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${nn2}", hosts.get(1));
     }
 
     @Override
-    public void handlerConfig(Integer clusterId, List<ServiceConfig> list) {
+    public void handlerConfig(Integer clusterId, List<ServiceConfig> list, String serviceName) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
         ClusterInfoEntity clusterInfo = ProcessUtils.getClusterInfo(clusterId);
 

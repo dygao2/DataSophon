@@ -157,7 +157,7 @@ public class ServiceInstallServiceImpl implements ServiceInstallService {
         ServiceRoleStrategy serviceRoleHandler =
                 ServiceRoleStrategyContext.getServiceRoleHandler(serviceName);
         if (Objects.nonNull(serviceRoleHandler)) {
-            serviceRoleHandler.handlerConfig(clusterId, list);
+            serviceRoleHandler.handlerConfig(clusterId, list, ServiceRoleStrategyContext.getServiceName(serviceName));
         }
         // add variable
         FrameServiceEntity frameServiceEntity =
@@ -170,7 +170,7 @@ public class ServiceInstallServiceImpl implements ServiceInstallService {
             String variableValue = String.valueOf(serviceConfig.getValue());
             // add to global variable
             if (Constants.INPUT.equals(serviceConfig.getType())) {
-                addToGlobalVariable(clusterId, variableName, variableValue);
+                addToGlobalVariable(clusterId, serviceName, variableName, variableValue);
             }
             globalVariables.put(variableName, variableValue);
             map.put(serviceConfig.getName(), serviceConfig);
@@ -264,8 +264,10 @@ public class ServiceInstallServiceImpl implements ServiceInstallService {
             ServiceRoleStrategy serviceRoleHandler =
                     ServiceRoleStrategyContext.getServiceRoleHandler(
                             serviceRoleHostMapping.getServiceRole());
+            String serviceName = ServiceRoleStrategyContext.getServiceName(
+                    serviceRoleHostMapping.getServiceRole());
             if (Objects.nonNull(serviceRoleHandler)) {
-                serviceRoleHandler.handler(clusterId, serviceRoleHostMapping.getHosts());
+                serviceRoleHandler.handler(clusterId, serviceRoleHostMapping.getHosts(), serviceName);
             }
         }
 
@@ -627,17 +629,19 @@ public class ServiceInstallServiceImpl implements ServiceInstallService {
         }
     }
 
-    private void addToGlobalVariable(Integer clusterId, String variableName, String value) {
+    private void addToGlobalVariable(Integer clusterId, String serviceName, String variableName, String value) {
         ClusterVariable clusterVariable =
                 variableService.getVariableByVariableName(variableName, clusterId);
         if (Objects.nonNull(clusterVariable)) {
             if (!value.equals(clusterVariable.getVariableValue())) {
+                clusterVariable.setServiceName(serviceName);
                 clusterVariable.setVariableValue(value);
                 variableService.updateById(clusterVariable);
             }
         } else {
             clusterVariable = new ClusterVariable();
             clusterVariable.setClusterId(clusterId);
+            clusterVariable.setServiceName(serviceName);
             clusterVariable.setVariableName(variableName);
             clusterVariable.setVariableValue(value);
             variableService.save(clusterVariable);

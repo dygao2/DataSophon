@@ -29,15 +29,15 @@ import java.util.Map;
 public class TrinoHandlerStrategy implements ServiceRoleStrategy {
 
     @Override
-    public void handler(Integer clusterId, List<String> hosts) {
+    public void handler(Integer clusterId, List<String> hosts,String serviceName) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
         if (hosts.size() == 1) {
-            ProcessUtils.generateClusterVariable(globalVariables, clusterId, "${coordinatorHost}", hosts.get(0));
+            ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${coordinatorHost}", hosts.get(0));
         }
     }
 
     @Override
-    public void handlerConfig(Integer clusterId, List<ServiceConfig> list) {
+    public void handlerConfig(Integer clusterId, List<ServiceConfig> list,String serviceName) {
 
     }
 

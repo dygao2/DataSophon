@@ -48,17 +48,17 @@ public class RangerAdminHandlerStrategy extends ServiceHandlerAbstract implement
     private static final Logger logger = LoggerFactory.getLogger(RangerAdminHandlerStrategy.class);
 
     @Override
-    public void handler(Integer clusterId, List<String> hosts) {
+    public void handler(Integer clusterId, List<String> hosts, String serviceName) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
         if (hosts.size() == 1) {
             String rangerAdminUrl = "http://" + hosts.get(0) + ":6080";
             logger.info("rangerAdminUrl is {}", rangerAdminUrl);
-            ProcessUtils.generateClusterVariable(globalVariables, clusterId, "${rangerAdminUrl}", rangerAdminUrl);
+            ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${rangerAdminUrl}", rangerAdminUrl);
         }
     }
 
     @Override
-    public void handlerConfig(Integer clusterId, List<ServiceConfig> list) {
+    public void handlerConfig(Integer clusterId, List<ServiceConfig> list, String serviceName) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
         ClusterInfoEntity clusterInfo = ProcessUtils.getClusterInfo(clusterId);
         boolean enableKerberos = false;
@@ -67,22 +67,22 @@ public class RangerAdminHandlerStrategy extends ServiceHandlerAbstract implement
         for (ServiceConfig config : list) {
             if ("enableHDFSPlugin".equals(config.getName()) && ((Boolean) config.getValue()).booleanValue()) {
                 logger.info("enableHdfsPlugin");
-                ProcessUtils.generateClusterVariable(globalVariables, clusterId, "${enableHDFSPlugin}", "true");
+                ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${enableHDFSPlugin}", "true");
                 enableRangerPlugin(clusterId, "HDFS", "NameNode");
             }
             if ("enableHIVEPlugin".equals(config.getName()) && ((Boolean) config.getValue()).booleanValue()) {
                 logger.info("enableHivePlugin");
-                ProcessUtils.generateClusterVariable(globalVariables, clusterId, "${enableHIVEPlugin}", "true");
+                ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${enableHIVEPlugin}", "true");
                 enableRangerPlugin(clusterId, "HIVE", "HiveServer2");
             }
             if ("enableHBASEPlugin".equals(config.getName()) && ((Boolean) config.getValue()).booleanValue()) {
                 logger.info("enableHbasePlugin");
-                ProcessUtils.generateClusterVariable(globalVariables, clusterId, "${enableHBASEPlugin}", "true");
+                ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${enableHBASEPlugin}", "true");
                 enableRangerPlugin(clusterId, "HBASE", "HbaseMaster");
             }
             if (config.getName().contains("Plugin") && !(Boolean) config.getValue()) {
                 String configName = config.getName();
-                ProcessUtils.generateClusterVariable(globalVariables, clusterId, "${" + configName + "}", "false");
+                ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${" + configName + "}", "false");
             }
             if ("enableKerberos".equals(config.getName())) {
                 enableKerberos = isEnableKerberos(clusterId, globalVariables, enableKerberos, config, "RANGER");

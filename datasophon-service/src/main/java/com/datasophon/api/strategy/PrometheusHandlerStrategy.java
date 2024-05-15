@@ -45,12 +45,12 @@ import java.util.concurrent.TimeUnit;
 public class PrometheusHandlerStrategy implements ServiceRoleStrategy {
 
     @Override
-    public void handler(Integer clusterId, List<String> hosts) {
+    public void handler(Integer clusterId, List<String> hosts, String serviceName) {
 
     }
 
     @Override
-    public void handlerConfig(Integer clusterId, List<ServiceConfig> list) {
+    public void handlerConfig(Integer clusterId, List<ServiceConfig> list, String serviceName) {
 
     }
 

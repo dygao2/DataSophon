@@ -17,7 +17,6 @@
 
 package com.datasophon.api.strategy;
 
-import cn.hutool.core.util.ObjUtil;
 import com.datasophon.api.load.GlobalVariables;
 import com.datasophon.api.utils.ProcessUtils;
 import com.datasophon.common.model.ProcInfo;
@@ -38,12 +37,12 @@ public class FEObserverHandlerStartegy implements ServiceRoleStrategy {
     private static final Logger logger = LoggerFactory.getLogger(FEObserverHandlerStartegy.class);
 
     @Override
-    public void handler(Integer clusterId, List<String> hosts) {
+    public void handler(Integer clusterId, List<String> hosts, String serviceName) {
 
     }
 
     @Override
-    public void handlerConfig(Integer clusterId, List<ServiceConfig> list) {
+    public void handlerConfig(Integer clusterId, List<ServiceConfig> list, String serviceName) {
 
     }
 

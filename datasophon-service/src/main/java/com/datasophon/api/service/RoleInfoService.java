@@ -29,5 +29,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @date 2022-03-15 17:36:08
  */
 public interface RoleInfoService extends IService<RoleInfoEntity> {
-
+    
 }

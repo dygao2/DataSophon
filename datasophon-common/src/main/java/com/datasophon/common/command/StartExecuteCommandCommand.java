@@ -26,13 +26,13 @@ import lombok.Data;
 
 @Data
 public class StartExecuteCommandCommand implements Serializable {
-
+    
     private List<String> commandIds;
-
+    
     private Integer clusterId;
-
+    
     private CommandType commandType;
-
+    
     public StartExecuteCommandCommand(List<String> list, Integer clusterId, CommandType commandType) {
         this.commandIds = list;
         this.clusterId = clusterId;

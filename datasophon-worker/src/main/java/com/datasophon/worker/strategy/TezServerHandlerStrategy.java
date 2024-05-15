@@ -41,11 +41,11 @@ import java.util.Optional;
  * @author zhenqin
  */
 public class TezServerHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
-
+    
     public TezServerHandlerStrategy(String serviceName, String serviceRoleName) {
         super(serviceName, serviceRoleName);
     }
-
+    
     @Override
     public ExecResult handler(ServiceRoleOperateCommand command) {
         ServiceHandler serviceHandler = new ServiceHandler(command.getServiceName(), command.getServiceRoleName());
@@ -67,7 +67,7 @@ public class TezServerHandlerStrategy extends AbstractHandlerStrategy implements
             commands.add(tezLibParentDir);
             ExecResult execResult = ShellUtils.execWithStatus(workPath, commands, 90, logger);
             logger.info("mkdir {} output: {}", tezLibParentDir, execResult.getExecOut());
-
+            
             // 改变文件组权限
             if (Objects.nonNull(command.getRunAs()) && StringUtils.isNotBlank(command.getRunAs().getUser())) {
                 commands = new ArrayList<>();
@@ -82,7 +82,7 @@ public class TezServerHandlerStrategy extends AbstractHandlerStrategy implements
                 execResult = ShellUtils.execWithStatus(workPath, commands, 90, logger);
                 logger.info("chown {} output: {}", tezLibParentDir, execResult.getExecOut());
             }
-
+            
             logger.info("Start to execute hdfs dfs -put ./share/tez.tar.gz {}", tezLibParentDir);
             commands = new ArrayList<>();
             if (Objects.nonNull(command.getRunAs()) && StringUtils.isNotBlank(command.getRunAs().getUser())) {
@@ -102,7 +102,7 @@ public class TezServerHandlerStrategy extends AbstractHandlerStrategy implements
                 command.getDecompressPackageName(), command.getRunAs());
         return startResult;
     }
-
+    
     /**
      * tez 的元数据
      *
@@ -116,7 +116,7 @@ public class TezServerHandlerStrategy extends AbstractHandlerStrategy implements
                 conf.addResource(tezSiteFile.toURL());
                 logger.info("add tez-site file: {}", tezSiteFile.getAbsolutePath());
             }
-
+            
             // tez lib uri 启动清理
             String tezLibPath = conf.get("tez.lib.uris");
             return tezLibPath;

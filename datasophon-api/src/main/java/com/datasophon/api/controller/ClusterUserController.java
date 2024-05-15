@@ -30,49 +30,49 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("cluster/user")
 public class ClusterUserController {
-
+    
     @Autowired
     private ClusterUserService clusterUserService;
-
+    
     /**
      * 列表
      */
     @RequestMapping("/list")
     public Result list(Integer clusterId, String username, Integer page, Integer pageSize) {
-
+        
         return clusterUserService.listPage(clusterId, username, page, pageSize);
     }
-
+    
     /**
      * 信息
      */
     @RequestMapping("/info/{id}")
     public Result info(@PathVariable("id") Integer id) {
         ClusterUser clusterUser = clusterUserService.getById(id);
-
+        
         return Result.success().put("clusterUser", clusterUser);
     }
-
+    
     /**
      * 保存
      */
     @RequestMapping("/create")
     public Result save(Integer clusterId, String username, Integer mainGroupId, String otherGroupIds) {
-
+        
         return clusterUserService.create(clusterId, username, mainGroupId, otherGroupIds);
     }
-
+    
     /**
      * 修改
      */
     @RequestMapping("/update")
     public Result update(@RequestBody ClusterUser clusterUser) {
-
+        
         clusterUserService.updateById(clusterUser);
-
+        
         return Result.success();
     }
-
+    
     /**
      * 删除
      */
@@ -80,5 +80,5 @@ public class ClusterUserController {
     public Result delete(Integer id) {
         return clusterUserService.deleteClusterUser(id);
     }
-
+    
 }

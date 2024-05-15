@@ -40,10 +40,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 @Service("userInfoService")
 public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoEntity> implements UserInfoService {
-
+    
     @Autowired
     private UserInfoMapper userMapper;
-
+    
     @Override
     public UserInfoEntity queryUser(String username, String password) {
         String md5 = EncryptionUtils.getMd5(password);
@@ -51,7 +51,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoEnt
                 .eq(Constants.USERNAME, username)
                 .eq(Constants.PASSWORD, md5));
     }
-
+    
     @Override
     public Result createUser(UserInfoEntity userInfo) {
         // check all user params
@@ -75,7 +75,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoEnt
         this.save(userInfo);
         return Result.success();
     }
-
+    
     /**
      * @param userName
      * @param password
@@ -84,25 +84,25 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoEnt
      * @return if check failed return the field, otherwise return null
      */
     private String checkUserParams(String userName, String password, String email, String phone) {
-
+        
         String msg = null;
         if (!CheckUtils.checkUserName(userName)) {
-
+            
             msg = userName;
         } else if (!CheckUtils.checkPassword(password)) {
-
+            
             msg = password;
         } else if (!CheckUtils.checkEmail(email)) {
-
+            
             msg = email;
         } else if (!CheckUtils.checkPhone(phone)) {
-
+            
             msg = phone;
         }
-
+        
         return msg;
     }
-
+    
     @Override
     public Result getUserListByPage(String username, Integer page, Integer pageSize) {
         Integer offset = (page - 1) * pageSize;

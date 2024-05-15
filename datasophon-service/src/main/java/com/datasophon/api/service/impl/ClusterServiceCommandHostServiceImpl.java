@@ -39,17 +39,17 @@ public class ClusterServiceCommandHostServiceImpl
             ServiceImpl<ClusterServiceCommandHostMapper, ClusterServiceCommandHostEntity>
         implements
             ClusterServiceCommandHostService {
-
+    
     @Autowired
     private ClusterServiceCommandHostCommandService hostCommandService;
-
+    
     @Autowired
     private ClusterServiceCommandHostMapper hostMapper;
-
+    
     @Override
     public Result getCommandHostList(Integer clusterId, String commandId, Integer page, Integer pageSize) {
         Integer offset = (page - 1) * pageSize;
-
+        
         LambdaQueryChainWrapper<ClusterServiceCommandHostEntity> wrapper = this.lambdaQuery()
                 .eq(ClusterServiceCommandHostEntity::getCommandId, commandId);
         int total = wrapper.count();
@@ -60,20 +60,20 @@ public class ClusterServiceCommandHostServiceImpl
         for (ClusterServiceCommandHostEntity commandHostEntity : list) {
             commandHostEntity.setCommandStateCode(commandHostEntity.getCommandState().getValue());
         }
-
+        
         return Result.success(list).put(Constants.TOTAL, total);
     }
-
+    
     @Override
     public Integer getCommandHostSizeByCommandId(String commandId) {
         return this.lambdaQuery().eq(ClusterServiceCommandHostEntity::getCommandId, commandId).count();
     }
-
+    
     @Override
     public Integer getCommandHostTotalProgressByCommandId(String commandId) {
         return hostMapper.getCommandHostTotalProgressByCommandId(commandId);
     }
-
+    
     @Override
     public List<ClusterServiceCommandHostEntity> findFailedCommandHost(String commandId) {
         return this.lambdaQuery()
@@ -81,7 +81,7 @@ public class ClusterServiceCommandHostServiceImpl
                 .eq(ClusterServiceCommandHostEntity::getCommandState, CommandState.FAILED)
                 .list();
     }
-
+    
     @Override
     public List<ClusterServiceCommandHostEntity> findCanceledCommandHost(String commandId) {
         return this.lambdaQuery()
@@ -89,5 +89,5 @@ public class ClusterServiceCommandHostServiceImpl
                 .eq(ClusterServiceCommandHostEntity::getCommandState, CommandState.CANCEL)
                 .list();
     }
-
+    
 }

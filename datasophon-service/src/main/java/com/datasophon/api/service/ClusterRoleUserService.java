@@ -33,10 +33,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @date 2022-03-15 17:36:08
  */
 public interface ClusterRoleUserService extends IService<ClusterRoleUserEntity> {
-
+    
     boolean isClusterManager(Integer id, String clusterId);
-
+    
     Result saveClusterManager(Integer clusterId, String userIds);
-
+    
     List<UserInfoEntity> getAllClusterManagerByClusterId(Integer id);
 }

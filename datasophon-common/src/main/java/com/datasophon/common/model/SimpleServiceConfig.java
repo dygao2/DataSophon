@@ -23,9 +23,9 @@ import lombok.Data;
 
 @Data
 public class SimpleServiceConfig implements Serializable {
-
+    
     private String name;
-
+    
     private Object value;
-
+    
 }

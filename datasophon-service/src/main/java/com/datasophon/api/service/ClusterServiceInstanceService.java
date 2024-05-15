@@ -32,22 +32,22 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @date 2022-04-24 16:25:17
  */
 public interface ClusterServiceInstanceService extends IService<ClusterServiceInstanceEntity> {
-
+    
     ClusterServiceInstanceEntity getServiceInstanceByClusterIdAndServiceName(Integer clusterId, String parentName);
-
+    
     String getServiceConfigByClusterIdAndServiceName(Integer id, String node);
-
+    
     List<ClusterServiceInstanceEntity> listAll(Integer clusterId);
-
+    
     Result downloadClientConfig(Integer clusterId, String serviceName);
-
+    
     Result getServiceRoleType(Integer serviceInstanceId);
-
+    
     Result configVersionCompare(Integer serviceInstanceId, Integer roleGroupId);
-
+    
     Result delServiceInstance(Integer serviceInstanceId);
-
+    
     List<ClusterServiceInstanceEntity> listRunningServiceInstance(Integer clusterId);
-
+    
     boolean hasRunningRoleInstance(Integer serviceInstanceId);
 }

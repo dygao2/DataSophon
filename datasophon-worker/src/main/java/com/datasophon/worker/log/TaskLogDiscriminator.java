@@ -29,19 +29,19 @@ import ch.qos.logback.core.sift.AbstractDiscriminator;
  * Task Log Discriminator
  */
 public class TaskLogDiscriminator extends AbstractDiscriminator<ILoggingEvent> {
-
+    
     private static Logger logger = LoggerFactory.getLogger(TaskLogDiscriminator.class);
-
+    
     /**
      * key
      */
     private String key;
-
+    
     /**
      * log base
      */
     private String logBase;
-
+    
     /**
      * logger name should be like:
      * Task Logger name should be like: Task-{processDefinitionId}-{processInstanceId}-{taskInstanceId}
@@ -57,25 +57,25 @@ public class TaskLogDiscriminator extends AbstractDiscriminator<ILoggingEvent> {
             return "unknown_task";
         }
     }
-
+    
     @Override
     public void start() {
         started = true;
     }
-
+    
     @Override
     public String getKey() {
         return key;
     }
-
+    
     public void setKey(String key) {
         this.key = key;
     }
-
+    
     public String getLogBase() {
         return logBase;
     }
-
+    
     public void setLogBase(String logBase) {
         this.logBase = logBase;
     }

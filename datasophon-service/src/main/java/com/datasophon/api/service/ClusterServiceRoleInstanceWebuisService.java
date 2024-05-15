@@ -33,18 +33,18 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @date 2022-04-24 16:25:17
  */
 public interface ClusterServiceRoleInstanceWebuisService extends IService<ClusterServiceRoleInstanceWebuis> {
-
+    
     Result getWebUis(Integer serviceInstanceId);
-
+    
     void removeByServiceInsId(Integer serviceInstanceId);
-
+    
     void updateWebUiToActive(Integer id);
-
+    
     ClusterServiceRoleInstanceWebuis getRoleInstanceWebUi(Integer roleInstanceId);
-
+    
     void removeByRoleInsIds(ArrayList<Integer> needRemoveList);
-
+    
     void updateWebUiToStandby(Integer id);
-
+    
     List<ClusterServiceRoleInstanceWebuis> listWebUisByServiceInstanceId(Integer serviceInstanceId);
 }

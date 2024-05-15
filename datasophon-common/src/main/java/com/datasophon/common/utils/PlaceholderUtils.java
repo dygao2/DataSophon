@@ -28,9 +28,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PlaceholderUtils {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(PlaceholderUtils.class);
-
+    
     public static void main(String[] args) {
         HashMap<String, String> paramMap = new HashMap<>();
         paramMap.put("${apiHost}", "ddp1016");
@@ -62,17 +62,17 @@ public class PlaceholderUtils {
                 "      \"defaultValue\": \"${apiPort}\"\n" +
                 "    }\n" +
                 "  ]", paramMap, regex);
-
+        
         System.out.println(replacePlaceholders);
         List<String> newEquipmentNoList = PlaceholderUtils.getNewEquipmentNoList("001", "002");
         for (String s : newEquipmentNoList) {
             System.out.println(s);
         }
     }
-
+    
     public static String replacePlaceholders(String value,
                                              Map<String, String> paramsMap, String regex) {
-
+        
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(value);
         // 自旋进行最小匹配，直到无法匹配
@@ -86,11 +86,11 @@ public class PlaceholderUtils {
         }
         return value;
     }
-
+    
     public static List<String> getMatchValue(String value) {
         String regex = "\\[.*?\\]";
         ArrayList<String> list = new ArrayList<>();
-
+        
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(value);
         // 自旋进行最小匹配，直到无法匹配
@@ -101,7 +101,7 @@ public class PlaceholderUtils {
         }
         return list;
     }
-
+    
     public static List<String> getNewEquipmentNoList(String pre, String last) {
         int length = pre.length();
         ArrayList<String> list = new ArrayList<>();
@@ -116,5 +116,5 @@ public class PlaceholderUtils {
         }
         return list;
     }
-
+    
 }

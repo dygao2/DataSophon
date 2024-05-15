@@ -30,8 +30,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @date 2022-07-13 19:34:14
  */
 public interface ClusterYarnQueueService extends IService<ClusterYarnQueue> {
-
+    
     Result listByPage(Integer clusterId, Integer page, Integer pageSize);
-
+    
     Result refreshQueues(Integer clusterId) throws Exception;
 }

@@ -37,9 +37,9 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 
 public class LogActor extends UntypedActor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(LogActor.class);
-
+    
     @Override
     public void onReceive(Object msg) throws Throwable {
         if (msg instanceof GetLogCommand) {
@@ -51,7 +51,7 @@ public class LogActor extends UntypedActor {
             paramMap.put("${host}", hostName);
             String logFileName =
                     PlaceholderUtils.replacePlaceholders(command.getLogFile(), paramMap, Constants.REGEX_VARIABLE);
-
+            
             ExecResult execResult = new ExecResult();
             String logStr = "can not find log file";
             if (logFileName.startsWith(StrUtil.SLASH) && FileUtil.exist(logFileName)) {

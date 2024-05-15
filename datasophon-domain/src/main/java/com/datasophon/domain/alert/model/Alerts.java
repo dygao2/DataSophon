@@ -22,7 +22,7 @@ import lombok.Data;
 
 @Data
 public class Alerts {
-
+    
     private String status;
     private AlertLabels labels;
     private String startsAt;

@@ -43,10 +43,10 @@ public class ClusterServiceInstanceConfigServiceImpl
             ServiceImpl<ClusterServiceInstanceConfigMapper, ClusterServiceInstanceConfigEntity>
         implements
             ClusterServiceInstanceConfigService {
-
+    
     @Autowired
     private ClusterServiceRoleGroupConfigService roleGroupConfigService;
-
+    
     @Override
     public Result getServiceInstanceConfig(Integer serviceInstanceId, Integer version, Integer roleGroupId,
                                            Integer page, Integer pageSize) {
@@ -59,7 +59,7 @@ public class ClusterServiceInstanceConfigServiceImpl
         }
         return Result.success();
     }
-
+    
     @Override
     public ClusterServiceInstanceConfigEntity getServiceConfigByServiceId(Integer id) {
         return this.lambdaQuery()
@@ -68,10 +68,10 @@ public class ClusterServiceInstanceConfigServiceImpl
                 .last("limit 1")
                 .one();
     }
-
+    
     @Override
     public Result getConfigVersion(Integer serviceInstanceId, Integer roleGroupId) {
-
+        
         List<ClusterServiceRoleGroupConfig> list =
                 roleGroupConfigService.list(new QueryWrapper<ClusterServiceRoleGroupConfig>()
                         .eq(Constants.ROLE_GROUP_ID, roleGroupId)

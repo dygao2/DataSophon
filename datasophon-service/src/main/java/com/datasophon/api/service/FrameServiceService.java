@@ -32,16 +32,16 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @date 2022-03-15 17:36:08
  */
 public interface FrameServiceService extends IService<FrameServiceEntity> {
-
+    
     Result getAllFrameService(Integer clusterId);
-
+    
     Result getServiceListByServiceIds(List<Integer> serviceIds);
-
+    
     FrameServiceEntity getServiceByFrameIdAndServiceName(Integer id, String serviceName);
-
+    
     FrameServiceEntity getServiceByFrameCodeAndServiceName(String clusterFrame, String serviceName);
-
+    
     List<FrameServiceEntity> getAllFrameServiceByFrameCode(String clusterFrame);
-
+    
     List<FrameServiceEntity> listServices(String serviceIds);
 }

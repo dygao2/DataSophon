@@ -32,5 +32,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 @Mapper
 public interface ClusterAlertExpressionMapper extends BaseMapper<ClusterAlertExpression> {
-
+    
 }

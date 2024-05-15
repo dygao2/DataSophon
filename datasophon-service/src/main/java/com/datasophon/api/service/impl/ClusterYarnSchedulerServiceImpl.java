@@ -31,12 +31,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 public class ClusterYarnSchedulerServiceImpl extends ServiceImpl<ClusterYarnSchedulerMapper, ClusterYarnScheduler>
         implements
             ClusterYarnSchedulerService {
-
+    
     @Override
     public ClusterYarnScheduler getScheduler(Integer clusterId) {
         return this.getOne(new QueryWrapper<ClusterYarnScheduler>().eq(Constants.CLUSTER_ID, clusterId));
     }
-
+    
     @Override
     public void createDefaultYarnScheduler(Integer clusterId) {
         ClusterYarnScheduler scheduler = new ClusterYarnScheduler();

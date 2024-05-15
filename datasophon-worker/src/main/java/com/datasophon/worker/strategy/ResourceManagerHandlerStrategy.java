@@ -31,11 +31,11 @@ import java.sql.SQLException;
 import cn.hutool.core.io.FileUtil;
 
 public class ResourceManagerHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
-
+    
     public ResourceManagerHandlerStrategy(String serviceName, String serviceRoleName) {
         super(serviceName, serviceRoleName);
     }
-
+    
     @Override
     public ExecResult handler(ServiceRoleOperateCommand command) throws SQLException, ClassNotFoundException {
         ExecResult startResult = new ExecResult();

@@ -54,44 +54,44 @@ import akka.remote.AssociationErrorEvent;
 import akka.remote.DisassociatedEvent;
 
 public class WorkerApplicationServer {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(WorkerApplicationServer.class);
-
+    
     private static final String USER_DIR = "user.dir";
-
+    
     private static final String MASTER_HOST = "masterHost";
-
+    
     private static final String WORKER = "worker";
-
+    
     private static final String SH = "sh";
-
+    
     private static final String NODE = "node";
-
+    
     private static final String HADOOP = "hadoop";
-
+    
     public static void main(String[] args) throws UnknownHostException {
         String hostname = InetAddress.getLocalHost().getHostName();
         String workDir = System.getProperty(USER_DIR);
         String masterHost = PropertyUtils.getString(MASTER_HOST);
         String cpuArchitecture = ShellUtils.getCpuArchitecture();
-
+        
         CacheUtils.put(Constants.HOSTNAME, hostname);
         // init actor
         ActorSystem system = initActor(hostname);
         ActorUtils.setActorSystem(system);
-
+        
         subscribeRemoteEvent(system);
-
+        
         startNodeExporter(workDir, cpuArchitecture);
-
+        
         Map<String, String> userMap = new HashMap(16);
         initUserMap(userMap);
-
+        
         createDefaultUser(userMap);
-
+        
         tellToMaster(hostname, workDir, masterHost, cpuArchitecture, system);
         logger.info("start worker");
-
+        
         /*
          * registry hooks, which are called before the process exits
          */
@@ -104,7 +104,7 @@ public class WorkerApplicationServer {
                                     }
                                 }));
     }
-
+    
     private static void initUserMap(Map<String, String> userMap) {
         userMap.put("hdfs", HADOOP);
         userMap.put("yarn", HADOOP);
@@ -115,7 +115,7 @@ public class WorkerApplicationServer {
         userMap.put("flink", HADOOP);
         userMap.put("elastic", "elastic");
     }
-
+    
     private static void createDefaultUser(Map<String, String> userMap) {
         for (Map.Entry<String, String> entry : userMap.entrySet()) {
             String user = entry.getKey();
@@ -126,7 +126,7 @@ public class WorkerApplicationServer {
             UnixUtils.createUnixUser(user, group, null);
         }
     }
-
+    
     private static ActorSystem initActor(String hostname) {
         Config config = ConfigFactory.parseString("akka.remote.netty.tcp.hostname=" + hostname);
         ActorSystem system =
@@ -134,7 +134,7 @@ public class WorkerApplicationServer {
         system.actorOf(Props.create(WorkerActor.class), WORKER);
         return system;
     }
-
+    
     private static void subscribeRemoteEvent(ActorSystem system) {
         ActorRef remoteEventActor =
                 system.actorOf(Props.create(RemoteEventActor.class), "remoteEventActor");
@@ -143,7 +143,7 @@ public class WorkerApplicationServer {
         eventStream.subscribe(remoteEventActor, AssociatedEvent.class);
         eventStream.subscribe(remoteEventActor, DisassociatedEvent.class);
     }
-
+    
     private static void tellToMaster(
                                      String hostname,
                                      String workDir,
@@ -166,22 +166,22 @@ public class WorkerApplicationServer {
         startWorkerMessage.setHostname(hostname);
         workerStartActor.tell(startWorkerMessage, ActorRef.noSender());
     }
-
+    
     public static void close(String cause) {
         stopNodeExporter();
         logger.info("Worker server stopped");
     }
-
+    
     private static void stopNodeExporter() {
         String workDir = System.getProperty(USER_DIR);
         String cpuArchitecture = ShellUtils.getCpuArchitecture();
         operateNodeExporter(workDir, cpuArchitecture, "stop");
     }
-
+    
     private static void startNodeExporter(String workDir, String cpuArchitecture) {
         operateNodeExporter(workDir, cpuArchitecture, "restart");
     }
-
+    
     private static void operateNodeExporter(
                                             String workDir, String cpuArchitecture, String operate) {
         ArrayList<String> commands = new ArrayList<>();

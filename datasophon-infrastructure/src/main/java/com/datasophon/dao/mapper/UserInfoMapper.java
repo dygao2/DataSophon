@@ -33,6 +33,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 @Mapper
 public interface UserInfoMapper extends BaseMapper<UserInfoEntity> {
-
+    
     UserInfoEntity queryUserByToken(@Param("token") String token);
 }

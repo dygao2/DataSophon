@@ -59,24 +59,24 @@ public class ClusterServiceCommandHostCommandServiceImpl
             ServiceImpl<ClusterServiceCommandHostCommandMapper, ClusterServiceCommandHostCommandEntity>
         implements
             ClusterServiceCommandHostCommandService {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(ClusterServiceCommandHostCommandServiceImpl.class);
-
+    
     @Autowired
     ClusterServiceCommandHostCommandMapper hostCommandMapper;
-
+    
     @Autowired
     FrameServiceRoleService frameServiceRoleService;
-
+    
     @Autowired
     FrameServiceService frameService;
-
+    
     @Autowired
     ClusterInfoService clusterInfoService;
-
+    
     @Autowired
     ClusterServiceCommandService commandService;
-
+    
     @Override
     public Result getHostCommandList(String hostname, String commandHostId, Integer page, Integer pageSize) {
         Integer offset = (page - 1) * pageSize;
@@ -92,50 +92,50 @@ public class ClusterServiceCommandHostCommandServiceImpl
         }
         return Result.success(list).put(Constants.TOTAL, total);
     }
-
+    
     @Override
     public List<ClusterServiceCommandHostCommandEntity> getHostCommandListByCommandId(String commandId) {
         return this.lambdaQuery().eq(ClusterServiceCommandHostCommandEntity::getCommandId, commandId).list();
     }
-
+    
     @Override
     public ClusterServiceCommandHostCommandEntity getByHostCommandId(String hostCommandId) {
         return this.getOne(new QueryWrapper<ClusterServiceCommandHostCommandEntity>().eq(Constants.HOST_COMMAND_ID,
                 hostCommandId));
     }
-
+    
     @Override
     public void updateByHostCommandId(ClusterServiceCommandHostCommandEntity hostCommand) {
         this.update(hostCommand, new QueryWrapper<ClusterServiceCommandHostCommandEntity>()
                 .eq(Constants.HOST_COMMAND_ID, hostCommand.getHostCommandId()));
     }
-
+    
     @Override
     public Integer getHostCommandSizeByHostnameAndCommandHostId(String hostname, String commandHostId) {
         int size = this.count(new QueryWrapper<ClusterServiceCommandHostCommandEntity>()
                 .eq(Constants.HOSTNAME, hostname).eq(Constants.COMMAND_HOST_ID, commandHostId));
         return size;
     }
-
+    
     @Override
     public Integer getHostCommandTotalProgressByHostnameAndCommandHostId(String hostname, String commandHostId) {
         return hostCommandMapper.getHostCommandTotalProgressByHostnameAndCommandHostId(hostname, commandHostId);
     }
-
+    
     @Override
     public Result getHostCommandLog(Integer clusterId, String hostCommandId) throws Exception {
         ClusterInfoEntity clusterInfo = clusterInfoService.getById(clusterId);
-
+        
         ClusterServiceCommandHostCommandEntity hostCommand =
                 this.getOne(new QueryWrapper<ClusterServiceCommandHostCommandEntity>().eq(Constants.HOST_COMMAND_ID,
                         hostCommandId));
-
+        
         ClusterServiceCommandEntity commandEntity = commandService.getCommandById(hostCommand.getCommandId());
-
+        
         String serviceName = commandEntity.getServiceName();
         String serviceRoleName = hostCommand.getServiceRoleName();
         String logFile = String.format("%s/%s/%s.log", "logs", serviceName, serviceRoleName);
-
+        
         GetLogCommand command = new GetLogCommand();
         command.setLogFile(logFile);
         command.setDecompressPackageName("datasophon-worker");
@@ -150,7 +150,7 @@ public class ClusterServiceCommandHostCommandServiceImpl
         }
         return Result.success();
     }
-
+    
     @Override
     public List<ClusterServiceCommandHostCommandEntity> findFailedHostCommand(String hostname, String commandHostId) {
         return this.list(new QueryWrapper<ClusterServiceCommandHostCommandEntity>()
@@ -158,7 +158,7 @@ public class ClusterServiceCommandHostCommandServiceImpl
                 .eq(Constants.COMMAND_HOST_ID, commandHostId)
                 .eq(Constants.COMMAND_STATE, CommandState.FAILED));
     }
-
+    
     @Override
     public List<ClusterServiceCommandHostCommandEntity> findCanceledHostCommand(String hostname, String commandHostId) {
         return this.list(new QueryWrapper<ClusterServiceCommandHostCommandEntity>()

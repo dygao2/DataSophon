@@ -18,10 +18,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 @Component
 public class AlertHistoryGatewayImpl implements AlertHistoryGateway {
-
+    
     @Autowired
     private ClusterAlertHistoryMapper alertHistoryMapper;
-
+    
     @Override
     public boolean hasEnabledAlertHistory(String alertname, int clusterId, String hostname) {
         LambdaQueryWrapper<ClusterAlertHistory> queryWrapper = new LambdaQueryWrapper<>();
@@ -35,7 +35,7 @@ public class AlertHistoryGatewayImpl implements AlertHistoryGateway {
         }
         return false;
     }
-
+    
     @Override
     public AlertHistory getEnabledAlertHistory(String alertname, int clusterId, String hostname) {
         LambdaQueryWrapper<ClusterAlertHistory> queryWrapper = new LambdaQueryWrapper<>();
@@ -52,14 +52,14 @@ public class AlertHistoryGatewayImpl implements AlertHistoryGateway {
         }
         return null;
     }
-
+    
     @Override
     public void updateAlertHistoryToDisabled(Integer id) {
         ClusterAlertHistory clusterAlertHistory = alertHistoryMapper.selectById(id);
         clusterAlertHistory.setIsEnabled(2);
         alertHistoryMapper.updateById(clusterAlertHistory);
     }
-
+    
     @Override
     public boolean nodeHasWarnAlertList(String hostname, String serviceRoleName, Integer id) {
         LambdaQueryWrapper<ClusterAlertHistory> queryWrapper = new LambdaQueryWrapper<>();

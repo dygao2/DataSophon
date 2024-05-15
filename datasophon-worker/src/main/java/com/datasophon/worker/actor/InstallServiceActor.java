@@ -35,9 +35,9 @@ import org.slf4j.LoggerFactory;
 import akka.actor.UntypedActor;
 
 public class InstallServiceActor extends UntypedActor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(InstallServiceActor.class);
-
+    
     @Override
     public void onReceive(Object msg) throws Throwable {
         if (msg instanceof InstallServiceRoleCommand) {
@@ -45,7 +45,7 @@ public class InstallServiceActor extends UntypedActor {
             ExecResult installResult = new ExecResult();
             InstallServiceHandler serviceHandler = new InstallServiceHandler(command.getFrameCode(),
                     command.getServiceName(), command.getServiceRoleName());
-
+            
             logger.info("Start install package {}", command.getPackageName());
             if (command.getDecompressPackageName().contains("kerberos")) {
                 ArrayList<String> commands = new ArrayList<>();

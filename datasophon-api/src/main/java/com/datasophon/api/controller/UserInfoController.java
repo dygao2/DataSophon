@@ -41,10 +41,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 @RestController
 @RequestMapping("api/user")
 public class UserInfoController {
-
+    
     @Autowired
     private UserInfoService userInfoService;
-
+    
     /**
      * 列表带分页
      */
@@ -52,7 +52,7 @@ public class UserInfoController {
     public Result list(String username, Integer page, Integer pageSize) {
         return userInfoService.getUserListByPage(username, page, pageSize);
     }
-
+    
     /**
      * 查询所有用户
      */
@@ -61,27 +61,27 @@ public class UserInfoController {
         List<UserInfoEntity> list = userInfoService.lambdaQuery().ne(UserInfoEntity::getId, 1).list();
         return Result.success(list);
     }
-
+    
     /**
      * 信息
      */
     @RequestMapping("/info/{id}")
     public Result info(@PathVariable("id") Integer id) {
         UserInfoEntity userInfo = userInfoService.getById(id);
-
+        
         return Result.success().put(Constants.DATA, userInfo);
     }
-
+    
     /**
      * 保存
      */
     @RequestMapping("/save")
     @UserPermission
     public Result save(@RequestBody UserInfoEntity userInfo) {
-
+        
         return userInfoService.createUser(userInfo);
     }
-
+    
     /**
      * 修改
      */
@@ -100,10 +100,10 @@ public class UserInfoController {
         String password = userInfo.getPassword();
         userInfo.setPassword(EncryptionUtils.getMd5(password));
         userInfoService.updateById(userInfo);
-
+        
         return Result.success();
     }
-
+    
     /**
      * 删除
      */
@@ -118,8 +118,8 @@ public class UserInfoController {
             return Result.error(Status.USER_NO_OPERATION_PERM.getMsg());
         }
         userInfoService.removeByIds(Arrays.asList(ids));
-
+        
         return Result.success();
     }
-
+    
 }

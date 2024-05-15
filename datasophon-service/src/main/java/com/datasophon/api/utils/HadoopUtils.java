@@ -42,7 +42,7 @@ import akka.pattern.Patterns;
 import akka.util.Timeout;
 
 public class HadoopUtils {
-
+    
     public static ExecResult configQueueProp(ClusterInfoEntity clusterInfo,
                                              HashMap<Generators, List<ServiceConfig>> configFileMap,
                                              ClusterServiceRoleInstanceEntity roleInstanceEntity) throws Exception {
@@ -57,7 +57,7 @@ public class HadoopUtils {
         ExecResult execResult = configureHandler.handlerRequest(serviceRoleInfo);
         return execResult;
     }
-
+    
     public static ExecResult refreshQueuePropToYarn(ClusterInfoEntity clusterInfo, String hostname) throws Exception {
         ActorSelection execCmdActor = ActorUtils.actorSystem
                 .actorSelection("akka.tcp://datasophon@" + hostname + ":2552/user/worker/executeCmdActor");

@@ -23,7 +23,7 @@ import lombok.Data;
 
 @Data
 public class GenerateRackPropCommand implements Serializable {
-
+    
     private Integer clusterId;
-
+    
 }

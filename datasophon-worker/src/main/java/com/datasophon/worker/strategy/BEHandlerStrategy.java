@@ -30,19 +30,19 @@ import akka.actor.ActorRef;
 import cn.hutool.core.net.NetUtil;
 
 public class BEHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
-
+    
     public BEHandlerStrategy(String serviceName, String serviceRoleName) {
         super(serviceName, serviceRoleName);
     }
-
+    
     @Override
     public ExecResult handler(ServiceRoleOperateCommand command) {
         ExecResult startResult = new ExecResult();
         ServiceHandler serviceHandler = new ServiceHandler(command.getServiceName(), command.getServiceRoleName());
-
+        
         if (command.getCommandType().equals(CommandType.INSTALL_SERVICE)) {
             logger.info("add  be to cluster");
-
+            
             startResult = serviceHandler.start(command.getStartRunner(), command.getStatusRunner(),
                     command.getDecompressPackageName(), command.getRunAs());
             if (startResult.getExecResult()) {

@@ -23,7 +23,7 @@ import akka.actor.SupervisorStrategy;
 import akka.japi.Function;
 
 public class SupervisorFunction implements Function<Throwable, SupervisorStrategy.Directive> {
-
+    
     @Override
     public SupervisorStrategy.Directive apply(Throwable param) throws Exception {
         if (param instanceof ArithmeticException) {

@@ -45,14 +45,14 @@ import com.baomidou.mybatisplus.core.toolkit.Constants;
 import akka.actor.UntypedActor;
 
 public class RackActor extends UntypedActor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(RackActor.class);
-
+    
     @Override
     public void onReceive(Object msg) throws Throwable {
         if (msg instanceof GenerateRackPropCommand) {
             GenerateRackPropCommand command = (GenerateRackPropCommand) msg;
-
+            
             ClusterServiceRoleInstanceService roleInstanceService =
                     SpringTool.getApplicationContext().getBean(ClusterServiceRoleInstanceService.class);
             ClusterHostService hostService = SpringTool.getApplicationContext().getBean(ClusterHostService.class);
@@ -68,7 +68,7 @@ public class RackActor extends UntypedActor {
             generators.setFilename("rack.properties");
             generators.setOutputDirectory("etc/hadoop");
             generators.setConfigFormat("properties2");
-
+            
             ArrayList<ServiceConfig> serviceConfigs = new ArrayList<>();
             List<ClusterHostDO> hostList = hostService.list();
             for (ClusterHostDO clusterHostDO : hostList) {

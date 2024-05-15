@@ -32,14 +32,14 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @date 2022-06-24 15:10:41
  */
 public interface ClusterAlertQuotaService extends IService<ClusterAlertQuota> {
-
+    
     Result getAlertQuotaList(Integer clusterId, Integer alertGroupId, String quotaName, Integer page, Integer pageSize);
-
+    
     void start(Integer clusterId, String alertQuotaIds);
-
+    
     void stop(Integer clusterId, String alertQuotaIds);
-
+    
     void saveAlertQuota(ClusterAlertQuota clusterAlertQuota);
-
+    
     List<ClusterAlertQuota> listAlertQuotaByServiceName(String serviceName);
 }

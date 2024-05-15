@@ -32,22 +32,22 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @date 2022-04-12 11:28:06
  */
 public interface ClusterServiceCommandHostCommandService extends IService<ClusterServiceCommandHostCommandEntity> {
-
+    
     Result getHostCommandList(String hostname, String commandHostId, Integer page, Integer pageSize);
-
+    
     List<ClusterServiceCommandHostCommandEntity> getHostCommandListByCommandId(String id);
-
+    
     ClusterServiceCommandHostCommandEntity getByHostCommandId(String hostCommandId);
-
+    
     void updateByHostCommandId(ClusterServiceCommandHostCommandEntity hostCommand);
-
+    
     Integer getHostCommandSizeByHostnameAndCommandHostId(String hostname, String commandHostId);
-
+    
     Integer getHostCommandTotalProgressByHostnameAndCommandHostId(String hostname, String commandHostId);
-
+    
     Result getHostCommandLog(Integer clusterId, String hostCommandId) throws Exception;
-
+    
     List<ClusterServiceCommandHostCommandEntity> findFailedHostCommand(String hostname, String commandHostId);
-
+    
     List<ClusterServiceCommandHostCommandEntity> findCanceledHostCommand(String hostname, String commandHostId);
 }

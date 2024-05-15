@@ -25,14 +25,14 @@ import java.util.List;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 public interface ClusterNodeLabelService extends IService<ClusterNodeLabelEntity> {
-
+    
     Result saveNodeLabel(Integer clusterId, String nodeLabel);
-
+    
     Result deleteNodeLabel(Integer nodeLabelId);
-
+    
     Result assignNodeLabel(Integer nodeLabelId, String hostIds);
-
+    
     List<ClusterNodeLabelEntity> queryClusterNodeLabel(Integer clusterId);
-
+    
     void createDefaultNodeLabel(Integer id);
 }

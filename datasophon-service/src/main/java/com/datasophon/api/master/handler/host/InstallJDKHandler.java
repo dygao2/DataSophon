@@ -29,9 +29,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class InstallJDKHandler implements DispatcherWorkerHandler {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(InstallJDKHandler.class);
-
+    
     @Override
     public boolean handle(ClientSession session, HostInfo hostInfo) {
         hostInfo.setProgress(60);

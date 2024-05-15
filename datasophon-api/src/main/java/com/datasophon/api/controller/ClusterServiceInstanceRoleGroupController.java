@@ -34,10 +34,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 @RestController
 @RequestMapping("cluster/service/instance/role/group")
 public class ClusterServiceInstanceRoleGroupController {
-
+    
     @Autowired
     private ClusterServiceInstanceRoleGroupService clusterServiceInstanceRoleGroupService;
-
+    
     /**
      * 列表
      */
@@ -48,7 +48,7 @@ public class ClusterServiceInstanceRoleGroupController {
                         .eq(Constants.SERVICE_INSTANCE_ID, serviceInstanceId));
         return Result.success(list);
     }
-
+    
     /**
      * 信息
      */
@@ -56,10 +56,10 @@ public class ClusterServiceInstanceRoleGroupController {
     public Result info(@PathVariable("id") Integer id) {
         ClusterServiceInstanceRoleGroup clusterServiceInstanceRoleGroup =
                 clusterServiceInstanceRoleGroupService.getById(id);
-
+        
         return Result.success().put("clusterServiceInstanceRoleGroup", clusterServiceInstanceRoleGroup);
     }
-
+    
     /**
      * 保存
      */
@@ -68,7 +68,7 @@ public class ClusterServiceInstanceRoleGroupController {
         clusterServiceInstanceRoleGroupService.saveRoleGroup(serviceInstanceId, roleGroupId, roleGroupName);
         return Result.success();
     }
-
+    
     /**
      * 分配角色组
      */
@@ -76,25 +76,25 @@ public class ClusterServiceInstanceRoleGroupController {
     public Result bind(String roleInstanceIds, Integer roleGroupId) {
         return clusterServiceInstanceRoleGroupService.bind(roleInstanceIds, roleGroupId);
     }
-
+    
     /**
      * 修改
      */
     @RequestMapping("/rename")
     public Result update(Integer roleGroupId, String roleGroupName) {
-
+        
         return clusterServiceInstanceRoleGroupService.rename(roleGroupId, roleGroupName);
-
+        
     }
-
+    
     /**
      * 删除
      */
     @RequestMapping("/delete")
     public Result delete(Integer roleGroupId) {
         // clusterServiceInstanceRoleGroupService.removeByIds(Arrays.asList(ids));
-
+        
         return clusterServiceInstanceRoleGroupService.deleteRoleGroup(roleGroupId);
     }
-
+    
 }

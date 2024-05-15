@@ -68,37 +68,37 @@ public class ClusterServiceInstanceServiceImpl
             ServiceImpl<ClusterServiceInstanceMapper, ClusterServiceInstanceEntity>
         implements
             ClusterServiceInstanceService {
-
+    
     @Autowired
     private ClusterServiceInstanceMapper serviceInstanceMapper;
-
+    
     @Autowired
     private ClusterServiceRoleInstanceService roleInstanceService;
-
+    
     @Autowired
     private ClusterServiceDashboardService dashboardService;
-
+    
     @Autowired
     private ClusterInfoService clusterInfoService;
-
+    
     @Autowired
     private ClusterAlertHistoryService alertHistoryService;
-
+    
     @Autowired
     private FrameServiceRoleService frameServiceRoleService;
-
+    
     @Autowired
     private ClusterServiceRoleGroupConfigService roleGroupConfigService;
-
+    
     @Autowired
     private ClusterServiceInstanceRoleGroupService roleGroupService;
-
+    
     @Autowired
     private ClusterServiceRoleInstanceWebuisService webuisService;
-
+    
     @Autowired
     private ClusterVariableService variableService;
-
+    
     @Override
     public ClusterServiceInstanceEntity getServiceInstanceByClusterIdAndServiceName(Integer clusterId,
                                                                                     String serviceName) {
@@ -106,12 +106,12 @@ public class ClusterServiceInstanceServiceImpl
                 .eq(Constants.CLUSTER_ID, clusterId)
                 .eq(Constants.SERVICE_NAME, serviceName));
     }
-
+    
     @Override
     public String getServiceConfigByClusterIdAndServiceName(Integer clusterId, String serviceName) {
         return serviceInstanceMapper.getServiceConfigByClusterIdAndServiceName(clusterId, serviceName);
     }
-
+    
     @Override
     public List<ClusterServiceInstanceEntity> listAll(Integer clusterId) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
@@ -139,7 +139,7 @@ public class ClusterServiceInstanceServiceImpl
                 serviceInstance.setServiceState(ServiceState.WAIT_INSTALL);
                 needUpdate = true;
             }
-
+            
             // 查询停止状态角色
             List<ClusterServiceRoleInstanceEntity> roleList = roleInstanceService.lambdaQuery()
                     .eq(ClusterServiceRoleInstanceEntity::getServiceId, serviceInstance.getId())
@@ -175,7 +175,7 @@ public class ClusterServiceInstanceServiceImpl
                     needUpdate = true;
                 }
             }
-
+            
             // 查询是否进行了配置更新
             List<ClusterServiceRoleInstanceEntity> obsoleteRoleList =
                     roleInstanceService.getObsoleteService(serviceInstance.getId());
@@ -190,13 +190,13 @@ public class ClusterServiceInstanceServiceImpl
         }
         return list;
     }
-
+    
     @Override
     public Result downloadClientConfig(Integer clusterId, String serviceName) {
-
+        
         return null;
     }
-
+    
     @Override
     public Result getServiceRoleType(Integer serviceInstanceId) {
         ClusterServiceInstanceEntity serviceInstanceEntity = this.getById(serviceInstanceId);
@@ -204,7 +204,7 @@ public class ClusterServiceInstanceServiceImpl
         List<FrameServiceRoleEntity> list = frameServiceRoleService.getAllServiceRoleList(frameServiceId);
         return Result.success(list);
     }
-
+    
     @Override
     public Result configVersionCompare(Integer serviceInstanceId, Integer roleGroupId) {
         List<ClusterServiceRoleGroupConfig> list =
@@ -218,13 +218,13 @@ public class ClusterServiceInstanceServiceImpl
             String newConfigJson = newConfig.getConfigJson();
             List<SimpleServiceConfig> newSimpleServiceConfigs =
                     JSONArray.parseArray(newConfigJson, SimpleServiceConfig.class);
-
+            
             String oldConfigJson = oldConfig.getConfigJson();
             List<SimpleServiceConfig> oldSimpleServiceConfigs =
                     JSONArray.parseArray(oldConfigJson, SimpleServiceConfig.class);
             map.put("newConfig", newSimpleServiceConfigs);
             map.put("oldConfig", oldSimpleServiceConfigs);
-
+            
         } else if (list.size() == 1) {
             ClusterServiceRoleGroupConfig newConfig = list.get(0);
             String newConfigJson = newConfig.getConfigJson();
@@ -235,7 +235,7 @@ public class ClusterServiceInstanceServiceImpl
         }
         return Result.success(map);
     }
-
+    
     @Override
     public Result delServiceInstance(Integer serviceInstanceId) {
         if (hasRunningRoleInstance(serviceInstanceId)) {
@@ -249,7 +249,7 @@ public class ClusterServiceInstanceServiceImpl
                 roleGroupConfigService.listRoleGroupConfigsByRoleGroupIds(roleGroupIds);
         List<ClusterServiceRoleInstanceEntity> roleInstanceList =
                 roleInstanceService.getServiceRoleInstanceListByServiceId(serviceInstanceId);
-
+        
         // del role group
         roleGroupService.removeByIds(roleGroupIds);
         // del role group config
@@ -264,7 +264,7 @@ public class ClusterServiceInstanceServiceImpl
         }
         // del web uis
         webuisService.removeByServiceInsId(serviceInstanceId);
-
+        
         // del service instance
         this.removeById(serviceInstanceId);
         // del variable
@@ -280,14 +280,14 @@ public class ClusterServiceInstanceServiceImpl
         });
         return Result.success();
     }
-
+    
     @Override
     public List<ClusterServiceInstanceEntity> listRunningServiceInstance(Integer clusterId) {
         return this.list(new QueryWrapper<ClusterServiceInstanceEntity>()
                 .eq(Constants.CLUSTER_ID, clusterId)
                 .eq(Constants.SERVICE_STATE, ServiceState.RUNNING));
     }
-
+    
     public boolean hasRunningRoleInstance(Integer serviceInstanceId) {
         List<ClusterServiceRoleInstanceEntity> list =
                 roleInstanceService.getRunningServiceRoleInstanceListByServiceId(serviceInstanceId);

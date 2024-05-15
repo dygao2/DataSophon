@@ -26,9 +26,9 @@ import akka.remote.AssociationErrorEvent;
 import akka.remote.DisassociatedEvent;
 
 public class RemoteEventActor extends UntypedActor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(RemoteEventActor.class);
-
+    
     @Override
     public void onReceive(Object msg) throws Throwable {
         if (msg instanceof AssociationErrorEvent) {

@@ -31,12 +31,12 @@ import java.util.List;
 import java.util.Map;
 
 public class FlinkHandlerStrategy extends ServiceHandlerAbstract implements ServiceRoleStrategy {
-
+    
     @Override
     public void handler(Integer clusterId, List<String> hosts, String serviceName) {
-
+        
     }
-
+    
     @Override
     public void handlerConfig(Integer clusterId, List<ServiceConfig> list, String serviceName) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
@@ -49,7 +49,7 @@ public class FlinkHandlerStrategy extends ServiceHandlerAbstract implements Serv
                 enableKerberos = isEnableKerberos(clusterId, globalVariables, enableKerberos, serviceConfig, "FLINK");
             }
         }
-
+        
         for (ServiceConfig config : list) {
             if ("enableJMHA".equals(config.getName())) {
                 enableJM2HA = isEnableHA(clusterId, globalVariables, enableJM2HA, config, "FLINK");
@@ -63,31 +63,31 @@ public class FlinkHandlerStrategy extends ServiceHandlerAbstract implements Serv
         } else {
             removeConfigWithHA(list, map, configs);
         }
-
+        
         ArrayList<ServiceConfig> kbConfigs = new ArrayList<>();
         if (enableKerberos) {
             addConfigWithKerberos(globalVariables, map, configs, kbConfigs);
         } else {
             removeConfigWithKerberos(list, map, configs);
         }
-
+        
         list.addAll(haConfigs);
         list.addAll(kbConfigs);
     }
-
+    
     @Override
     public void getConfig(Integer clusterId, List<ServiceConfig> list) {
-
+        
     }
-
+    
     @Override
     public void handlerServiceRoleInfo(ServiceRoleInfo serviceRoleInfo, String hostname) {
-
+        
     }
-
+    
     @Override
     public void handlerServiceRoleCheck(ClusterServiceRoleInstanceEntity roleInstanceEntity,
                                         Map<String, ClusterServiceRoleInstanceEntity> map) {
-
+        
     }
 }

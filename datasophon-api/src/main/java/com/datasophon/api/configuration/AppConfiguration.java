@@ -41,12 +41,12 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
  */
 @Configuration
 public class AppConfiguration implements WebMvcConfigurer {
-
+    
     public static final String LOGIN_INTERCEPTOR_PATH_PATTERN = "/**/*";
     public static final String LOGIN_PATH_PATTERN = "/login";
     public static final String PATH_PATTERN = "/**";
     public static final String LOCALE_LANGUAGE_COOKIE = "language";
-
+    
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
@@ -57,12 +57,12 @@ public class AppConfiguration implements WebMvcConfigurer {
         configSource.registerCorsConfiguration(PATH_PATTERN, config);
         return new CorsFilter(configSource);
     }
-
+    
     @Bean
     public LoginHandlerInterceptor loginInterceptor() {
         return new LoginHandlerInterceptor();
     }
-
+    
     /**
      * Cookie
      * @return local resolver
@@ -77,17 +77,17 @@ public class AppConfiguration implements WebMvcConfigurer {
         localeResolver.setLanguageTagCompliant(false);
         return localeResolver;
     }
-
+    
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {
         return new LocaleChangeInterceptor();
     }
-
+    
     @Bean
     public UserPermissionHandler userPermissionHandler() {
         return new UserPermissionHandler();
     }
-
+    
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // i18n
@@ -104,7 +104,7 @@ public class AppConfiguration implements WebMvcConfigurer {
                         "/",
                         "/static/**");
     }
-
+    
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/**")
@@ -114,13 +114,13 @@ public class AppConfiguration implements WebMvcConfigurer {
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
         registry.addResourceHandler("/ui/**").addResourceLocations("file:ui/");
     }
-
+    
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/ui/").setViewName("forward:/ui/index.html");
         registry.addViewController("/").setViewName("index");
     }
-
+    
     /**
      * Turn off suffix-based content negotiation
      *
@@ -130,5 +130,5 @@ public class AppConfiguration implements WebMvcConfigurer {
     public void configureContentNegotiation(final ContentNegotiationConfigurer configurer) {
         configurer.favorPathExtension(false);
     }
-
+    
 }

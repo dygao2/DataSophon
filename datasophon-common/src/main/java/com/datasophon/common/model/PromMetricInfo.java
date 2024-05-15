@@ -27,22 +27,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Data
 public class PromMetricInfo {
-
+    
     /**
      * prometheus指标名称
      */
     @JsonProperty(value = "__name__")
     @JSONField(name = "__name__")
     private String name;
-
+    
     /**
      * prometheus实例名称
      */
     private String instance;
-
+    
     /**
      * prometheus任务名称
      */
     private String job;
-
+    
 }

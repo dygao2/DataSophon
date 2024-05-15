@@ -35,29 +35,29 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("api/cluster/user")
 public class ClusterRoleUserController {
-
+    
     @Autowired
     private ClusterRoleUserService clusterRoleUserService;
-
+    
     /**
      * 列表
      */
     @RequestMapping("/list")
     public Result list(@RequestParam Map<String, Object> params) {
-
+        
         return Result.success();
     }
-
+    
     /**
      * 信息
      */
     @RequestMapping("/info/{id}")
     public Result info(@PathVariable("id") Integer id) {
         ClusterRoleUserEntity clusterRoleUser = clusterRoleUserService.getById(id);
-
+        
         return Result.success().put("clusterRoleUser", clusterRoleUser);
     }
-
+    
     /**
      * 保存
      */
@@ -66,25 +66,25 @@ public class ClusterRoleUserController {
     public Result saveClusterManager(Integer clusterId, String userIds) {
         return clusterRoleUserService.saveClusterManager(clusterId, userIds);
     }
-
+    
     /**
      * 修改
      */
     @RequestMapping("/update")
     public Result update(@RequestBody ClusterRoleUserEntity clusterRoleUser) {
         clusterRoleUserService.updateById(clusterRoleUser);
-
+        
         return Result.success();
     }
-
+    
     /**
      * 删除
      */
     @RequestMapping("/delete")
     public Result delete(@RequestBody Integer[] ids) {
         clusterRoleUserService.removeByIds(Arrays.asList(ids));
-
+        
         return Result.success();
     }
-
+    
 }

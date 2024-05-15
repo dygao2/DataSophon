@@ -37,17 +37,17 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 @Service("frameInfoService")
 public class FrameInfoServiceImpl extends ServiceImpl<FrameInfoMapper, FrameInfoEntity> implements FrameInfoService {
-
+    
     @Autowired
     private FrameServiceService frameServiceService;
-
+    
     @Override
     public Result getAllClusterFrame() {
         List<FrameInfoEntity> frameInfoEntities = this.list();
         if (CollectionUtils.isEmpty(frameInfoEntities)) {
             return Result.success();
         }
-
+        
         Set<Integer> frameInfoIds = frameInfoEntities.stream().map(FrameInfoEntity::getId).collect(Collectors.toSet());
         Map<Integer, List<FrameServiceEntity>> frameServiceGroupBys = frameServiceService.lambdaQuery()
                 .select(FrameServiceEntity::getId, FrameServiceEntity::getFrameId, FrameServiceEntity::getFrameCode,
@@ -58,7 +58,7 @@ public class FrameInfoServiceImpl extends ServiceImpl<FrameInfoMapper, FrameInfo
                 .stream()
                 .collect(Collectors.groupingBy(FrameServiceEntity::getFrameId));
         frameInfoEntities.forEach(f -> f.setFrameServiceList(frameServiceGroupBys.get(f.getId())));
-
+        
         return Result.success(frameInfoEntities);
     }
 }

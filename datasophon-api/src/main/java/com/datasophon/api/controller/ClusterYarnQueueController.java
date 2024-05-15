@@ -39,10 +39,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 @RestController
 @RequestMapping("cluster/yarn/queue")
 public class ClusterYarnQueueController {
-
+    
     @Autowired
     private ClusterYarnQueueService clusterYarnQueueService;
-
+    
     /**
      * 列表
      */
@@ -50,7 +50,7 @@ public class ClusterYarnQueueController {
     public Result list(Integer clusterId, Integer page, Integer pageSize) {
         return clusterYarnQueueService.listByPage(clusterId, page, pageSize);
     }
-
+    
     /**
      * 刷新队列
      */
@@ -58,17 +58,17 @@ public class ClusterYarnQueueController {
     public Result refreshQueues(Integer clusterId) throws Exception {
         return clusterYarnQueueService.refreshQueues(clusterId);
     }
-
+    
     /**
      * 信息
      */
     @RequestMapping("/info/{id}")
     public Result info(@PathVariable("id") Integer id) {
         ClusterYarnQueue clusterYarnQueue = clusterYarnQueueService.getById(id);
-
+        
         return Result.success().put("clusterYarnQueue", clusterYarnQueue);
     }
-
+    
     /**
      * 保存
      */
@@ -81,29 +81,29 @@ public class ClusterYarnQueueController {
         }
         clusterYarnQueue.setCreateTime(new Date());
         clusterYarnQueueService.save(clusterYarnQueue);
-
+        
         return Result.success();
     }
-
+    
     /**
      * 修改
      */
     @RequestMapping("/update")
     public Result update(@RequestBody ClusterYarnQueue clusterYarnQueue) {
-
+        
         clusterYarnQueueService.updateById(clusterYarnQueue);
-
+        
         return Result.success();
     }
-
+    
     /**
      * 删除
      */
     @RequestMapping("/delete")
     public Result delete(@RequestBody Integer[] ids) {
         clusterYarnQueueService.removeByIds(Arrays.asList(ids));
-
+        
         return Result.success();
     }
-
+    
 }

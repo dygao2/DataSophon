@@ -52,28 +52,28 @@ import org.slf4j.LoggerFactory;
 import akka.actor.UntypedActor;
 
 public class MasterServiceActor extends UntypedActor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(MasterServiceActor.class);
-
+    
     @Override
     public void postStop() {
-
+        
         logger.info("{} service actor stopped ", getSelf().path().toString());
     }
-
+    
     @Override
     public void onReceive(Object message) {
         if (message instanceof ExecuteServiceRoleCommand) {
             ExecuteServiceRoleCommand executeServiceRoleCommand =
                     (ExecuteServiceRoleCommand) message;
-
+            
             ClusterServiceRoleGroupConfigService roleGroupConfigService =
                     SpringTool.getApplicationContext()
                             .getBean(ClusterServiceRoleGroupConfigService.class);
             ClusterServiceRoleInstanceService roleInstanceService =
                     SpringTool.getApplicationContext()
                             .getBean(ClusterServiceRoleInstanceService.class);
-
+            
             List<ServiceRoleInfo> serviceRoleInfoList = executeServiceRoleCommand.getMasterRoles();
             Collections.sort(serviceRoleInfoList);
             int successNum = 0;
@@ -120,7 +120,7 @@ public class MasterServiceActor extends UntypedActor {
                                     "start to install {} in host {}",
                                     serviceRoleInfo.getName(),
                                     serviceRoleInfo.getHostname());
-
+                            
                             execResult = ProcessUtils.startInstallService(serviceRoleInfo);
                             if (Objects.nonNull(execResult) && execResult.getExecResult()) {
                                 ProcessUtils.saveServiceInstallInfo(serviceRoleInfo);
@@ -149,7 +149,7 @@ public class MasterServiceActor extends UntypedActor {
                                             ServiceExecuteState.ERROR);
                                 }
                             }
-
+                            
                         } catch (Exception e) {
                             logger.info(
                                     "{} install failed in {}",
@@ -230,7 +230,7 @@ public class MasterServiceActor extends UntypedActor {
                                         executeServiceRoleCommand.getClusterId(),
                                         ServiceRoleState.STOP);
                             } else {
-
+                                
                                 if (ServiceRoleType.MASTER.equals(serviceRoleInfo.getRoleType())) {
                                     logger.info("{} stop failed", serviceRoleInfo.getParentName());
                                     ProcessUtils.tellCommandActorResult(
@@ -302,11 +302,11 @@ public class MasterServiceActor extends UntypedActor {
             unhandled(message);
         }
     }
-
+    
     private boolean isEnableRangerPlugin(Integer clusterId, String serviceName) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
         return globalVariables.containsKey("${enable" + serviceName + "Plugin}")
                 && "true".equals(globalVariables.get("${enable" + serviceName + "Plugin}"));
     }
-
+    
 }

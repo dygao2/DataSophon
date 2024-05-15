@@ -46,16 +46,16 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 public class FrameServiceServiceImpl extends ServiceImpl<FrameServiceMapper, FrameServiceEntity>
         implements
             FrameServiceService {
-
+    
     @Autowired
     ClusterInfoService clusterInfoService;
-
+    
     @Autowired
     FrameInfoMapper frameInfoMapper;
-
+    
     @Autowired
     ClusterServiceInstanceService serviceInstanceService;
-
+    
     @Override
     public Result getAllFrameService(Integer clusterId) {
         ClusterInfoEntity clusterInfo = clusterInfoService.getById(clusterId);
@@ -67,7 +67,7 @@ public class FrameServiceServiceImpl extends ServiceImpl<FrameServiceMapper, Fra
         setInstalled(clusterId, list);
         return Result.success(list);
     }
-
+    
     private void setInstalled(Integer clusterId, List<FrameServiceEntity> list) {
         for (FrameServiceEntity serviceEntity : list) {
             ClusterServiceInstanceEntity serviceInstance = serviceInstanceService
@@ -80,13 +80,13 @@ public class FrameServiceServiceImpl extends ServiceImpl<FrameServiceMapper, Fra
             }
         }
     }
-
+    
     @Override
     public Result getServiceListByServiceIds(List<Integer> serviceIds) {
         Collection<FrameServiceEntity> list = this.listByIds(serviceIds);
         return Result.success(list);
     }
-
+    
     @Override
     public FrameServiceEntity getServiceByFrameIdAndServiceName(Integer frameId, String serviceName) {
         return this.lambdaQuery()
@@ -94,23 +94,23 @@ public class FrameServiceServiceImpl extends ServiceImpl<FrameServiceMapper, Fra
                 .eq(FrameServiceEntity::getServiceName, serviceName)
                 .one();
     }
-
+    
     @Override
     public FrameServiceEntity getServiceByFrameCodeAndServiceName(String clusterFrame, String serviceName) {
         return this.getOne(new QueryWrapper<FrameServiceEntity>()
                 .eq(Constants.FRAME_CODE_1, clusterFrame)
                 .eq(Constants.SERVICE_NAME, serviceName));
     }
-
+    
     @Override
     public List<FrameServiceEntity> getAllFrameServiceByFrameCode(String clusterFrame) {
         return this.list(new QueryWrapper<FrameServiceEntity>().eq(Constants.FRAME_CODE_1, clusterFrame));
     }
-
+    
     @Override
     public List<FrameServiceEntity> listServices(String serviceIds) {
         List<String> ids = Arrays.stream(serviceIds.split(",")).collect(Collectors.toList());
         return this.lambdaQuery().in(FrameServiceEntity::getId, ids).list();
     }
-
+    
 }

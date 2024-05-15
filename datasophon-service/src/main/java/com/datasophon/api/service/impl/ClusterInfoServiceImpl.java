@@ -72,48 +72,48 @@ import akka.actor.ActorRef;
 public class ClusterInfoServiceImpl extends ServiceImpl<ClusterInfoMapper, ClusterInfoEntity>
         implements
             ClusterInfoService {
-
+    
     @Autowired
     private ClusterInfoMapper clusterInfoMapper;
-
+    
     @Autowired
     private ClusterRoleUserService clusterUserService;
-
+    
     @Autowired
     private AlertGroupService alertGroupService;
-
+    
     @Autowired
     private ClusterAlertGroupMapService groupMapService;
-
+    
     @Autowired
     private ConfigBean configBean;
-
+    
     @Autowired
     private FrameServiceService frameServiceService;
-
+    
     @Autowired
     private ClusterHostService clusterHostService;
-
+    
     @Autowired
     private ClusterYarnSchedulerService yarnSchedulerService;
-
+    
     @Autowired
     private ClusterNodeLabelService nodeLabelService;
-
+    
     @Autowired
     private ClusterQueueCapacityService queueCapacityService;
-
+    
     @Autowired
     private ClusterRackService rackService;
-
+    
     @Autowired
     private ClusterServiceInstanceService clusterServiceInstanceService;
-
+    
     @Override
     public ClusterInfoEntity getClusterByClusterCode(String clusterCode) {
         return clusterInfoMapper.getClusterByClusterCode(clusterCode);
     }
-
+    
     @Override
     public Result saveCluster(ClusterInfoEntity clusterInfo) {
         List<ClusterInfoEntity> list = this
@@ -133,19 +133,19 @@ public class ClusterInfoServiceImpl extends ServiceImpl<ClusterInfoMapper, Clust
             groupMapService.save(alertGroupMap);
         }
         // ProcessUtils.createServiceActor(clusterInfo);
-
+        
         yarnSchedulerService.createDefaultYarnScheduler(clusterInfo.getId());
-
+        
         nodeLabelService.createDefaultNodeLabel(clusterInfo.getId());
-
+        
         queueCapacityService.createDefaultQueue(clusterInfo.getId());
-
+        
         rackService.createDefaultRack(clusterInfo.getId());
-
+        
         putClusterVariable(clusterInfo);
         return Result.success();
     }
-
+    
     private void putClusterVariable(ClusterInfoEntity clusterInfo) {
         HashMap<String, String> globalVariables = new HashMap<>();
         List<FrameServiceEntity> frameServiceList =
@@ -159,10 +159,10 @@ public class ClusterInfoServiceImpl extends ServiceImpl<ClusterInfoMapper, Clust
         globalVariables.put("${apiPort}", configBean.getServerPort());
         globalVariables.put("${HADOOP_HOME}", Constants.INSTALL_PATH + Constants.SLASH
                 + PackageUtils.getServiceDcPackageName(clusterInfo.getClusterFrame(), "HDFS"));
-
+        
         GlobalVariables.put(clusterInfo.getId(), globalVariables);
     }
-
+    
     @Override
     public Result getClusterList() {
         List<ClusterInfoEntity> list = this.list();
@@ -174,14 +174,14 @@ public class ClusterInfoServiceImpl extends ServiceImpl<ClusterInfoMapper, Clust
         }
         return Result.success(list);
     }
-
+    
     @Override
     public Result runningClusterList() {
         List<ClusterInfoEntity> list =
                 this.list(new QueryWrapper<ClusterInfoEntity>().eq(Constants.CLUSTER_STATE, ClusterState.RUNNING));
         return Result.success(list);
     }
-
+    
     @Override
     public Result updateClusterState(Integer clusterId, Integer clusterState) {
         ClusterInfoEntity clusterInfo = this.getById(clusterId);
@@ -194,12 +194,12 @@ public class ClusterInfoServiceImpl extends ServiceImpl<ClusterInfoMapper, Clust
             return Result.error("未知状态");
         }
     }
-
+    
     @Override
     public List<ClusterInfoEntity> getClusterByFrameCode(String frameCode) {
         return this.list(new QueryWrapper<ClusterInfoEntity>().eq(Constants.CLUSTER_FRAME, frameCode));
     }
-
+    
     @Override
     public Result updateCluster(ClusterInfoEntity clusterInfo) {
         // 集群编码判重
@@ -218,12 +218,12 @@ public class ClusterInfoServiceImpl extends ServiceImpl<ClusterInfoMapper, Clust
         this.updateById(clusterInfo);
         return Result.success();
     }
-
+    
     @Override
     public void deleteCluster(List<Integer> ids) {
         Integer id = ids.get(0);
         ClusterInfoEntity clusterInfo = this.getById(id);
-
+        
         if (ClusterState.STOP.equals(clusterInfo.getClusterState())) {
             List<ClusterServiceInstanceEntity> serviceInstanceList = clusterServiceInstanceService.listAll(id);
             if (serviceInstanceList.stream()
@@ -231,7 +231,7 @@ public class ClusterInfoServiceImpl extends ServiceImpl<ClusterInfoMapper, Clust
                 ActorUtils.getLocalActor(
                         ClusterActor.class, "clusterActor")
                         .tell(new ClusterCommand(ClusterCommandType.DELETE, id), ActorRef.noSender());
-
+                
                 this.updateClusterState(id, ClusterState.DELETING.getValue());
             }
         }
@@ -240,7 +240,7 @@ public class ClusterInfoServiceImpl extends ServiceImpl<ClusterInfoMapper, Clust
             // delete host
             clusterHostService.removeHostByClusterId(id);
         }
-
+        
     }
-
+    
 }

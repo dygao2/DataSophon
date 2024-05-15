@@ -46,23 +46,23 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 public class AlertGroupServiceImpl extends ServiceImpl<AlertGroupMapper, AlertGroupEntity>
         implements
             AlertGroupService {
-
+    
     @Autowired
     private ClusterAlertGroupMapService alertGroupMapService;
-
+    
     @Autowired
     private ClusterAlertQuotaService quotaService;
-
+    
     @Override
     public Result getAlertGroupList(Integer clusterId, String alertGroupName, Integer page, Integer pageSize) {
         Integer offset = (page - 1) * pageSize;
-
+        
         List<ClusterAlertGroupMap> alertGroupMapList =
                 alertGroupMapService.list(new QueryWrapper<ClusterAlertGroupMap>().eq(Constants.CLUSTER_ID, clusterId));
         if (CollectionUtils.isEmpty(alertGroupMapList)) {
             return Result.successEmptyCount();
         }
-
+        
         List<Integer> groupIds =
                 alertGroupMapList.stream().map(ClusterAlertGroupMap::getAlertGroupId).collect(Collectors.toList());
         LambdaQueryChainWrapper<AlertGroupEntity> wrapper = this.lambdaQuery()
@@ -73,7 +73,7 @@ public class AlertGroupServiceImpl extends ServiceImpl<AlertGroupMapper, AlertGr
         if (CollectionUtils.isEmpty(alertGroupList)) {
             return Result.successEmptyCount();
         }
-
+        
         Set<Integer> alertGroupIdList =
                 alertGroupList.stream().map(AlertGroupEntity::getId).collect(Collectors.toSet());
         // 查询告警组下告警指标个数
@@ -88,10 +88,10 @@ public class AlertGroupServiceImpl extends ServiceImpl<AlertGroupMapper, AlertGr
                 a.setAlertQuotaNum(quotaCnt);
             });
         }
-
+        
         return Result.success(alertGroupList).put(Constants.TOTAL, count);
     }
-
+    
     @Override
     public Result saveAlertGroup(AlertGroupEntity alertGroup) {
         this.save(alertGroup);

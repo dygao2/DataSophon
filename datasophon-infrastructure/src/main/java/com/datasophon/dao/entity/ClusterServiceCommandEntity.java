@@ -30,9 +30,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @TableName("t_ddh_cluster_service_command")
 @Data
 public class ClusterServiceCommandEntity implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     /**
      * 主键
      */
@@ -53,7 +53,7 @@ public class ClusterServiceCommandEntity implements Serializable {
      * 命令状态 1：正在运行2：成功3：失败
      */
     private CommandState commandState;
-
+    
     @TableField(exist = false)
     private Integer commandStateCode;
     /**
@@ -72,12 +72,12 @@ public class ClusterServiceCommandEntity implements Serializable {
      * 命令类型
      */
     private Integer commandType;
-
+    
     @TableField(exist = false)
     private String durationTime;
-
+    
     private Date endTime;
-
+    
     private Integer serviceInstanceId;
-
+    
 }

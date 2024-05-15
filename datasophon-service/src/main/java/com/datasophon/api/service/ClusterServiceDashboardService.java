@@ -30,6 +30,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @date 2022-06-23 17:01:58
  */
 public interface ClusterServiceDashboardService extends IService<ClusterServiceDashboard> {
-
+    
     Result getDashboardUrl(Integer clusterId);
 }

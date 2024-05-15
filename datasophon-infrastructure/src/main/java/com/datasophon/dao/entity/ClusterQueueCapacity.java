@@ -27,15 +27,15 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @Data
 @TableName("t_ddh_cluster_queue_capacity")
 public class ClusterQueueCapacity implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     /**
      * 
      */
     @TableId
     private Integer id;
-
+    
     private Integer clusterId;
     /**
      * 
@@ -53,7 +53,7 @@ public class ClusterQueueCapacity implements Serializable {
      * 
      */
     private String aclUsers;
-
+    
     private String parent;
-
+    
 }

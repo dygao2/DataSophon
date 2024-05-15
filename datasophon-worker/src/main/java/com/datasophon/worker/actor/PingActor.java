@@ -31,9 +31,9 @@ import akka.actor.UntypedActor;
  * @author zhenqin
  */
 public class PingActor extends UntypedActor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(PingActor.class);
-
+    
     @Override
     public void onReceive(Object msg) throws Throwable {
         if (msg instanceof PingCommand) {

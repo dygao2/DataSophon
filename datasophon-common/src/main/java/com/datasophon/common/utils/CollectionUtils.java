@@ -42,11 +42,11 @@ import java.util.Set;
  * @since 1.0
  */
 public class CollectionUtils {
-
+    
     private CollectionUtils() {
         throw new IllegalStateException("CollectionUtils class");
     }
-
+    
     /**
      * Returns a new {@link Collection} containing <i>a</i> minus a subset of
      * <i>b</i>.  Only the elements of <i>b</i> that satisfy the predicate
@@ -67,20 +67,20 @@ public class CollectionUtils {
     public static <T> Collection<T> subtract(Set<T> a, Set<T> b) {
         return CollectionUtils.subtract(a, b);
     }
-
+    
     public static boolean isNotEmpty(Collection coll) {
         return !isEmpty(coll);
     }
-
+    
     public static boolean isEmpty(Collection coll) {
         return coll == null || coll.isEmpty();
     }
-
+    
     /**
      * The load factor used when none specified in constructor.
      */
     static final float DEFAULT_LOAD_FACTOR = 0.75f;
-
+    
     /**
      * String to map
      *
@@ -91,7 +91,7 @@ public class CollectionUtils {
     public static Map<String, String> stringToMap(String str, String separator) {
         return stringToMap(str, separator, "");
     }
-
+    
     /**
      * String to map
      *
@@ -125,24 +125,24 @@ public class CollectionUtils {
         }
         return map;
     }
-
+    
     /**
      * Helper class to easily access cardinality properties of two collections.
      *
      * @param <O> the element type
      */
     private static class CardinalityHelper<O> {
-
+        
         /**
          * Contains the cardinality for each object in collection A.
          */
         final Map<O, Integer> cardinalityA;
-
+        
         /**
          * Contains the cardinality for each object in collection B.
          */
         final Map<O, Integer> cardinalityB;
-
+        
         /**
          * Create a new CardinalityHelper for two collections.
          *
@@ -153,7 +153,7 @@ public class CollectionUtils {
             cardinalityA = CollectionUtils.<O>getCardinalityMap(a);
             cardinalityB = CollectionUtils.<O>getCardinalityMap(b);
         }
-
+        
         /**
          * Returns the frequency of this object in collection A.
          *
@@ -163,7 +163,7 @@ public class CollectionUtils {
         public int freqA(final Object obj) {
             return getFreq(obj, cardinalityA);
         }
-
+        
         /**
          * Returns the frequency of this object in collection B.
          *
@@ -173,7 +173,7 @@ public class CollectionUtils {
         public int freqB(final Object obj) {
             return getFreq(obj, cardinalityB);
         }
-
+        
         private int getFreq(final Object obj, final Map<?, Integer> freqMap) {
             final Integer count = freqMap.get(obj);
             if (count != null) {
@@ -182,7 +182,7 @@ public class CollectionUtils {
             return 0;
         }
     }
-
+    
     /**
      * returns {@code true} iff the given {@link Collection}s contain
      * exactly the same elements with exactly the same cardinalities.
@@ -196,14 +196,14 @@ public class CollectionUtils {
         if (a == null && b == null) {
             return true;
         }
-
+        
         if (a == null || b == null) {
             return false;
         }
-
+        
         return isEqualCollection(a, b);
     }
-
+    
     /**
      * Returns {@code true} iff the given {@link Collection}s contain
      * exactly the same elements with exactly the same cardinalities.
@@ -231,7 +231,7 @@ public class CollectionUtils {
         }
         return true;
     }
-
+    
     /**
      * Returns a {@link Map} mapping each unique element in the given
      * {@link Collection} to an {@link Integer} representing the number
@@ -251,7 +251,7 @@ public class CollectionUtils {
         }
         return count;
     }
-
+    
     /**
      * Removes certain attributes of each object in the list
      * @param originList origin list
@@ -282,5 +282,5 @@ public class CollectionUtils {
         }
         return instanceList;
     }
-
+    
 }

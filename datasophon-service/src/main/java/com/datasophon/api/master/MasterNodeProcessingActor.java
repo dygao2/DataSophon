@@ -13,9 +13,9 @@ import akka.actor.UntypedActor;
 import cn.hutool.json.JSONUtil;
 
 public class MasterNodeProcessingActor extends UntypedActor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(MasterNodeProcessingActor.class);
-
+    
     @Override
     public void onReceive(Object message) throws Throwable {
         logger.info("MasterNodeProcessingActor receive message: " + JSONUtil.toJsonStr(message));

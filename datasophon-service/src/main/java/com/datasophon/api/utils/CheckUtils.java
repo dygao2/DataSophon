@@ -28,11 +28,11 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class CheckUtils {
-
+    
     private CheckUtils() {
         throw new IllegalStateException("CheckUtils class");
     }
-
+    
     /**
      * check username
      *
@@ -42,7 +42,7 @@ public class CheckUtils {
     public static boolean checkUserName(String userName) {
         return regexChecks(userName, Constants.REGEX_USER_NAME);
     }
-
+    
     /**
      * check email
      *
@@ -53,10 +53,10 @@ public class CheckUtils {
         if (StringUtils.isEmpty(email)) {
             return false;
         }
-
+        
         return email.length() > 5 && email.length() <= 40 && regexChecks(email, Constants.REGEX_MAIL_NAME);
     }
-
+    
     /**
      * check project description
      *
@@ -74,7 +74,7 @@ public class CheckUtils {
         }
         return result;
     }
-
+    
     /**
      * check password
      *
@@ -84,7 +84,7 @@ public class CheckUtils {
     public static boolean checkPassword(String password) {
         return StringUtils.isNotEmpty(password) && password.length() >= 2 && password.length() <= 20;
     }
-
+    
     /**
      * check phone
      * phone can be empty.
@@ -95,7 +95,7 @@ public class CheckUtils {
     public static boolean checkPhone(String phone) {
         return StringUtils.isEmpty(phone) || phone.length() == 11;
     }
-
+    
     /**
      * check params
      *
@@ -111,7 +111,7 @@ public class CheckUtils {
                 CheckUtils.checkPassword(password) &&
                 CheckUtils.checkPhone(phone);
     }
-
+    
     /**
      * regex check
      *
@@ -123,7 +123,7 @@ public class CheckUtils {
         if (StringUtils.isEmpty(str)) {
             return false;
         }
-
+        
         return pattern.matcher(str).matches();
     }
 }

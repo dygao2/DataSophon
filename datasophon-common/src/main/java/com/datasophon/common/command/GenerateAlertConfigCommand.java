@@ -28,7 +28,7 @@ import lombok.Data;
 
 @Data
 public class GenerateAlertConfigCommand implements Serializable {
-
+    
     HashMap<Generators, List<AlertItem>> configFileMap;
     Integer clusterId;
 }

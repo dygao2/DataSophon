@@ -28,7 +28,7 @@ import lombok.Data;
  */
 @Data
 public class PingCommand implements Serializable {
-
+    
     private String message;
-
+    
 }

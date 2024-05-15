@@ -28,35 +28,35 @@ import lombok.Data;
  */
 @Data
 public class ComponentVO {
-
+    
     String name;
     String label;
     String version;
     String packageName;
     String hash;
     String md5;
-
+    
     /**
      * 系统架构，x86、x86_64、aarch64、RISC-V
      */
     String arch;
     String description;
-
+    
     /**
      * 支持的 frame 版本
      */
     String meta;
-
+    
     /**
      * 当前阶段：下载(download)、验证(valid)、安装(install)
      */
     String step;
-
+    
     /**
      * 当前状态，executing, success, fail
      */
     String state;
-
+    
     /**
      * 下载进度：0 - 1 之间
      */

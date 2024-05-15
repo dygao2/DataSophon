@@ -30,23 +30,23 @@ import lombok.Data;
 
 @Data
 public class InstallServiceRoleCommand extends BaseCommand implements Serializable {
-
+    
     private static final long serialVersionUID = -8610024764701745463L;
-
+    
     private Map<Generators, List<ServiceConfig>> cofigFileMap;
-
+    
     private Long deliveryId;
-
+    
     private Integer normalSize;
-
+    
     private String packageMd5;
-
+    
     private String decompressPackageName;
-
+    
     private RunAs runAs;
-
+    
     private ServiceRoleType serviceRoleType;
-
+    
     private List<Map<String, Object>> resourceStrategies;
-
+    
 }

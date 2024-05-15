@@ -63,15 +63,15 @@ import akka.util.Timeout;
 public class ClusterGroupServiceImpl extends ServiceImpl<ClusterGroupMapper, ClusterGroup>
         implements
             ClusterGroupService {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(ClusterGroupServiceImpl.class);
-
+    
     @Autowired
     private ClusterHostService hostService;
-
+    
     @Autowired
     private ClusterUserGroupService userGroupService;
-
+    
     @Override
     public Result saveClusterGroup(Integer clusterId, String groupName) {
         if (hasRepeatGroupName(clusterId, groupName)) {
@@ -81,7 +81,7 @@ public class ClusterGroupServiceImpl extends ServiceImpl<ClusterGroupMapper, Clu
         clusterGroup.setClusterId(clusterId);
         clusterGroup.setGroupName(groupName);
         this.save(clusterGroup);
-
+        
         List<ClusterHostDO> hostList = hostService.getHostListByClusterId(clusterId);
         for (ClusterHostDO clusterHost : hostList) {
             ActorRef unixGroupActor = ActorUtils.getRemoteActor(clusterHost.getHostname(), "unixGroupActor");
@@ -104,10 +104,10 @@ public class ClusterGroupServiceImpl extends ServiceImpl<ClusterGroupMapper, Clu
                         "create unix group " + groupName + " failed at " + clusterHost.getHostname());
             }
         }
-
+        
         return Result.success();
     }
-
+    
     private boolean hasRepeatGroupName(Integer clusterId, String groupName) {
         List<ClusterGroup> list = this.list(new QueryWrapper<ClusterGroup>()
                 .eq(Constants.CLUSTER_ID, clusterId)
@@ -117,7 +117,7 @@ public class ClusterGroupServiceImpl extends ServiceImpl<ClusterGroupMapper, Clu
         }
         return false;
     }
-
+    
     @Override
     public void refreshUserGroupToHost(Integer clusterId) {
         List<ClusterHostDO> hostList = hostService.getHostListByClusterId(clusterId);
@@ -126,7 +126,7 @@ public class ClusterGroupServiceImpl extends ServiceImpl<ClusterGroupMapper, Clu
             ProcessUtils.syncUserGroupToHosts(hostList, clusterGroup.getGroupName(), "groupadd");
         }
     }
-
+    
     @Override
     public Result deleteUserGroup(Integer id) {
         ClusterGroup clusterGroup = this.getById(id);
@@ -156,7 +156,7 @@ public class ClusterGroupServiceImpl extends ServiceImpl<ClusterGroupMapper, Clu
         }
         return Result.success();
     }
-
+    
     @Override
     public Result listPage(String groupName, Integer clusterId, Integer page, Integer pageSize) {
         Integer offset = (page - 1) * pageSize;
@@ -177,18 +177,18 @@ public class ClusterGroupServiceImpl extends ServiceImpl<ClusterGroupMapper, Clu
                 .eq(Constants.CLUSTER_ID, clusterId));
         return Result.success(list).put(Constants.TOTAL, total);
     }
-
+    
     @Override
     public List<ClusterGroup> listAllUserGroup(Integer clusterId) {
         return this.lambdaQuery().eq(ClusterGroup::getClusterId, clusterId).list();
     }
-
+    
     @Override
     public void createUnixGroupOnHost(String hostname, String groupName) {
         ActorRef unixGroupActor = ActorUtils.getRemoteActor(hostname, "unixGroupActor");
         createUnixGroup(hostname, unixGroupActor, groupName);
     }
-
+    
     private void createUnixGroup(String hostname, ActorRef unixGroupActor, String groupName) {
         CreateUnixGroupCommand createUnixGroupCommand = new CreateUnixGroupCommand();
         createUnixGroupCommand.setGroupName(groupName);

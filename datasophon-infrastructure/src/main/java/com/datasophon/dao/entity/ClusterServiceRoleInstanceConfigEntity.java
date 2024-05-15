@@ -29,9 +29,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @Data
 @TableName("t_ddh_cluster_service_role_instance_config")
 public class ClusterServiceRoleInstanceConfigEntity implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     /**
      * 主机
      */
@@ -42,13 +42,13 @@ public class ClusterServiceRoleInstanceConfigEntity implements Serializable {
      */
     @TableField("service_role_instance_id")
     private Integer serviceRoleInstanceId;
-
+    
     /**
      * 创建时间
      */
     @TableField("create_time")
     private Date createTime;
-
+    
     /**
      * 配置json
      */
@@ -59,17 +59,17 @@ public class ClusterServiceRoleInstanceConfigEntity implements Serializable {
      */
     @TableField("update_time")
     private Date updateTime;
-
+    
     /**
      * 配置json md5
      */
     @TableField("config_json_md5")
     private String configJsonMd5;
-
+    
     /**
      * 配置json版本
      */
     @TableField("config_json_version")
     private String configJsonVersion;
-
+    
 }

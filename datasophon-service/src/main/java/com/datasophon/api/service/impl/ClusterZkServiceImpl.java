@@ -32,15 +32,15 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 @Service("clusterZkService")
 public class ClusterZkServiceImpl extends ServiceImpl<ClusterZkMapper, ClusterZk> implements ClusterZkService {
-
+    
     @Autowired
     private ClusterZkMapper clusterZkMapper;
-
+    
     @Override
     public Integer getMaxMyId(Integer clusterId) {
         return clusterZkMapper.getMaxMyId(clusterId);
     }
-
+    
     @Override
     public List<ClusterZk> getAllZkServer(Integer clusterId) {
         return this.list(new QueryWrapper<ClusterZk>().eq(Constants.CLUSTER_ID, clusterId));

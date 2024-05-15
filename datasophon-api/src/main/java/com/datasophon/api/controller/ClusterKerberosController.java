@@ -35,10 +35,10 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("cluster/kerberos")
 public class ClusterKerberosController {
-
+    
     @Autowired
     private ClusterKerberosService kerberosService;
-
+    
     /**
      * download keytab
      */
@@ -47,7 +47,7 @@ public class ClusterKerberosController {
                                HttpServletResponse response) throws IOException {
         kerberosService.downloadKeytab(clusterId, principal, keytabName, hostname, response);
     }
-
+    
     /**
      * upload keytab
      */
@@ -56,5 +56,5 @@ public class ClusterKerberosController {
                            String keytabFileName) throws IOException {
         kerberosService.uploadKeytab(file, hostname, keytabFileName);
     }
-
+    
 }

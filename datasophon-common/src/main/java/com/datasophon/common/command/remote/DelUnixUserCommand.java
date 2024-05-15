@@ -23,7 +23,7 @@ import lombok.Data;
 
 @Data
 public class DelUnixUserCommand implements Serializable {
-
+    
     private String username;
-
+    
 }

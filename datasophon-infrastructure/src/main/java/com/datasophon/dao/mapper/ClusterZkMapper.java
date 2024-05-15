@@ -33,6 +33,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 @Mapper
 public interface ClusterZkMapper extends BaseMapper<ClusterZk> {
-
+    
     Integer getMaxMyId(@Param("clusterId") Integer clusterId);
 }

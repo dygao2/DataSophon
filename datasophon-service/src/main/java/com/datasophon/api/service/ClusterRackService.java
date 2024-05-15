@@ -32,12 +32,12 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @date 2022-11-25 11:31:59
  */
 public interface ClusterRackService extends IService<ClusterRack> {
-
+    
     List<ClusterRack> queryClusterRack(Integer clusterId);
-
+    
     void saveRack(Integer clusterId, String rack);
-
+    
     Result deleteRack(Integer rackId);
-
+    
     void createDefaultRack(Integer clusterId);
 }

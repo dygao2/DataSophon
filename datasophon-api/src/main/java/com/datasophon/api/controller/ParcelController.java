@@ -75,29 +75,29 @@ import cn.hutool.http.HttpUtil;
 @RestController
 @RequestMapping("/cluster/parcel")
 public class ParcelController implements DisposableBean {
-
+    
     /**
      * 组件下载进程缓存，不会安装太多组件的，直接采用内存
      */
     final Map<String, ComponentVO> componentCache = new ConcurrentHashMap<>();
-
+    
     /**
      * 异步操作的任务
      */
     final Map<String, CompletableFuture> asyncTaskCache = new ConcurrentHashMap<>();
-
+    
     @Autowired
     private FrameServiceService frameServiceService;
-
+    
     @Autowired
     private FrameInfoService frameInfoService;
-
+    
     @Autowired
     private ClusterInfoService clusterInfoService;
-
+    
     @Autowired
     LoadServiceMeta loadServiceMeta;
-
+    
     /**
      * 列表
      */
@@ -105,7 +105,7 @@ public class ParcelController implements DisposableBean {
     public Result list() {
         return Result.success("");
     }
-
+    
     /**
      * 解析 URL 中的 parcel 信息
      */
@@ -125,7 +125,7 @@ public class ParcelController implements DisposableBean {
         List<FrameInfoEntity> installFrames = frameInfoService.list();
         final Map<String, List<FrameInfoEntity>> frameCodeMapping =
                 installFrames.stream().collect(Collectors.groupingBy(FrameInfoEntity::getFrameCode));
-
+        
         try {
             JSONObject json = JSON.parseObject(httpGet(url));
             ParcelInfoVO parcelInfo = JSON.toJavaObject((JSONObject) json.get("parcel"), ParcelInfoVO.class);
@@ -138,9 +138,7 @@ public class ParcelController implements DisposableBean {
             if (parcelInfo.getComponents() != null && !parcelInfo.getComponents().isEmpty()) {
                 // 仅过滤支持的架构
                 final List<ComponentVO> componentVOS = parcelInfo.getComponents(); /*
-                                                                                    * .stream().filter(it -> { return
-                                                                                    * SystemUtils.OS_ARCH.
-                                                                                    * equalsIgnoreCase(it.getArch());
+                                                                                    * .stream().filter(it -> { return SystemUtils.OS_ARCH. equalsIgnoreCase(it.getArch());
                                                                                     * }).collect(Collectors.toList());
                                                                                     */
                 parcelInfo.setComponents(componentVOS);
@@ -153,7 +151,7 @@ public class ParcelController implements DisposableBean {
         }
         return Result.error("Invalid DHH Parcel Endpoint!");
     }
-
+    
     /**
      * 下载 Parcel
      */
@@ -173,7 +171,7 @@ public class ParcelController implements DisposableBean {
             List<FrameInfoEntity> installFrames = frameInfoService.list();
             final Map<String, List<FrameInfoEntity>> frameCodeMapping =
                     installFrames.stream().collect(Collectors.groupingBy(FrameInfoEntity::getFrameCode));
-
+            
             JSONObject json = JSONObject.parseObject(httpGet(url));
             final ParcelInfoVO parcelInfo = JSON.toJavaObject((JSONObject) json.get("parcel"), ParcelInfoVO.class);
             parcelInfo.setUrl(url);
@@ -182,7 +180,7 @@ public class ParcelController implements DisposableBean {
                 // 不支持的框架版本
                 return Result.error("Unsupported frame: " + parcelInfo.getMeta());
             }
-
+            
             if (parcelInfo.getComponents() != null && !parcelInfo.getComponents().isEmpty()) {
                 final List<ComponentVO> componentVOS = parcelInfo.getComponents().stream().filter(it -> {
                     return info.getParcelName().equals(it.getName());
@@ -196,7 +194,7 @@ public class ParcelController implements DisposableBean {
                 if (!ddhTmpDir.exists()) {
                     ddhTmpDir.mkdirs();
                 }
-
+                
                 // 开始下载，这里需要做成带进度
                 componentVO.setProcess(0.0f);
                 componentVO.setStep("download");
@@ -208,12 +206,12 @@ public class ParcelController implements DisposableBean {
                         // 开始下载，这里需要做成带进度
                         final AtomicDouble process = new AtomicDouble(0.0f);
                         File filePath = HttpUtil.downloadFileFromUrl(packagePath, ddhTmpDir, new StreamProgress() {
-
+                            
                             @Override
                             public void start() {
                                 log.info("start to download: {} to dir: {}", packagePath, ddhTmpDir.getAbsolutePath());
                             }
-
+                            
                             @Override
                             public void progress(long total, long progressSize) {
                                 float p = progressSize * 1.0f / total;
@@ -225,7 +223,7 @@ public class ParcelController implements DisposableBean {
                                     process.set(per + 0.1f);
                                 }
                             }
-
+                            
                             @Override
                             public void finish() {
                             }
@@ -263,7 +261,7 @@ public class ParcelController implements DisposableBean {
             return Result.error("download parcel error, Cause: " + e.getMessage());
         }
     }
-
+    
     /**
      * Install Parcel
      */
@@ -275,13 +273,13 @@ public class ParcelController implements DisposableBean {
         if (vo == null) {
             return Result.error("component: " + info.getPackageName() + " not found!");
         }
-
+        
         // 应用包
         File packageFile = new File(vo.getHash());
         if (!packageFile.exists()) {
             return Result.error("component: " + info.getPackageName() + " not found!");
         }
-
+        
         // 检验是否合法
         List<FrameInfoEntity> installFrames = frameInfoService.list();
         final Map<String, List<FrameInfoEntity>> frameCodeMapping =
@@ -293,7 +291,7 @@ public class ParcelController implements DisposableBean {
         }
         // 当前安装的框架
         final FrameInfoEntity frameInfo = frameInfoEntityList.get(0);
-
+        
         // 是否已经安装了组件？
         List<FrameServiceEntity> installService = frameServiceService.list(
                 Wrappers.<FrameServiceEntity>lambdaQuery()
@@ -309,7 +307,7 @@ public class ParcelController implements DisposableBean {
         if (installService != null && !installService.isEmpty()) {
             return Result.error("已经安装组件: " + vo.getName() + "-" + vo.getVersion());
         }
-
+        
         vo.setProcess(0.0f);
         vo.setStep("install");
         vo.setState("executing");
@@ -326,9 +324,9 @@ public class ParcelController implements DisposableBean {
                 vo.setProcess(0.3f);
                 vo.setStep("install");
                 vo.setState("executing");
-
+                
                 Thread.sleep(5000);
-
+                
                 // mv 到 /DDP/packages
                 File targetPackageFile = new File(Constants.MASTER_MANAGE_PACKAGE_PATH, packageFile.getName());
                 FileUtil.move(packageFile, targetPackageFile, true);
@@ -336,14 +334,14 @@ public class ParcelController implements DisposableBean {
                 File targetPackageFileMd5 = new File(Constants.MASTER_MANAGE_PACKAGE_PATH, packageFileMd5.getName());
                 FileUtil.move(packageFileMd5, targetPackageFileMd5, true);
                 log.info("move package md5 file to: {}", targetPackageFileMd5.getAbsolutePath());
-
+                
                 // 合法，开始安装
                 vo.setProcess(0.6f);
                 vo.setStep("install");
                 vo.setState("executing");
-
+                
                 Thread.sleep(5000);
-
+                
                 String frameCode = frameInfo.getFrameCode();
                 List<ClusterInfoEntity> clusters = clusterInfoService.list();
                 // service ddl 存在的目录，读取压缩包内的 meta 文件
@@ -368,7 +366,7 @@ public class ParcelController implements DisposableBean {
         // 返回安装，异步获取进度
         return Result.success(vo);
     }
-
+    
     /**
      * 获取 Process 进度，简易方案
      */
@@ -385,7 +383,7 @@ public class ParcelController implements DisposableBean {
         }
         return Result.success(vo);
     }
-
+    
     /**
      * http get
      * @param url
@@ -398,7 +396,7 @@ public class ParcelController implements DisposableBean {
         }
         return HttpUtil.get(url, 20000);
     }
-
+    
     /**
      * parcel name
      * @param url
@@ -408,15 +406,15 @@ public class ParcelController implements DisposableBean {
     private String getParcelPath(String url, String resourceName) {
         final URI uri = URI.create(url);
         final Path urlParentPath = Paths.get(uri.getPath()).getParent();
-
+        
         String urlStr = uri.toString();
         String prefix = urlStr.substring(0, urlStr.lastIndexOf(urlParentPath.toString()));
-
+        
         URI newUrl = "/".equals(urlParentPath.toString()) ? URI.create(prefix + urlParentPath.toString() + resourceName)
                 : URI.create(prefix + urlParentPath.toString() + "/" + resourceName);
         return newUrl.toString();
     }
-
+    
     /**
      * 当 api-server 停止时，结束没有完成的任务
      * @throws Exception

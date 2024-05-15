@@ -30,10 +30,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @date 2022-03-16 11:40:00
  */
 public interface SessionService extends IService<SessionEntity> {
-
+    
     SessionEntity getSession(HttpServletRequest request);
-
+    
     String createSession(UserInfoEntity user, String ip);
-
+    
     void signOut(String ip, UserInfoEntity loginUser);
 }

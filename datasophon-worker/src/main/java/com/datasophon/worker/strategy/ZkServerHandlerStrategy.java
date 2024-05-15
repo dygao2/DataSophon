@@ -27,11 +27,11 @@ import com.datasophon.worker.utils.KerberosUtils;
 import cn.hutool.core.io.FileUtil;
 
 public class ZkServerHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
-
+    
     public ZkServerHandlerStrategy(String serviceName, String serviceRoleName) {
         super(serviceName, serviceRoleName);
     }
-
+    
     @Override
     public ExecResult handler(ServiceRoleOperateCommand command) {
         ExecResult startResult = new ExecResult();
@@ -54,5 +54,5 @@ public class ZkServerHandlerStrategy extends AbstractHandlerStrategy implements 
         }
         return startResult;
     }
-
+    
 }

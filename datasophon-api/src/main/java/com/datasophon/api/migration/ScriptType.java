@@ -25,17 +25,17 @@ import lombok.Getter;
 
 @Getter
 public enum ScriptType {
-
+    
     UPGRADE("V"),
-
+    
     ROLLBACK("R");
-
+    
     private final String prefix;
-
+    
     ScriptType(String prefix) {
         this.prefix = prefix;
     }
-
+    
     public static ScriptType of(String version) {
         if (StringUtils.isBlank(version)) {
             return null;

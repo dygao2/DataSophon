@@ -50,15 +50,15 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ObjectUtil;
 
 public class DispatcherWorkerActor extends UntypedActor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(DispatcherWorkerActor.class);
-
+    
     @Override
     public void preRestart(Throwable reason, Option<Object> message) throws Exception {
         logger.info("host actor restart because {}", reason.getMessage());
         super.preRestart(reason, message);
     }
-
+    
     @Override
     public void onReceive(Object message) throws Throwable {
         DispatcherHostAgentCommand command = (DispatcherHostAgentCommand) message;
@@ -99,13 +99,13 @@ public class DispatcherWorkerActor extends UntypedActor {
                 CommonUtils.updateInstallState(InstallState.FAILED, hostInfo);
                 throw new RuntimeException("---- dispatcher manage node host agent failed ----");
             }
-
+            
         } else {
             handlerChain.addHandler(new UploadWorkerHandler());
             handlerChain.addHandler(new CheckWorkerMd5Handler());
             handlerChain.addHandler(new DecompressWorkerHandler());
         }
-
+        
         handlerChain.addHandler(new InstallJDKHandler());
         handlerChain.addHandler(
                 new StartWorkerHandler(command.getClusterId(), command.getClusterFrame()));

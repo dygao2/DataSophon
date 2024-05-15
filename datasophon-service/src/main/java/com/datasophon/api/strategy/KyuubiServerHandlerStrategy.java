@@ -36,18 +36,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class KyuubiServerHandlerStrategy extends ServiceHandlerAbstract implements ServiceRoleStrategy {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(KyuubiServerHandlerStrategy.class);
     private static final String ENABLE_KERBEROS = "enableKerberos";
-
+    
     @Override
     public void handler(Integer clusterId, List<String> hosts, String serviceName) {
-
+        
     }
-
+    
     @Override
     public void handlerConfig(Integer clusterId, List<ServiceConfig> list, String serviceName) {
-
+        
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
         boolean enableKerberos = false;
         Map<String, ServiceConfig> map = ProcessUtils.translateToMap(list);
@@ -70,20 +70,20 @@ public class KyuubiServerHandlerStrategy extends ServiceHandlerAbstract implemen
         }
         list.addAll(kbConfigs);
     }
-
+    
     @Override
     public void getConfig(Integer clusterId, List<ServiceConfig> list) {
-
+        
     }
-
+    
     @Override
     public void handlerServiceRoleInfo(ServiceRoleInfo serviceRoleInfo, String hostname) {
-
+        
     }
-
+    
     @Override
     public void handlerServiceRoleCheck(ClusterServiceRoleInstanceEntity roleInstanceEntity,
                                         Map<String, ClusterServiceRoleInstanceEntity> map) {
     }
-
+    
 }

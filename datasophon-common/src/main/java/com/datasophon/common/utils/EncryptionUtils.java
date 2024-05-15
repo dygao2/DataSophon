@@ -24,7 +24,7 @@ import org.apache.commons.lang3.StringUtils;
  * encryption utils
  */
 public class EncryptionUtils {
-
+    
     /**
      *
      * @param rawStr raw string
@@ -33,5 +33,5 @@ public class EncryptionUtils {
     public static String getMd5(String rawStr) {
         return DigestUtils.md5Hex(null == rawStr ? StringUtils.EMPTY : rawStr);
     }
-
+    
 }

@@ -32,12 +32,12 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @date 2022-06-07 12:04:38
  */
 public interface ClusterAlertHistoryService extends IService<ClusterAlertHistory> {
-
+    
     void saveAlertHistory(String alertMessage);
-
+    
     Result getAlertList(Integer serviceInstanceId);
-
+    
     Result getAllAlertList(Integer clusterId, Integer page, Integer pageSize);
-
+    
     void removeAlertByRoleInstanceIds(List<Integer> ids);
 }

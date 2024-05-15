@@ -62,12 +62,12 @@ import cn.hutool.core.bean.BeanUtil;
 public class ClusterYarnQueueServiceImpl extends ServiceImpl<ClusterYarnQueueMapper, ClusterYarnQueue>
         implements
             ClusterYarnQueueService {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(ClusterYarnQueueServiceImpl.class);
-
+    
     @Autowired
     private ClusterServiceRoleInstanceService roleInstanceService;
-
+    
     @Override
     public Result listByPage(Integer clusterId, Integer page, Integer pageSize) {
         Integer offset = (page - 1) * pageSize;
@@ -85,7 +85,7 @@ public class ClusterYarnQueueServiceImpl extends ServiceImpl<ClusterYarnQueueMap
         }
         return Result.success(list).put(Constants.TOTAL, count);
     }
-
+    
     @Override
     public Result refreshQueues(Integer clusterId) throws Exception {
         List<ClusterYarnQueue> list = this.list(new QueryWrapper<ClusterYarnQueue>()
@@ -93,7 +93,7 @@ public class ClusterYarnQueueServiceImpl extends ServiceImpl<ClusterYarnQueueMap
         // 查询resourcemanager节点
         List<ClusterServiceRoleInstanceEntity> roleList =
                 roleInstanceService.getServiceRoleInstanceListByClusterIdAndRoleName(clusterId, "ResourceManager");
-
+        
         // 构建configfilemap
         HashMap<Generators, List<ServiceConfig>> configFileMap = new HashMap<>();
         Generators generators = new Generators();
@@ -101,7 +101,7 @@ public class ClusterYarnQueueServiceImpl extends ServiceImpl<ClusterYarnQueueMap
         generators.setOutputDirectory("etc/hadoop");
         generators.setConfigFormat("custom");
         generators.setTemplateName("fair-scheduler.ftl");
-
+        
         ArrayList<ServiceConfig> serviceConfigs = new ArrayList<>();
         ServiceConfig config = new ServiceConfig();
         ArrayList<JSONObject> queueList = new ArrayList<>();
@@ -119,7 +119,7 @@ public class ClusterYarnQueueServiceImpl extends ServiceImpl<ClusterYarnQueueMap
         config.setConfigType("map");
         config.setRequired(true);
         serviceConfigs.add(config);
-
+        
         configFileMap.put(generators, serviceConfigs);
         String hostname = "";
         for (ClusterServiceRoleInstanceEntity roleInstanceEntity : roleList) {

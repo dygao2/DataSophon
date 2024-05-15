@@ -12,13 +12,13 @@ import akka.actor.ActorSystem;
 import akka.util.Timeout;
 
 public class ActorUtils {
-
+    
     private static ActorSystem actorSystem;
-
+    
     public static void setActorSystem(ActorSystem actorSystem) {
         ActorUtils.actorSystem = actorSystem;
     }
-
+    
     public static ActorRef getRemoteActor(String hostname, String actorName) {
         String actorPath = "akka.tcp://datasophon@" + hostname + ":2551/user/" + actorName;
         ActorSelection actorSelection = actorSystem.actorSelection(actorPath);
@@ -30,7 +30,7 @@ public class ActorUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        
         return actorRef;
     }
 }

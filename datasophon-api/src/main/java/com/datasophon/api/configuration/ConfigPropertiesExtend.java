@@ -28,11 +28,11 @@ import org.springframework.util.CollectionUtils;
 
 @Slf4j
 public class ConfigPropertiesExtend implements EnvironmentPostProcessor {
-
+    
     private static final String CONFIG_HOME = "conf/datasophon.conf";
-
+    
     private static final String DEFAULT_APPLICATION_CONFIG = "conf/profiles/application-config.yml";
-
+    
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
         MutablePropertySources propertySources = environment.getPropertySources();
@@ -40,7 +40,7 @@ public class ConfigPropertiesExtend implements EnvironmentPostProcessor {
         checkProfile(environment);
         propertySources.addFirst(new PropertiesPropertySource("datasophonConfig", properties));
     }
-
+    
     private Properties loadCustomProperties() {
         Properties properties = new Properties();
         File file = new File(FileUtils.concatPath(System.getProperty("user.dir"), CONFIG_HOME));
@@ -64,7 +64,7 @@ public class ConfigPropertiesExtend implements EnvironmentPostProcessor {
         }
         return properties;
     }
-
+    
     private void checkProfile(ConfigurableEnvironment environment) {
         List<String> activeProfiles = Arrays.asList(environment.getActiveProfiles());
         if (!activeProfiles.isEmpty() && !Collections.singletonList("config").containsAll(activeProfiles)) {

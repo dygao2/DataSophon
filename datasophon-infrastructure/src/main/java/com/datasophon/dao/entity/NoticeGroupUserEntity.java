@@ -24,9 +24,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 @TableName("t_ddh_notice_group_user")
 public class NoticeGroupUserEntity implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     /**
      * 主键
      */
@@ -40,5 +40,5 @@ public class NoticeGroupUserEntity implements Serializable {
      * 用户id
      */
     private Integer userId;
-
+    
 }

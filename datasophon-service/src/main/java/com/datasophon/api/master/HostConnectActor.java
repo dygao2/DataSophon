@@ -37,15 +37,15 @@ import akka.actor.UntypedActor;
 import cn.hutool.core.util.ObjectUtil;
 
 public class HostConnectActor extends UntypedActor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(HostConnectActor.class);
-
+    
     @Override
     public void preRestart(Throwable reason, Option<Object> message) throws Exception {
         logger.info("or restart because {}", reason.getMessage());
         super.preRestart(reason, message);
     }
-
+    
     @Override
     public void onReceive(Object message) throws Throwable {
         if (message instanceof HostCheckCommand) {

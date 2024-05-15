@@ -30,27 +30,27 @@ import lombok.Data;
  */
 @Data
 public class WorkerServiceMessage implements Serializable {
-
+    
     /**
      * 节点名称
      */
     private String hostname;
-
+    
     /**
      * Cluster ID
      */
     private Integer clusterId;
-
+    
     /**
      * 节点 IP
      */
     private String ip;
-
+    
     private CommandType commandType;
-
+    
     public WorkerServiceMessage() {
     }
-
+    
     public WorkerServiceMessage(String hostname, Integer clusterId, CommandType commandType) {
         this.hostname = hostname;
         this.clusterId = clusterId;

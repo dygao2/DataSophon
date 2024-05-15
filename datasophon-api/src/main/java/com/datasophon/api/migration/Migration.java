@@ -35,28 +35,28 @@ import org.springframework.core.io.Resource;
 @Data
 @NoArgsConstructor
 public class Migration implements Comparable<Migration> {
-
+    
     private String version;
-
+    
     private String executeUser;
-
+    
     private Date executeDate;
-
+    
     private boolean success;
-
+    
     private Resource upgradeDDLFile;
-
+    
     private Resource upgradeDMLFile;
-
+    
     private Resource rollbackFile;
-
+    
     public Migration(String version, Resource upgradeDDLFile, Resource upgradeDMLFile, Resource rollbackFile) {
         this.version = version;
         this.upgradeDDLFile = upgradeDDLFile;
         this.upgradeDMLFile = upgradeDMLFile;
         this.rollbackFile = rollbackFile;
     }
-
+    
     @Override
     public int compareTo(Migration other) {
         int[] otherId = Arrays.stream(other.getVersion().split("\\.")).mapToInt(Integer::valueOf).toArray();
@@ -71,7 +71,7 @@ public class Migration implements Comparable<Migration> {
         }
         return 0;
     }
-
+    
     public static boolean isMigrationFile(Resource resource) {
         if (resource == null) {
             return false;
@@ -85,7 +85,7 @@ public class Migration implements Comparable<Migration> {
         }
         return name.startsWith(ScriptType.ROLLBACK.getPrefix()) || name.startsWith(ScriptType.UPGRADE.getPrefix());
     }
-
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -97,7 +97,7 @@ public class Migration implements Comparable<Migration> {
         Migration migration = (Migration) o;
         return version.equals(migration.version);
     }
-
+    
     @Override
     public int hashCode() {
         return Objects.hash(version);

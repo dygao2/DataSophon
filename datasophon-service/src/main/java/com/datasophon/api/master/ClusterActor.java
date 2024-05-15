@@ -58,11 +58,11 @@ import cn.hutool.extra.spring.SpringUtil;
  * 节点状态监测
  */
 public class ClusterActor extends UntypedActor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(ClusterActor.class);
-
+    
     private static final String DEPRECATED = "Deprecated";
-
+    
     @Override
     public void onReceive(Object msg) throws Throwable {
         if (msg instanceof ClusterCommand) {
@@ -71,15 +71,15 @@ public class ClusterActor extends UntypedActor {
                     SpringUtil.getBean(ClusterServiceRoleInstanceService.class);
             ClusterInfoService clusterInfoService =
                     SpringUtil.getBean(ClusterInfoService.class);
-
+            
             // Host or cluster
             final ClusterCommand clusterCommand = (ClusterCommand) msg;
-
+            
             if (ClusterCommandType.CHECK.equals(clusterCommand.getCommandType())) {
                 // 获取所有集群
                 Result result = clusterInfoService.getClusterList();
                 List<ClusterInfoEntity> clusterList = (List<ClusterInfoEntity>) result.getData();
-
+                
                 for (ClusterInfoEntity clusterInfoEntity : clusterList) {
                     // 获取集群上正在运行的服务
                     int clusterId = clusterInfoEntity.getId();
@@ -94,10 +94,10 @@ public class ClusterActor extends UntypedActor {
                                 clusterInfoService.updateClusterState(clusterId, ClusterState.RUNNING.getValue());
                             }
                         }
-
+                        
                     }
                 }
-
+                
             } else if (ClusterCommandType.DELETE.equals(clusterCommand.getCommandType())) {
                 Integer clusterId = clusterCommand.getClusterId();
                 if (Objects.nonNull(clusterId)) {
@@ -110,7 +110,7 @@ public class ClusterActor extends UntypedActor {
                                 SpringUtil.getBean(ClusterServiceRoleInstanceService.class);
                         ClusterServiceRoleGroupConfigService clusterServiceRoleGroupConfigService =
                                 SpringUtil.getBean(ClusterServiceRoleGroupConfigService.class);
-
+                        
                         // 检查服务实例配置与目录
                         List<ClusterServiceRoleInstanceEntity> roleInstanceList =
                                 clusterServiceRoleInstanceService.getServiceRoleInstanceListByClusterId(clusterId);
@@ -154,7 +154,7 @@ public class ClusterActor extends UntypedActor {
                                     configFileMap.remove(configFile.getKey());
                                 }
                             }
-
+                            
                             if (!configFileMap.isEmpty()) {
                                 // 分发重命名命令
                                 ExecResult execResult = new ExecResult();
@@ -177,7 +177,7 @@ public class ClusterActor extends UntypedActor {
                                                 hostname);
                                         return;
                                     }
-
+                                    
                                 } catch (Exception e) {
                                     logger.info(
                                             "{} uninstall failed in {}",

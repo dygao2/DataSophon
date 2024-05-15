@@ -31,12 +31,12 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @date 2022-08-16 16:56:01
  */
 public interface ClusterServiceRoleGroupConfigService extends IService<ClusterServiceRoleGroupConfig> {
-
+    
     ClusterServiceRoleGroupConfig getConfigByRoleGroupId(Integer roleGroupId);
-
+    
     ClusterServiceRoleGroupConfig getConfigByRoleGroupIdAndVersion(Integer roleGroupId, Integer version);
-
+    
     void removeAllByRoleGroupId(Integer roleGroupId);
-
+    
     List<ClusterServiceRoleGroupConfig> listRoleGroupConfigsByRoleGroupIds(List<Integer> roleGroupIds);
 }

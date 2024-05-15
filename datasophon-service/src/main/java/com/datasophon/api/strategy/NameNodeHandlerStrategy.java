@@ -50,37 +50,37 @@ import akka.pattern.Patterns;
 import akka.util.Timeout;
 
 public class NameNodeHandlerStrategy extends ServiceHandlerAbstract implements ServiceRoleStrategy {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(NameNodeHandlerStrategy.class);
-
+    
     private static final String ENABLE_RACK = "enableRack";
-
+    
     private static final String ENABLE_KERBEROS = "enableKerberos";
-
+    
     private static final String ACTIVE = "active";
-
+    
     @Override
     public void handler(Integer clusterId, List<String> hosts, String serviceName) {
-
+        
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
-
+        
         ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${nn1}", hosts.get(0));
         ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${nn2}", hosts.get(1));
     }
-
+    
     @Override
     public void handlerConfig(Integer clusterId, List<ServiceConfig> list, String serviceName) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
         ClusterInfoEntity clusterInfo = ProcessUtils.getClusterInfo(clusterId);
-
+        
         boolean enableRack = false;
         boolean enableKerberos = false;
         Map<String, ServiceConfig> map = ProcessUtils.translateToMap(list);
-
+        
         String key =
                 clusterInfo.getClusterFrame() + Constants.UNDERLINE + "HDFS" + Constants.CONFIG;
         List<ServiceConfig> configs = ServiceConfigMap.get(key);
-
+        
         for (ServiceConfig config : list) {
             if (ENABLE_RACK.equals(config.getName())) {
                 if ((Boolean) config.getValue()) {
@@ -101,7 +101,7 @@ public class NameNodeHandlerStrategy extends ServiceHandlerAbstract implements S
             removeConfigWithRack(list, map, configs);
         }
         list.addAll(rackConfigs);
-
+        
         ArrayList<ServiceConfig> kbConfigs = new ArrayList<>();
         if (enableKerberos) {
             addConfigWithKerberos(globalVariables, map, configs, kbConfigs);
@@ -110,11 +110,11 @@ public class NameNodeHandlerStrategy extends ServiceHandlerAbstract implements S
         }
         list.addAll(kbConfigs);
     }
-
+    
     @Override
     public void getConfig(Integer clusterId, List<ServiceConfig> list) {
     }
-
+    
     @Override
     public void handlerServiceRoleInfo(ServiceRoleInfo serviceRoleInfo, String hostname) {
         Map<String, String> globalVariables = GlobalVariables.get(serviceRoleInfo.getClusterId());
@@ -124,7 +124,7 @@ public class NameNodeHandlerStrategy extends ServiceHandlerAbstract implements S
             serviceRoleInfo.setSortNum(5);
         }
     }
-
+    
     @Override
     public void handlerServiceRoleCheck(
                                         ClusterServiceRoleInstanceEntity roleInstanceEntity,
@@ -139,7 +139,7 @@ public class NameNodeHandlerStrategy extends ServiceHandlerAbstract implements S
         }
         getNMState(roleInstanceEntity, commandLine);
     }
-
+    
     private void getNMState(
                             ClusterServiceRoleInstanceEntity roleInstanceEntity, String commandLine) {
         ClusterServiceRoleInstanceWebuisService webuisService =

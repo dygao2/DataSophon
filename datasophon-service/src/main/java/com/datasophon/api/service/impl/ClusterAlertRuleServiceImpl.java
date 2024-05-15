@@ -29,5 +29,5 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 public class ClusterAlertRuleServiceImpl extends ServiceImpl<ClusterAlertRuleMapper, ClusterAlertRule>
         implements
             ClusterAlertRuleService {
-
+    
 }

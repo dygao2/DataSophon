@@ -30,8 +30,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @date 2022-03-15 17:36:08
  */
 public interface AlertGroupService extends IService<AlertGroupEntity> {
-
+    
     Result getAlertGroupList(Integer clusterId, String alertGroupName, Integer page, Integer pageSize);
-
+    
     Result saveAlertGroup(AlertGroupEntity alertGroup);
 }

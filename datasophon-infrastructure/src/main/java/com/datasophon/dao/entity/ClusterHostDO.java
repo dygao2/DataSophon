@@ -32,9 +32,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @TableName("t_ddh_cluster_host")
 @Data
 public class ClusterHostDO implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     /**
      * 主键
      */
@@ -96,12 +96,12 @@ public class ClusterHostDO implements Serializable {
      * 1:受管 2：断线
      */
     private MANAGED managed;
-
+    
     private String cpuArchitecture;
-
+    
     private String nodeLabel;
-
+    
     @TableField(exist = false)
     private Integer serviceRoleNum;
-
+    
 }

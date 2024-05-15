@@ -29,5 +29,5 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 public class ClusterAlertExpressionServiceImpl extends ServiceImpl<ClusterAlertExpressionMapper, ClusterAlertExpression>
         implements
             ClusterAlertExpressionService {
-
+    
 }

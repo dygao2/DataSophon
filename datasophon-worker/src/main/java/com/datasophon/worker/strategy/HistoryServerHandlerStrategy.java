@@ -29,11 +29,11 @@ import com.datasophon.worker.utils.KerberosUtils;
 import cn.hutool.core.io.FileUtil;
 
 public class HistoryServerHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
-
+    
     public HistoryServerHandlerStrategy(String serviceName, String serviceRoleName) {
         super(serviceName, serviceRoleName);
     }
-
+    
     @Override
     public ExecResult handler(ServiceRoleOperateCommand command) {
         ServiceHandler serviceHandler = new ServiceHandler(command.getServiceName(), command.getServiceRoleName());

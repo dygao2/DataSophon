@@ -46,9 +46,9 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSONObject;
 
 public class RangerAdminHandlerStrategy extends ServiceHandlerAbstract implements ServiceRoleStrategy {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(RangerAdminHandlerStrategy.class);
-
+    
     @Override
     public void handler(Integer clusterId, List<String> hosts, String serviceName) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
@@ -59,7 +59,7 @@ public class RangerAdminHandlerStrategy extends ServiceHandlerAbstract implement
                     rangerAdminUrl);
         }
     }
-
+    
     @Override
     public void handlerConfig(Integer clusterId, List<ServiceConfig> list, String serviceName) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
@@ -105,23 +105,23 @@ public class RangerAdminHandlerStrategy extends ServiceHandlerAbstract implement
         }
         list.addAll(kbConfigs);
     }
-
+    
     @Override
     public void getConfig(Integer clusterId, List<ServiceConfig> list) {
-
+        
     }
-
+    
     @Override
     public void handlerServiceRoleInfo(ServiceRoleInfo serviceRoleInfo, String hostname) {
-
+        
     }
-
+    
     @Override
     public void handlerServiceRoleCheck(ClusterServiceRoleInstanceEntity roleInstanceEntity,
                                         Map<String, ClusterServiceRoleInstanceEntity> map) {
-
+        
     }
-
+    
     private void enableRangerPlugin(Integer clusterId, String serviceName, String serviceRoleName) {
         ClusterServiceInstanceService serviceInstanceService =
                 SpringTool.getApplicationContext().getBean(ClusterServiceInstanceService.class);
@@ -139,15 +139,15 @@ public class RangerAdminHandlerStrategy extends ServiceHandlerAbstract implement
         // 查询角色组id
         List<ClusterServiceRoleInstanceEntity> roleList =
                 roleInstanceService.getServiceRoleInstanceListByClusterIdAndRoleName(clusterId, serviceRoleName);
-
+        
         if (Objects.nonNull(roleList) && roleList.size() > 0) {
             Integer roleGroupId = roleList.get(0).getRoleGroupId();
-
+            
             ClusterServiceRoleGroupConfig config = roleGroupConfigService.getConfigByRoleGroupId(roleGroupId);
             List<ServiceConfig> serviceConfigs = JSONObject.parseArray(config.getConfigJson(), ServiceConfig.class);
             Map<String, ServiceConfig> map = serviceConfigs.stream()
                     .collect(Collectors.toMap(ServiceConfig::getName, serviceConfig -> serviceConfig, (v1, v2) -> v1));
-
+            
             String key = clusterInfo.getClusterFrame() + Constants.UNDERLINE + serviceName + Constants.CONFIG;
             List<ServiceConfig> configs = ServiceConfigMap.get(key);
             for (ServiceConfig parameter : configs) {
@@ -155,7 +155,7 @@ public class RangerAdminHandlerStrategy extends ServiceHandlerAbstract implement
                 if (map.containsKey(name)) {
                     parameter = map.get(name);
                 }
-
+                
                 if ("permission".equals(parameter.getConfigType())) {
                     parameter.setHidden(false);
                     parameter.setRequired(true);
@@ -164,7 +164,7 @@ public class RangerAdminHandlerStrategy extends ServiceHandlerAbstract implement
                     parameter.setHidden(false);
                     parameter.setRequired(true);
                     parameter.setValue(true);
-
+                    
                 }
                 if ("rangerAdminUrl".equals(parameter.getName())) {
                     parameter.setHidden(false);

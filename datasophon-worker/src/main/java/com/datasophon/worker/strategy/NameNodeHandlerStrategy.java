@@ -31,11 +31,11 @@ import java.util.ArrayList;
 import cn.hutool.core.io.FileUtil;
 
 public class NameNodeHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
-
+    
     public NameNodeHandlerStrategy(String serviceName, String serviceRoleName) {
         super(serviceName, serviceRoleName);
     }
-
+    
     @Override
     public ExecResult handler(ServiceRoleOperateCommand command) {
         ServiceHandler serviceHandler = new ServiceHandler(command.getServiceName(), command.getServiceRoleName());
@@ -104,8 +104,8 @@ public class NameNodeHandlerStrategy extends AbstractHandlerStrategy implements 
         }
         ExecResult startResult = serviceHandler.start(command.getStartRunner(), command.getStatusRunner(),
                 command.getDecompressPackageName(), command.getRunAs());
-
+        
         return startResult;
     }
-
+    
 }

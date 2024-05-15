@@ -71,26 +71,26 @@ import cn.hutool.crypto.SecureUtil;
 public class ClusterHostServiceImpl extends ServiceImpl<ClusterHostMapper, ClusterHostDO>
         implements
             ClusterHostService {
-
+    
     @Autowired
     ClusterHostMapper hostMapper;
-
+    
     @Autowired
     ClusterServiceRoleInstanceService roleInstanceService;
-
+    
     @Autowired
     ClusterInfoService clusterInfoService;
-
+    
     @Autowired
     ClusterRackService clusterRackService;
-
+    
     private final String ip = "ip";
-
+    
     @Override
     public ClusterHostDO getClusterHostByHostname(String hostname) {
         return hostMapper.getClusterHostByHostname(hostname);
     }
-
+    
     @Override
     public Result listByPage(Integer clusterId, String hostname, String ip, String cpuArchitecture, Integer hostState,
                              String orderField, String orderType, Integer page, Integer pageSize) {
@@ -106,7 +106,7 @@ public class ClusterHostServiceImpl extends ServiceImpl<ClusterHostMapper, Clust
                         .orderByAsc("asc".equals(orderType), orderField)
                         .orderByDesc("desc".equals(orderType), orderField)
                         .last("limit " + offset + "," + pageSize));
-
+        
         // 回显rack的名称 而不是ID
         Map<String, String> rackMap = clusterRackService.queryClusterRack(clusterId).stream()
                 .collect(Collectors.toMap(obj -> obj.getId() + "", ClusterRack::getRack));
@@ -128,14 +128,14 @@ public class ClusterHostServiceImpl extends ServiceImpl<ClusterHostMapper, Clust
                 .like(StringUtils.isNotBlank(hostname), Constants.HOSTNAME, hostname));
         return Result.success(hostListPageDTOS).put(Constants.TOTAL, count);
     }
-
+    
     @Override
     public List<ClusterHostDO> getHostListByClusterId(Integer clusterId) {
         return this.list(new QueryWrapper<ClusterHostDO>()
                 .eq(Constants.CLUSTER_ID, clusterId)
                 .eq(Constants.MANAGED, 1));
     }
-
+    
     @Override
     public Result getRoleListByHostname(Integer clusterId, String hostname) {
         List<ClusterServiceRoleInstanceEntity> list =
@@ -145,7 +145,7 @@ public class ClusterHostServiceImpl extends ServiceImpl<ClusterHostMapper, Clust
         }
         return Result.success(list);
     }
-
+    
     /**
      * 批量删除主机。
      * 删除主机，首先停止主机上的服务
@@ -180,9 +180,9 @@ public class ClusterHostServiceImpl extends ServiceImpl<ClusterHostMapper, Clust
             if (CacheUtils.constainsKey(distributeAgentKey + Constants.UNDERLINE + host.getHostname())) {
                 CacheUtils.removeKey(distributeAgentKey + Constants.UNDERLINE + host.getHostname());
             }
-
+            
             this.removeById(hostId);
-
+            
             if (host.getHostState() != HostState.OFFLINE) {
                 // stop the worker on this host
                 ActorRef execCmdActor = ActorUtils.getRemoteActor(host.getHostname(), "executeCmdActor");
@@ -191,25 +191,25 @@ public class ClusterHostServiceImpl extends ServiceImpl<ClusterHostMapper, Clust
                 commands.add("service");
                 commands.add("datasophon-worker");
                 commands.add("stop");
-
+                
                 command.setCommands(commands);
                 execCmdActor.tell(command, ActorRef.noSender());
             }
             // remove host from prometheus
             ActorRef prometheusActor =
                     ActorUtils.getLocalActor(PrometheusActor.class, ActorUtils.getActorRefName(PrometheusActor.class));
-
+            
             // Prometheus 移除 hosts 信息
             GenerateHostPrometheusConfig prometheusConfigCommand = new GenerateHostPrometheusConfig();
             prometheusConfigCommand.setClusterId(clusterInfo.getId());
-
+            
             ActorUtils.actorSystem.scheduler().scheduleOnce(
                     FiniteDuration.apply(3L, TimeUnit.SECONDS),
                     prometheusActor,
                     prometheusConfigCommand,
                     ActorUtils.actorSystem.dispatcher(),
                     ActorRef.noSender());
-
+            
             // remove the host from the cache
             Map<String, HostInfo> map =
                     (Map<String, HostInfo>) CacheUtils.get(clusterCode + Constants.HOST_MAP);
@@ -224,7 +224,7 @@ public class ClusterHostServiceImpl extends ServiceImpl<ClusterHostMapper, Clust
         }
         return Result.success();
     }
-
+    
     @Override
     public Result getRack(Integer clusterId) {
         ArrayList<JSONObject> list = new ArrayList<>();
@@ -233,12 +233,12 @@ public class ClusterHostServiceImpl extends ServiceImpl<ClusterHostMapper, Clust
         list.add(rack);
         return Result.success(list);
     }
-
+    
     @Override
     public void removeHostByClusterId(Integer clusterId) {
         this.remove(new QueryWrapper<ClusterHostDO>().eq(Constants.CLUSTER_ID, clusterId));
     }
-
+    
     @Override
     public void updateBatchNodeLabel(List<String> hostIds, String nodeLabel) {
         List<ClusterHostDO> list = this.lambdaQuery().in(ClusterHostDO::getId, hostIds).list();
@@ -247,12 +247,12 @@ public class ClusterHostServiceImpl extends ServiceImpl<ClusterHostMapper, Clust
         }
         this.updateBatchById(list);
     }
-
+    
     @Override
     public List<ClusterHostDO> getHostListByIds(List<String> ids) {
         return this.lambdaQuery().in(ClusterHostDO::getId, ids).or().in(ClusterHostDO::getHostname, ids).list();
     }
-
+    
     @Override
     public Result assignRack(Integer clusterId, String rack, String hostIds) {
         List<String> ids = Arrays.asList(hostIds.split(","));
@@ -268,7 +268,7 @@ public class ClusterHostServiceImpl extends ServiceImpl<ClusterHostMapper, Clust
         rackActor.tell(command, ActorRef.noSender());
         return Result.success();
     }
-
+    
     @Override
     public List<ClusterHostDO> getClusterHostByRack(Integer clusterId, String rack) {
         return this.list(new QueryWrapper<ClusterHostDO>()

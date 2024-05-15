@@ -57,38 +57,38 @@ import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
 
 public class ServiceCommandActor extends UntypedActor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(ServiceCommandActor.class);
-
+    
     private static final String STARROCKS = "starrocks";
-
+    
     private static final String DORIS = "doris";
-
+    
     private static final String HDFS = "hdfs";
-
+    
     private static final String ENABLE_HDFS_KERBEROS = "${enableHDFSKerberos}";
-
+    
     private static final String TRUE = "true";
-
+    
     private static final String FALSE = "false";
-
+    
     private static final String HTTP = "http";
-
+    
     private static final String HTTPS = "https";
-
+    
     private static final String NODE = "NODE";
-
+    
     @Override
     public void preRestart(Throwable reason, Option<Object> message) throws Exception {
         logger.info("service command actor restart because {}", reason.getMessage());
         super.preRestart(reason, message);
     }
-
+    
     @Override
     public void onReceive(Object msg) throws Throwable {
         if (msg instanceof UpdateCommandHostMessage) {
             UpdateCommandHostMessage message = (UpdateCommandHostMessage) msg;
-
+            
             ClusterInfoService clusterInfoService =
                     SpringTool.getApplicationContext().getBean(ClusterInfoService.class);
             ClusterServiceCommandHostCommandService service =
@@ -97,7 +97,7 @@ public class ServiceCommandActor extends UntypedActor {
                     SpringTool.getApplicationContext().getBean(ClusterServiceCommandHostService.class);
             ClusterServiceCommandService commandService =
                     SpringTool.getApplicationContext().getBean(ClusterServiceCommandService.class);
-
+            
             ClusterServiceCommandHostEntity commandHost =
                     commandHostService.getOne(new QueryWrapper<ClusterServiceCommandHostEntity>()
                             .eq(Constants.COMMAND_HOST_ID, message.getCommandHostId()));
@@ -107,7 +107,7 @@ public class ServiceCommandActor extends UntypedActor {
                     message.getCommandHostId());
             int progress = totalProgress / size;
             commandHost.setCommandProgress(progress);
-
+            
             if (progress == 100) {
                 List<ClusterServiceCommandHostCommandEntity> list =
                         service.findFailedHostCommand(message.getHostname(), message.getCommandHostId());
@@ -133,30 +133,30 @@ public class ServiceCommandActor extends UntypedActor {
             if (progress1 == 100) {
                 command.setCommandState(CommandState.SUCCESS);
                 command.setEndTime(new Date());
-
+                
                 String serviceName = command.getServiceName();
                 ClusterInfoEntity clusterInfo = clusterInfoService.getById(command.getClusterId());
-
+                
                 if (command.getCommandType() == 4 && HDFS.equalsIgnoreCase(serviceName)) {
                     // update web ui
                     updateHDFSWebUi(clusterInfo.getId(), command.getServiceInstanceId());
                 }
-
+                
                 // update cluster state
                 if (command.getCommandType() == 1) {
-
+                    
                     if (ClusterState.NEED_CONFIG.equals(clusterInfo.getClusterState())) {
                         clusterInfo.setClusterState(ClusterState.RUNNING);
                         clusterInfoService.updateById(clusterInfo);
                     }
-
+                    
                     if (HDFS.equalsIgnoreCase(serviceName)) {
                         ActorRef hdfsECActor = ActorUtils.getLocalActor(HdfsECActor.class,
                                 ActorUtils.getActorRefName(HdfsECActor.class));
                         HdfsEcCommand hdfsEcCommand = new HdfsEcCommand();
                         hdfsEcCommand.setServiceInstanceId(command.getServiceInstanceId());
                         hdfsECActor.tell(hdfsEcCommand, getSelf());
-
+                        
                     }
                     logger.info("start to generate prometheus config");
                     ActorRef prometheusActor = ActorUtils.getLocalActor(PrometheusActor.class,
@@ -184,7 +184,7 @@ public class ServiceCommandActor extends UntypedActor {
                     command.setCommandState(CommandState.FAILED);
                     command.setEndTime(new Date());
                 }
-
+                
                 List<ClusterServiceCommandHostEntity> cancelList =
                         commandHostService.findCanceledCommandHost(message.getCommandId());
                 if (!cancelList.isEmpty()) {
@@ -196,7 +196,7 @@ public class ServiceCommandActor extends UntypedActor {
                     .update(command);
         }
     }
-
+    
     private void enableAlertConfig(String serviceName, Integer clusterId) {
         ClusterAlertQuotaService alertQuotaService =
                 SpringTool.getApplicationContext().getBean(ClusterAlertQuotaService.class);
@@ -205,7 +205,7 @@ public class ServiceCommandActor extends UntypedActor {
         String alertQuotaIds = StringUtils.join(ids, ",");
         alertQuotaService.start(clusterId, alertQuotaIds);
     }
-
+    
     private void updateHDFSWebUi(Integer clusterId, Integer serviceInstanceId) {
         Map<String, String> variables = GlobalVariables.get(clusterId);
         if (variables.containsKey(ENABLE_HDFS_KERBEROS)) {
@@ -227,5 +227,5 @@ public class ServiceCommandActor extends UntypedActor {
             }
         }
     }
-
+    
 }

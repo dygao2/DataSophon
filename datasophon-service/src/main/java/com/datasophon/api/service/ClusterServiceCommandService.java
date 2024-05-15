@@ -34,24 +34,24 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @date 2022-04-12 11:28:06
  */
 public interface ClusterServiceCommandService extends IService<ClusterServiceCommandEntity> {
-
+    
     Result generateCommand(Integer clusterId, CommandType commandType, List<String> serviceNames);
-
+    
     Result getServiceCommandlist(Integer clusterId, Integer page, Integer pageSize);
-
+    
     Result generateServiceCommand(Integer clusterId, CommandType command, List<String> ids);
-
+    
     Result generateServiceRoleCommands(Integer clusterId, CommandType commandType,
                                        Map<Integer, List<String>> instanceIdMap);
-
+    
     Result generateServiceRoleCommand(Integer clusterId, CommandType command, Integer serviceIntanceId,
                                       List<String> ids);
-
+    
     void startExecuteCommand(Integer clusterId, String commandType, String commandIds);
-
+    
     void cancelCommand(String commandId);
-
+    
     ClusterServiceCommandEntity getLastRestartCommand(Integer id);
-
+    
     ClusterServiceCommandEntity getCommandById(String commandId);
 }

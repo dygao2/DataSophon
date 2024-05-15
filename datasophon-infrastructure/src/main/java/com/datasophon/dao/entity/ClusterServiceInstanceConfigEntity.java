@@ -28,9 +28,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @TableName("t_ddh_cluster_service_instance_config")
 @Data
 public class ClusterServiceInstanceConfigEntity implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     /**
      * 主机
      */
@@ -64,9 +64,9 @@ public class ClusterServiceInstanceConfigEntity implements Serializable {
      *
      */
     private Integer clusterId;
-
+    
     private String configFileJson;
-
+    
     private String configFileJsonMd5;
-
+    
 }

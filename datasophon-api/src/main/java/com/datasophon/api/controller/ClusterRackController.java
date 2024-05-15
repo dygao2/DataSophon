@@ -31,10 +31,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("cluster/rack")
 public class ClusterRackController {
-
+    
     @Autowired
     private ClusterRackService clusterRackService;
-
+    
     /**
      * 列表
      */
@@ -43,17 +43,17 @@ public class ClusterRackController {
         List<ClusterRack> list = clusterRackService.queryClusterRack(clusterId);
         return Result.success(list);
     }
-
+    
     /**
      * 信息
      */
     @RequestMapping("/info/{id}")
     public Result info(@PathVariable("id") Integer id) {
         ClusterRack clusterRack = clusterRackService.getById(id);
-
+        
         return Result.success().put("clusterRack", clusterRack);
     }
-
+    
     /**
      * 保存
      */
@@ -62,7 +62,7 @@ public class ClusterRackController {
         clusterRackService.saveRack(clusterId, rack);
         return Result.success();
     }
-
+    
     /**
      * 删除
      */
@@ -70,5 +70,5 @@ public class ClusterRackController {
     public Result delete(Integer clusterId, Integer rackId) {
         return clusterRackService.deleteRack(rackId);
     }
-
+    
 }

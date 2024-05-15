@@ -57,9 +57,9 @@ import cn.hutool.extra.spring.SpringUtil;
  * 节点状态监测
  */
 public class HostCheckActor extends UntypedActor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(HostCheckActor.class);
-
+    
     @Override
     public void onReceive(Object msg) throws Throwable {
         if (msg instanceof HostCheckCommand) {
@@ -70,15 +70,15 @@ public class HostCheckActor extends UntypedActor {
                     SpringUtil.getBean(ClusterServiceRoleInstanceService.class);
             ClusterInfoService clusterInfoService =
                     SpringUtil.getBean(ClusterInfoService.class);
-
+            
             // Host or cluster
             final HostCheckCommand hostCheckCommand = (HostCheckCommand) msg;
             final HostInfo hostInfo = hostCheckCommand.getHostInfo();
-
+            
             // 获取当前安装并且正在运行的集群
             Result result = clusterInfoService.runningClusterList();
             List<ClusterInfoEntity> clusterList = (List<ClusterInfoEntity>) result.getData();
-
+            
             for (ClusterInfoEntity clusterInfoEntity : clusterList) {
                 // 获取集群上安装的 Prometheus 服务, 从 Prometheus 获取CPU、磁盘使用量等
                 ClusterServiceRoleInstanceEntity prometheusInstance =

@@ -35,7 +35,7 @@ import akka.pattern.Patterns;
 import akka.util.Timeout;
 
 public class ServiceStopHandler extends ServiceHandler {
-
+    
     @Override
     public ExecResult handlerRequest(ServiceRoleInfo serviceRoleInfo) throws Exception {
         // 停止

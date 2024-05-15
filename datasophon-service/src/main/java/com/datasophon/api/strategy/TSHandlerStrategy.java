@@ -39,7 +39,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class TSHandlerStrategy implements ServiceRoleStrategy {
-
+    
     @Override
     public void handler(Integer clusterId, List<String> hosts, String serviceName) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
@@ -48,20 +48,20 @@ public class TSHandlerStrategy implements ServiceRoleStrategy {
                     hosts.get(0));
         }
     }
-
+    
     @Override
     public void handlerConfig(Integer clusterId, List<ServiceConfig> list, String serviceName) {
-
+        
     }
-
+    
     @Override
     public void getConfig(Integer clusterId, List<ServiceConfig> list) {
     }
-
+    
     @Override
     public void handlerServiceRoleInfo(ServiceRoleInfo serviceRoleInfo, String hostname) {
     }
-
+    
     @Override
     public void handlerServiceRoleCheck(
                                         ClusterServiceRoleInstanceEntity roleInstanceEntity,

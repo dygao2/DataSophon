@@ -37,18 +37,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class StartWorkerHandler implements DispatcherWorkerHandler {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(StartWorkerHandler.class);
-
+    
     private Integer clusterId;
-
+    
     private String clusterFrame;
-
+    
     public StartWorkerHandler(Integer clusterId, String clusterFrame) {
         this.clusterId = clusterId;
         this.clusterFrame = clusterFrame;
     }
-
+    
     @Override
     public boolean handle(ClientSession session, HostInfo hostInfo) throws UnknownHostException {
         ConfigBean configBean = SpringTool.getApplicationContext().getBean(ConfigBean.class);
@@ -87,7 +87,7 @@ public class StartWorkerHandler implements DispatcherWorkerHandler {
             hostInfo.setProgress(75);
             hostInfo.setCreateTime(new Date());
         }
-
+        
         logger.info("end dispatcher host agent :{}", hostInfo.getHostname());
         return true;
     }

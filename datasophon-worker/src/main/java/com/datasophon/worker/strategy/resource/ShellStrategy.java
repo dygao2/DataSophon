@@ -13,11 +13,11 @@ import lombok.extern.slf4j.Slf4j;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class ShellStrategy extends ResourceStrategy {
-
+    
     public static final String SHELL_TYPE = "sh";
-
+    
     private List<List<String>> commands;
-
+    
     @Override
     public void exec() {
         for (List<String> command : commands) {

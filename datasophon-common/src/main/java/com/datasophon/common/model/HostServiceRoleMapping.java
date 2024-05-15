@@ -23,8 +23,8 @@ import lombok.Data;
 
 @Data
 public class HostServiceRoleMapping {
-
+    
     private String host;
-
+    
     private List<String> serviceRoles;
 }

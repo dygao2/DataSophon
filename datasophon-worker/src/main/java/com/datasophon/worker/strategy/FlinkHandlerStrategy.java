@@ -20,16 +20,16 @@ import cn.hutool.core.io.FileUtil;
  * @since 2024-02-02 22:30
  */
 public class FlinkHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(FlinkHandlerStrategy.class);
-
+    
     public FlinkHandlerStrategy(String serviceName, String serviceRoleName) {
         super(serviceName, serviceRoleName);
     }
-
+    
     @Override
     public ExecResult handler(ServiceRoleOperateCommand command) throws SQLException, ClassNotFoundException {
-
+        
         if (command.getEnableKerberos()) {
             logger.info("start to get flink keytab file");
             String hostname = CacheUtils.getString(Constants.HOSTNAME);
@@ -37,7 +37,7 @@ public class FlinkHandlerStrategy extends AbstractHandlerStrategy implements Ser
             if (!FileUtil.exist("/etc/security/keytab/flink.keytab")) {
                 KerberosUtils.downloadKeytabFromMaster("flink/" + hostname, "flink.keytab");
             }
-
+            
         }
         ExecResult startResult = new ExecResult();
         startResult.setExecResult(true);

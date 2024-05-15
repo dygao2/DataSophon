@@ -29,5 +29,5 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 public class ClusterAlertGroupMapServiceImpl extends ServiceImpl<ClusterAlertGroupMapMapper, ClusterAlertGroupMap>
         implements
             ClusterAlertGroupMapService {
-
+    
 }

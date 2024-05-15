@@ -28,9 +28,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @Data
 @TableName("t_ddh_user_info")
 public class UserInfoEntity implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     /**
      * 主键
      */
@@ -56,7 +56,7 @@ public class UserInfoEntity implements Serializable {
      * 创建时间
      */
     private Date createTime;
-
+    
     private Integer userType;
-
+    
 }

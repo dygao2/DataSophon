@@ -40,20 +40,20 @@ import org.slf4j.LoggerFactory;
 
 @Data
 public class ServiceHandler {
-
+    
     private String serviceName;
-
+    
     private String serviceRoleName;
-
+    
     private Logger logger;
-
+    
     public ServiceHandler(String serviceName, String serviceRoleName) {
         this.serviceName = serviceName;
         this.serviceRoleName = serviceRoleName;
         String loggerName = String.format("%s-%s-%s", TaskConstants.TASK_LOG_LOGGER_NAME, serviceName, serviceRoleName);
         logger = LoggerFactory.getLogger(loggerName);
     }
-
+    
     public ExecResult start(ServiceRoleRunner startRunner, ServiceRoleRunner statusRunner, String decompressPackageName,
                             RunAs runAs) {
         ExecResult statusResult = execRunner(statusRunner, decompressPackageName, null);
@@ -91,7 +91,7 @@ public class ServiceHandler {
         }
         return startResult;
     }
-
+    
     public ExecResult stop(ServiceRoleRunner runner, ServiceRoleRunner statusRunner, String decompressPackageName,
                            RunAs runAs) {
         ExecResult statusResult = execRunner(statusRunner, decompressPackageName, runAs);
@@ -127,17 +127,17 @@ public class ServiceHandler {
         }
         return execResult;
     }
-
+    
     public ExecResult reStart(ServiceRoleRunner runner, String decompressPackageName) {
         ExecResult result = execRunner(runner, decompressPackageName, null);
         return result;
     }
-
+    
     public ExecResult status(ServiceRoleRunner runner, String decompressPackageName) {
         ExecResult result = execRunner(runner, decompressPackageName, null);
         return result;
     }
-
+    
     public ExecResult execRunner(ServiceRoleRunner runner, String decompressPackageName, RunAs runAs) {
         String shell = runner.getProgram();
         List<String> args = runner.getArgs();
@@ -179,5 +179,5 @@ public class ServiceHandler {
         return ShellUtils.execWithStatus(Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName, command,
                 timeout, logger);
     }
-
+    
 }

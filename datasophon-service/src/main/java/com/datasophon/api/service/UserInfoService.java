@@ -30,10 +30,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @date 2022-03-15 17:36:08
  */
 public interface UserInfoService extends IService<UserInfoEntity> {
-
+    
     UserInfoEntity queryUser(String username, String password);
-
+    
     Result createUser(UserInfoEntity userInfo);
-
+    
     Result getUserListByPage(String username, Integer page, Integer pageSize);
 }

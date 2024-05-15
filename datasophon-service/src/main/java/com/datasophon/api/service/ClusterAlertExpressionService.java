@@ -29,5 +29,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @date 2022-06-07 12:04:38
  */
 public interface ClusterAlertExpressionService extends IService<ClusterAlertExpression> {
-
+    
 }

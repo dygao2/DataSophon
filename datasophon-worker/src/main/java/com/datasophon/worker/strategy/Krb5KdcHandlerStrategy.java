@@ -30,11 +30,11 @@ import java.util.ArrayList;
 import cn.hutool.core.io.FileUtil;
 
 public class Krb5KdcHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
-
+    
     public Krb5KdcHandlerStrategy(String serviceName, String serviceRoleName) {
         super(serviceName, serviceRoleName);
     }
-
+    
     @Override
     public ExecResult handler(ServiceRoleOperateCommand command) throws SQLException, ClassNotFoundException {
         ExecResult startResult = new ExecResult();

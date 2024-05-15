@@ -24,10 +24,10 @@ import lombok.Data;
 
 @Data
 public class FileOperateCommand implements Serializable {
-
+    
     private TreeSet<String> lines;
-
+    
     private String content;
-
+    
     private String path;
 }

@@ -42,9 +42,9 @@ import akka.pattern.Patterns;
 import akka.util.Timeout;
 
 public class ServiceStartHandler extends ServiceHandler {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(ServiceStartHandler.class);
-
+    
     @Override
     public ExecResult handlerRequest(ServiceRoleInfo serviceRoleInfo) throws Exception {
         logger.info("start to start service {} in {}", serviceRoleInfo.getName(), serviceRoleInfo.getHostname());
@@ -60,9 +60,9 @@ public class ServiceStartHandler extends ServiceHandler {
         serviceRoleOperateCommand.setCommandType(serviceRoleInfo.getCommandType());
         serviceRoleOperateCommand.setMasterHost(serviceRoleInfo.getMasterHost());
         serviceRoleOperateCommand.setManagerHost(CacheUtils.getString(Constants.HOSTNAME));
-
+        
         logger.info("service master host is {}", serviceRoleInfo.getMasterHost());
-
+        
         serviceRoleOperateCommand.setEnableRangerPlugin(serviceRoleInfo.getEnableRangerPlugin());
         serviceRoleOperateCommand.setRunAs(serviceRoleInfo.getRunAs());
         Boolean enableKerberos =
@@ -70,7 +70,7 @@ public class ServiceStartHandler extends ServiceHandler {
         logger.info("{} enable kerberos is {}", serviceRoleInfo.getParentName(), enableKerberos);
         serviceRoleOperateCommand.setEnableKerberos(enableKerberos);
         if (serviceRoleInfo.getRoleType() == ServiceRoleType.CLIENT) {
-
+            
             if (serviceRoleInfo.getName().equals("FlinkClient") && enableKerberos) {
                 logger.info("when serviceRoleInfo name is FlinkClient ,start to startActor!");
                 ActorSelection startActors = ActorUtils.actorSystem.actorSelection(
@@ -79,7 +79,7 @@ public class ServiceStartHandler extends ServiceHandler {
                 Timeout timeouts = new Timeout(Duration.create(180, TimeUnit.SECONDS));
                 Await.result(Patterns.ask(startActors, serviceRoleOperateCommand, timeouts), timeouts.duration());
             }
-
+            
             ExecResult execResult = new ExecResult();
             execResult.setExecResult(true);
             if (Objects.nonNull(getNext())) {

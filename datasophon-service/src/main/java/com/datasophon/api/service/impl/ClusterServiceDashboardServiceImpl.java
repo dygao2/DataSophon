@@ -39,10 +39,10 @@ public class ClusterServiceDashboardServiceImpl
             ServiceImpl<ClusterServiceDashboardMapper, ClusterServiceDashboard>
         implements
             ClusterServiceDashboardService {
-
+    
     @Autowired
     ClusterServiceDashboardService dashboardService;
-
+    
     @Override
     public Result getDashboardUrl(Integer clusterId) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);

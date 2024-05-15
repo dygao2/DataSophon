@@ -45,7 +45,7 @@ import akka.util.Timeout;
 import cn.hutool.core.io.FileUtil;
 
 public class ServiceInstallHandler extends ServiceHandler {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(ServiceInstallHandler.class);
     @Override
     public ExecResult handlerRequest(ServiceRoleInfo serviceRoleInfo) throws Exception {
@@ -70,7 +70,7 @@ public class ServiceInstallHandler extends ServiceHandler {
         installServiceRoleCommand.setRunAs(serviceRoleInfo.getRunAs());
         installServiceRoleCommand.setServiceRoleType(serviceRoleInfo.getRoleType());
         installServiceRoleCommand.setResourceStrategies(serviceRoleInfo.getResourceStrategies());
-
+        
         String md5;
         if ("aarch64".equals(hostEntity.getCpuArchitecture()) && FileUtil.exist(Constants.MASTER_MANAGE_PACKAGE_PATH
                 + Constants.SLASH + serviceRoleInfo.getDecompressPackageName() + "-arm.tar.gz")) {
@@ -85,7 +85,7 @@ public class ServiceInstallHandler extends ServiceHandler {
                     Charset.defaultCharset());
         }
         installServiceRoleCommand.setPackageMd5(md5);
-
+        
         ActorSelection actorSelection = ActorUtils.actorSystem.actorSelection(
                 "akka.tcp://datasophon@" + serviceRoleInfo.getHostname() + ":2552/user/worker/installServiceActor");
         Timeout timeout = new Timeout(Duration.create(180, TimeUnit.SECONDS));

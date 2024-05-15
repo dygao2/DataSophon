@@ -38,14 +38,14 @@ import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
 
 public class ServiceExecuteResultActor extends UntypedActor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(ServiceExecuteResultActor.class);
-
+    
     @Override
     public void onReceive(Object message) throws Throwable {
         if (message instanceof ServiceExecuteResultMessage) {
             ServiceExecuteResultMessage result = (ServiceExecuteResultMessage) message;
-
+            
             DAGGraph<String, ServiceNode, String> dag = result.getDag();
             Map<String, ServiceExecuteState> activeTaskList = result.getActiveTaskList();
             Map<String, String> errorTaskList = result.getErrorTaskList();
@@ -93,7 +93,7 @@ public class ServiceExecuteResultActor extends UntypedActor {
                                     serviceActor,
                                     ServiceRoleType.WORKER);
                         }
-
+                        
                     } else {
                         activeTaskList.remove(node);
                         readyToSubmitTaskList.remove(node);
@@ -107,7 +107,7 @@ public class ServiceExecuteResultActor extends UntypedActor {
             unhandled(message);
         }
     }
-
+    
     public void listCancelCommand(DAGGraph<String, ServiceNode, String> dag, String node, List<String> commandIds) {
         if (dag.getSubsequentNodes(node).size() == 0) {
             return;
@@ -118,7 +118,7 @@ public class ServiceExecuteResultActor extends UntypedActor {
             listCancelCommand(dag, subsequentNode, commandIds);
         }
     }
-
+    
     private void tellToSubmitActiveTaskNode(ServiceExecuteResultMessage result,
                                             DAGGraph<String, ServiceNode, String> dag,
                                             Map<String, ServiceExecuteState> activeTaskList,
@@ -140,10 +140,10 @@ public class ServiceExecuteResultActor extends UntypedActor {
         submitActiveTaskNodeCommand.setErrorTaskList(errorTaskList);
         submitActiveTaskNodeCommand.setReadyToSubmitTaskList(readyToSubmitTaskList);
         submitActiveTaskNodeCommand.setCompleteTaskList(completeTaskList);
-
+        
         submitActiveTaskNodeCommand.setClusterCode(result.getClusterCode());
-
+        
         submitTaskNodeActor.tell(submitActiveTaskNodeCommand, getSelf());
     }
-
+    
 }

@@ -25,14 +25,14 @@ import java.util.List;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 public interface ClusterUserService extends IService<ClusterUser> {
-
+    
     Result create(Integer clusterId, String username, Integer mainGroupId, String otherGroupIds);
-
+    
     Result listPage(Integer clusterId, String username, Integer page, Integer pageSize);
-
+    
     Result deleteClusterUser(Integer id);
-
+    
     List<ClusterUser> listAllUser(Integer clusterId);
-
+    
     void createUnixUserOnHost(ClusterUser clusterUser, String hostname);
 }

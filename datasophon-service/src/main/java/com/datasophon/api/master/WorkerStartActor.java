@@ -60,9 +60,9 @@ import akka.actor.UntypedActor;
 import cn.hutool.core.util.ObjectUtil;
 
 public class WorkerStartActor extends UntypedActor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(WorkerStartActor.class);
-
+    
     @Override
     public void onReceive(Object message) throws Throwable {
         if (message instanceof StartWorkerMessage) {
@@ -70,12 +70,12 @@ public class WorkerStartActor extends UntypedActor {
             String hostname = msg.getHostname();
             Integer clusterId = msg.getClusterId();
             logger.info("Receive message when worker first start :{}", hostname);
-
+            
             ClusterHostService clusterHostService =
                     SpringTool.getApplicationContext().getBean(ClusterHostService.class);
             ClusterInfoService clusterInfoService =
                     SpringTool.getApplicationContext().getBean(ClusterInfoService.class);
-
+            
             // is managed?
             ClusterHostDO hostEntity = clusterHostService.getClusterHostByHostname(hostname);
             ClusterInfoEntity cluster = clusterInfoService.getById(clusterId);
@@ -102,14 +102,14 @@ public class WorkerStartActor extends UntypedActor {
                 hostEntity.setManaged(MANAGED.YES);
                 clusterHostService.updateById(hostEntity);
             }
-
+            
             // add to prometheus
             ActorRef prometheusActor =
                     ActorUtils.getLocalActor(PrometheusActor.class, ActorUtils.getActorRefName(PrometheusActor.class));
             GenerateHostPrometheusConfig prometheusConfigCommand = new GenerateHostPrometheusConfig();
             prometheusConfigCommand.setClusterId(cluster.getId());
             prometheusActor.tell(prometheusConfigCommand, getSelf());
-
+            
             // tell to worker what need to start
             autoAddServiceOperatorNeeded(msg.getHostname(), cluster.getId(), CommandType.START_SERVICE, false);
         } else if (message instanceof WorkerServiceMessage) {
@@ -118,7 +118,7 @@ public class WorkerStartActor extends UntypedActor {
             autoAddServiceOperatorNeeded(msg.getHostname(), msg.getClusterId(), msg.getCommandType(), true);
         }
     }
-
+    
     /**
      * Automatically start/stop services that need to be started
      *
@@ -130,7 +130,7 @@ public class WorkerStartActor extends UntypedActor {
                 SpringTool.getApplicationContext().getBean(ClusterServiceRoleInstanceService.class);
         ClusterServiceCommandService serviceCommandService =
                 SpringTool.getApplicationContext().getBean(ClusterServiceCommandService.class);
-
+        
         List<ClusterServiceRoleInstanceEntity> serviceRoleList = null;
         // 启动服务
         if (CommandType.START_SERVICE.equals(commandType)) {
@@ -141,7 +141,7 @@ public class WorkerStartActor extends UntypedActor {
                 roleInstanceService.updateToNeedRestartByHost(hostname);
             }
         }
-
+        
         // 停止运行状态的服务
         if (commandType.STOP_SERVICE.equals(commandType)) {
             serviceRoleList = roleInstanceService
@@ -150,12 +150,12 @@ public class WorkerStartActor extends UntypedActor {
                             !ServiceRoleState.DECOMMISSIONED.equals(roleInstance.getServiceRoleState())))
                     .collect(toList());
         }
-
+        
         if (CollectionUtils.isEmpty(serviceRoleList)) {
             logger.info("No services need to start at host {}.", hostname);
             return;
         }
-
+        
         Map<Integer, List<String>> serviceRoleMap = serviceRoleList.stream()
                 .collect(
                         groupingBy(
@@ -169,11 +169,11 @@ public class WorkerStartActor extends UntypedActor {
             logger.info("Some service auto-start failed, please check logs of the services that failed to start.");
         }
     }
-
+    
     private void syncClusterUserAndGroup(Integer clusterId, String hostname) {
         ClusterGroupService clusterGroupService = SpringTool.getApplicationContext().getBean(ClusterGroupService.class);
         ClusterUserService clusterUserService = SpringTool.getApplicationContext().getBean(ClusterUserService.class);
-
+        
         List<ClusterGroup> userGroupList = clusterGroupService.listAllUserGroup(clusterId);
         for (ClusterGroup clusterGroup : userGroupList) {
             String groupName = clusterGroup.getGroupName();
@@ -184,5 +184,5 @@ public class WorkerStartActor extends UntypedActor {
             clusterUserService.createUnixUserOnHost(clusterUser, hostname);
         }
     }
-
+    
 }

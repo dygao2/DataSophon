@@ -23,7 +23,7 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 
 public class FileUtils {
-
+    
     /**
      * 读取文件最后几行 <br>
      * 相当于Linux系统中的tail命令 读取大小限制是2GB
@@ -58,5 +58,5 @@ public class FileUtils {
             return new String(tempbytes, charset);
         }
     }
-
+    
 }

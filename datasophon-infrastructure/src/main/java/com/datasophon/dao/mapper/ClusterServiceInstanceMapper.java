@@ -33,7 +33,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 @Mapper
 public interface ClusterServiceInstanceMapper extends BaseMapper<ClusterServiceInstanceEntity> {
-
+    
     String getServiceConfigByClusterIdAndServiceName(@Param("clusterId") Integer clusterId,
                                                      @Param("serviceName") String serviceName);
 }

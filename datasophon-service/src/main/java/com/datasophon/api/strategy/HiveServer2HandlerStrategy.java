@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class HiveServer2HandlerStrategy extends ServiceHandlerAbstract implements ServiceRoleStrategy {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(HiveServer2HandlerStrategy.class);
     @Override
     public void handler(Integer clusterId, List<String> hosts, String serviceName) {
@@ -48,7 +48,7 @@ public class HiveServer2HandlerStrategy extends ServiceHandlerAbstract implement
                     hosts.get(0));
         }
     }
-
+    
     @Override
     public void handlerConfig(Integer clusterId, List<ServiceConfig> list, String serviceName) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
@@ -59,7 +59,7 @@ public class HiveServer2HandlerStrategy extends ServiceHandlerAbstract implement
             if ("enableKerberos".equals(config.getName())) {
                 enableKerberos = isEnableKerberos(clusterId, globalVariables, enableKerberos, config, "HIVE");
             }
-
+            
         }
         String key = clusterInfo.getClusterFrame() + Constants.UNDERLINE + "HIVE" + Constants.CONFIG;
         List<ServiceConfig> configs = ServiceConfigMap.get(key);
@@ -70,9 +70,9 @@ public class HiveServer2HandlerStrategy extends ServiceHandlerAbstract implement
             removeConfigWithKerberos(list, map, configs);
         }
         list.addAll(kbConfigs);
-
+        
     }
-
+    
     @Override
     public void getConfig(Integer clusterId, List<ServiceConfig> list) {
         // if enabled hiveserver2 ha
@@ -102,7 +102,7 @@ public class HiveServer2HandlerStrategy extends ServiceHandlerAbstract implement
             }
         }
     }
-
+    
     @Override
     public void handlerServiceRoleInfo(ServiceRoleInfo serviceRoleInfo, String hostname) {
         Map<String, String> globalVariables = GlobalVariables.get(serviceRoleInfo.getClusterId());
@@ -112,10 +112,10 @@ public class HiveServer2HandlerStrategy extends ServiceHandlerAbstract implement
             serviceRoleInfo.setSlave(true);
         }
     }
-
+    
     @Override
     public void handlerServiceRoleCheck(ClusterServiceRoleInstanceEntity roleInstanceEntity,
                                         Map<String, ClusterServiceRoleInstanceEntity> map) {
-
+        
     }
 }

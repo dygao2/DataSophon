@@ -25,18 +25,18 @@ import lombok.Data;
 
 @Data
 public class ClusterCommand implements Serializable {
-
+    
     private final ClusterCommandType commandType;
-
+    
     private Integer clusterId;
-
+    
     public ClusterCommand(ClusterCommandType commandType) {
         this.commandType = commandType;
     }
-
+    
     public ClusterCommand(ClusterCommandType commandType, Integer clusterId) {
         this.commandType = commandType;
         this.clusterId = clusterId;
     }
-
+    
 }

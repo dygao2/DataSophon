@@ -46,9 +46,9 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.LoggerFactory;
 
 public class MinaUtils {
-
+    
     private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(MinaUtils.class);
-
+    
     /** 打开远程会话 */
     public static ClientSession openConnection(String sshHost, Integer sshPort, String sshUser) {
         SshClient sshClient = SshClient.setUpDefaultClient();
@@ -69,7 +69,7 @@ public class MinaUtils {
         LOG.info(sshHost + " 连接成功");
         return session;
     }
-
+    
     /** 关闭远程会话 */
     public static void closeConnection(ClientSession session) {
         try {
@@ -78,7 +78,7 @@ public class MinaUtils {
             throw new RuntimeException(e);
         }
     }
-
+    
     /** 获取密钥对 */
     static KeyPair getKeyPairFromString(String pk) {
         final KeyPairGenerator rsa;
@@ -94,7 +94,7 @@ public class MinaUtils {
             throw new RuntimeException(e);
         }
     }
-
+    
     /**
      * 同步执行,需要获取执行完的结果
      *
@@ -145,7 +145,7 @@ public class MinaUtils {
         LOG.info("exe cmd return : {}", out);
         return out.toString().trim();
     }
-
+    
     /**
      * 上传文件,相同路径ui覆盖
      *
@@ -177,7 +177,7 @@ public class MinaUtils {
             throw new RuntimeException(e);
         }
     }
-
+    
     /**
      * 创建目录
      *
@@ -198,7 +198,7 @@ public class MinaUtils {
         }
         return false;
     }
-
+    
     public static void main(String[] args) throws IOException, InterruptedException {
         ClientSession session = MinaUtils.openConnection("localhost", 22, "liuxin");
         for (int i = 0; i < Constants.TEN; i++) {

@@ -40,9 +40,9 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @ControllerAdvice
 @ResponseBody
 public class ApiExceptionHandler {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(ApiExceptionHandler.class);
-
+    
     @ExceptionHandler(Exception.class)
     public Result exceptionHandler(Exception e, HandlerMethod hm) {
         ApiException ce = hm.getMethodAnnotation(ApiException.class);
@@ -54,7 +54,7 @@ public class ApiExceptionHandler {
         logger.error(st.getMsg(), e);
         return Result.error(st.getCode(), st.getMsg());
     }
-
+    
     @ExceptionHandler(ConstraintViolationException.class)
     public Result constraintViolationException(ConstraintViolationException e) {
         Set<String> set = e.getConstraintViolations()
@@ -63,12 +63,12 @@ public class ApiExceptionHandler {
                 .collect(Collectors.toSet());
         return Result.error(String.join(",", set));
     }
-
+    
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public Result exceptionHandler(MethodArgumentTypeMismatchException e) {
         return Result.error("参数类型错不匹配：" + e.getMessage());
     }
-
+    
     /**
      * business exception
      */

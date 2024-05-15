@@ -51,7 +51,7 @@ import com.google.common.io.LineProcessor;
  * @author zhenqin
  */
 public class FileUtils {
-
+    
     /**
      * 获取一个文件的md5值(可处理大文件)
      * @return md5 value
@@ -59,7 +59,7 @@ public class FileUtils {
     public static String md5(File file) {
         try (FileInputStream fileInputStream = new FileInputStream(file)) {
             MessageDigest md5 = MessageDigest.getInstance("MD5");
-
+            
             byte[] buffer = new byte[8192];
             int length;
             while ((length = fileInputStream.read(buffer)) != -1) {
@@ -70,7 +70,7 @@ public class FileUtils {
             throw new IllegalStateException(e);
         }
     }
-
+    
     /**
      * 从 tar.gz 的压缩包内读取一个 文本文件
      * @param targz
@@ -103,7 +103,7 @@ public class FileUtils {
         }
         return content;
     }
-
+    
     /**
      * 读取文件第一行，第一行的非空行
      * @param file
@@ -112,16 +112,16 @@ public class FileUtils {
      */
     public static String readFirstLine(File file) throws Exception {
         final String firstLine = CharStreams.readLines(new FileReader(file), new LineProcessor<String>() {
-
+            
             String firstLine = null;
-
+            
             @Override
             public boolean processLine(String line) throws IOException {
                 this.firstLine = line;
                 // 第一行非空则返回
                 return StringUtils.trimToNull(line) == null;
             }
-
+            
             @Override
             public String getResult() {
                 return firstLine;
@@ -129,7 +129,7 @@ public class FileUtils {
         });
         return firstLine;
     }
-
+    
     /**
      * 连接路径
      * @param paths

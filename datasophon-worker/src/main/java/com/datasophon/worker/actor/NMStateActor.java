@@ -7,7 +7,7 @@ import com.datasophon.common.utils.ShellUtils;
 import akka.actor.UntypedActor;
 
 public class NMStateActor extends UntypedActor {
-
+    
     @Override
     public void onReceive(Object msg) throws Throwable {
         if (msg instanceof ExecuteCmdCommand) {

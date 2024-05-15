@@ -23,7 +23,7 @@ import lombok.Data;
 
 @Data
 public class StartWorkerMessage implements Serializable {
-
+    
     private int coreNum;
     private double totalMem;
     private double totalDisk;
@@ -36,7 +36,7 @@ public class StartWorkerMessage implements Serializable {
     private Integer clusterId;
     private String ip;
     private String cpuArchitecture;
-
+    
     private Long deliveryId;
-
+    
 }

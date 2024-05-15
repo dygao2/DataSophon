@@ -39,11 +39,11 @@ import cn.hutool.db.handler.RsHandler;
 import cn.hutool.db.sql.SqlExecutor;
 
 public class DSMasterHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
-
+    
     public DSMasterHandlerStrategy(String serviceName, String serviceRoleName) {
         super(serviceName, serviceRoleName);
     }
-
+    
     @Override
     public ExecResult handler(ServiceRoleOperateCommand command) {
         ServiceHandler serviceHandler = new ServiceHandler(command.getServiceName(), command.getServiceRoleName());
@@ -62,14 +62,14 @@ public class DSMasterHandlerStrategy extends AbstractHandlerStrategy implements 
                         lines.stream().filter(line -> line.contains("SPRING_DATASOURCE_USERNAME")).findFirst();
                 Optional<String> optionalPassword =
                         lines.stream().filter(line -> line.contains("SPRING_DATASOURCE_PASSWORD")).findFirst();
-
+                
                 if (optionalUrl.isPresent() && optionaUsername.isPresent() && optionalPassword.isPresent()) {
                     Connection con = null;
                     try {
                         con = DbUtil.use(new SimpleDataSource(getValue(optionalUrl.get()),
                                 getValue(optionaUsername.get()), getValue(optionalPassword.get()))).getConnection();
                         List<String> entityList = SqlExecutor.query(con, "SHOW TABLES", new RsHandler<List<String>>() {
-
+                            
                             @Override
                             public List<String> handle(ResultSet rs) throws SQLException {
                                 final List<String> result = new ArrayList<>();
@@ -90,7 +90,7 @@ public class DSMasterHandlerStrategy extends AbstractHandlerStrategy implements 
                     }
                 }
             }
-
+            
             if (!ready) {
                 ArrayList<String> commands = new ArrayList<>();
                 commands.add("bash");
@@ -104,11 +104,11 @@ public class DSMasterHandlerStrategy extends AbstractHandlerStrategy implements 
                 }
             }
         }
-
+        
         return serviceHandler.start(command.getStartRunner(), command.getStatusRunner(),
                 command.getDecompressPackageName(), command.getRunAs());
     }
-
+    
     private String getValue(String line) {
         String value = line.substring(line.indexOf("=") + 1);
         if (value.startsWith("\"")) {
@@ -116,5 +116,5 @@ public class DSMasterHandlerStrategy extends AbstractHandlerStrategy implements 
         }
         return value;
     }
-
+    
 }

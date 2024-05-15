@@ -29,5 +29,5 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 public class NoticeGroupUserServiceImpl extends ServiceImpl<NoticeGroupUserMapper, NoticeGroupUserEntity>
         implements
             NoticeGroupUserService {
-
+    
 }

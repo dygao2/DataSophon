@@ -34,19 +34,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("api/clusterserviceroleinstanceconfig")
 public class ClusterServiceRoleInstanceConfigController {
-
+    
     @Autowired
     private ClusterServiceRoleInstanceConfigService clusterServiceRoleInstanceConfigService;
-
+    
     /**
      * 列表
      */
     @RequestMapping("/list")
     public Result list(@RequestParam Map<String, Object> params) {
-
+        
         return Result.success();
     }
-
+    
     /**
      * 信息
      */
@@ -54,38 +54,38 @@ public class ClusterServiceRoleInstanceConfigController {
     public Result info(@PathVariable("id") Integer id) {
         ClusterServiceRoleInstanceConfigEntity clusterServiceRoleInstanceConfig =
                 clusterServiceRoleInstanceConfigService.getById(id);
-
+        
         return Result.success().put("clusterServiceRoleInstanceConfig", clusterServiceRoleInstanceConfig);
     }
-
+    
     /**
      * 保存
      */
     @RequestMapping("/save")
     public Result save(@RequestBody ClusterServiceRoleInstanceConfigEntity clusterServiceRoleInstanceConfig) {
         clusterServiceRoleInstanceConfigService.save(clusterServiceRoleInstanceConfig);
-
+        
         return Result.success();
     }
-
+    
     /**
      * 修改
      */
     @RequestMapping("/update")
     public Result update(@RequestBody ClusterServiceRoleInstanceConfigEntity clusterServiceRoleInstanceConfig) {
         clusterServiceRoleInstanceConfigService.updateById(clusterServiceRoleInstanceConfig);
-
+        
         return Result.success();
     }
-
+    
     /**
      * 删除
      */
     @RequestMapping("/delete")
     public Result delete(@RequestBody Integer[] ids) {
         clusterServiceRoleInstanceConfigService.removeByIds(Arrays.asList(ids));
-
+        
         return Result.success();
     }
-
+    
 }

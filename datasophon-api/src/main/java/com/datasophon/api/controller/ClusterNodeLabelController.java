@@ -30,10 +30,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("cluster/node/label")
 public class ClusterNodeLabelController {
-
+    
     @Autowired
     private ClusterNodeLabelService nodeLabelService;
-
+    
     /**
      * save node label
      */
@@ -42,7 +42,7 @@ public class ClusterNodeLabelController {
         List<ClusterNodeLabelEntity> list = nodeLabelService.queryClusterNodeLabel(clusterId);
         return Result.success(list);
     }
-
+    
     /**
      * save node label
      */
@@ -50,7 +50,7 @@ public class ClusterNodeLabelController {
     public Result save(Integer clusterId, String nodeLabel) {
         return nodeLabelService.saveNodeLabel(clusterId, nodeLabel);
     }
-
+    
     /**
      * delete node label
      */
@@ -58,7 +58,7 @@ public class ClusterNodeLabelController {
     public Result delete(Integer nodeLabelId) {
         return nodeLabelService.deleteNodeLabel(nodeLabelId);
     }
-
+    
     /**
      * assign node label
      */

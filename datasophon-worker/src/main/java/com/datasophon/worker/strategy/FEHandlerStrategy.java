@@ -35,11 +35,11 @@ import cn.hutool.core.net.NetUtil;
 import cn.hutool.json.JSONUtil;
 
 public class FEHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
-
+    
     public FEHandlerStrategy(String serviceName, String serviceRoleName) {
         super(serviceName, serviceRoleName);
     }
-
+    
     @Override
     public ExecResult handler(ServiceRoleOperateCommand command) {
         ExecResult startResult = new ExecResult();
@@ -52,7 +52,7 @@ public class FEHandlerStrategy extends AbstractHandlerStrategy implements Servic
                 commands.add("--helper");
                 commands.add(command.getMasterHost() + ":9010");
                 commands.add("--daemon");
-
+                
                 ServiceRoleRunner startRunner = new ServiceRoleRunner();
                 startRunner.setProgram(command.getStartRunner().getProgram());
                 startRunner.setArgs(commands);

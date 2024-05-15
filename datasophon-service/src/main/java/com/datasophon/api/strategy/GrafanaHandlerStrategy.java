@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 public class GrafanaHandlerStrategy implements ServiceRoleStrategy {
-
+    
     @Override
     public void handler(Integer clusterId, List<String> hosts, String serviceName) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
@@ -37,25 +37,25 @@ public class GrafanaHandlerStrategy implements ServiceRoleStrategy {
                     HostUtils.getIp(hosts.get(0)));
         }
     }
-
+    
     @Override
     public void handlerConfig(Integer clusterId, List<ServiceConfig> list, String serviceName) {
-
+        
     }
-
+    
     @Override
     public void getConfig(Integer clusterId, List<ServiceConfig> list) {
-
+        
     }
-
+    
     @Override
     public void handlerServiceRoleInfo(ServiceRoleInfo serviceRoleInfo, String hostname) {
-
+        
     }
-
+    
     @Override
     public void handlerServiceRoleCheck(ClusterServiceRoleInstanceEntity roleInstanceEntity,
                                         Map<String, ClusterServiceRoleInstanceEntity> map) {
-
+        
     }
 }

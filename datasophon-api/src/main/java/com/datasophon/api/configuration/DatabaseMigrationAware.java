@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class DatabaseMigrationAware implements ApplicationContextAware, Ordered {
-
+    
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         String migrationEnable = applicationContext.getEnvironment().getProperty("datasophon.migration.enable");
@@ -47,10 +47,10 @@ public class DatabaseMigrationAware implements ApplicationContextAware, Ordered 
             throw new RuntimeException(e);
         }
     }
-
+    
     @Override
     public int getOrder() {
         return 0;
     }
-
+    
 }

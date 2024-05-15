@@ -28,26 +28,26 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 public interface ServiceInstallService {
-
+    
     Result getServiceConfigOption(Integer clusterId, String serviceName);
-
+    
     Result saveServiceRoleHostMapping(Integer clusterId, List<ServiceRoleHostMapping> list);
-
+    
     Result saveServiceConfig(Integer clusterId, String serviceName, List<ServiceConfig> configJson,
                              Integer roleGroupId);
-
+    
     Result saveHostServiceRoleMapping(Integer clusterId, List<HostServiceRoleMapping> list);
-
+    
     Result getServiceRoleDeployOverview(Integer clusterId);
-
+    
     Result startInstallService(Integer clusterId, List<String> commandIds);
-
+    
     void downloadPackage(String packageName, HttpServletResponse response) throws IOException;
-
+    
     void downloadResource(String frameCode, String serviceRoleName,
                           String resource, HttpServletResponse response) throws IOException;
-
+    
     Result getServiceRoleHostMapping(Integer clusterId);
-
+    
     Result checkServiceDependency(Integer clusterId, String serviceIds);
 }

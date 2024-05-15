@@ -28,17 +28,17 @@ import akka.actor.UntypedActor;
 import cn.hutool.extra.spring.SpringUtil;
 
 public class AlertActor extends UntypedActor {
-
+    
     private static final String FIRING = "firing";
-
+    
     private static final String NODE = "node";
-
+    
     private static final String WARNING = "warning";
-
+    
     private static final String EXCEPTION = "exception";
-
+    
     private static final String RESOLVED = "resolved";
-
+    
     @Override
     public void onReceive(Object msg) throws Throwable {
         if (msg instanceof String) {
@@ -51,7 +51,7 @@ public class AlertActor extends UntypedActor {
                     SpringUtil.getBean(ClusterServiceInstanceService.class);
             ClusterServiceRoleInstanceService roleInstanceService =
                     SpringUtil.getBean(ClusterServiceRoleInstanceService.class);
-
+            
             List<Alerts> alerts = alertMes.getAlerts();
             for (Alerts alertInfo : alerts) {
                 AlertLabels labels = alertInfo.getLabels();
@@ -110,7 +110,7 @@ public class AlertActor extends UntypedActor {
                                         .hostname(hostname)
                                         .isEnabled(1)
                                         .build();
-
+                                
                                 alertHistoryService.save(clusterAlertHistory);
                             }
                             if (EXCEPTION.equals(labels.getSeverity())) {
@@ -121,7 +121,7 @@ public class AlertActor extends UntypedActor {
                             roleInstanceService.updateById(roleInstance);
                         }
                     }
-
+                    
                 }
                 if (RESOLVED.equals(status)) {
                     AlertHistory alertHistory =
@@ -129,7 +129,7 @@ public class AlertActor extends UntypedActor {
                     if (Objects.nonNull(alertHistory)) {
                         boolean nodeHasWarnAlertList = alertHistoryGateway.nodeHasWarnAlertList(hostname,
                                 serviceRoleName, alertHistory.getId());
-
+                        
                         if (EXCEPTION.equals(labels.getSeverity())) {// 异常告警处理
                             if (NODE.equals(serviceRoleName)) {
                                 // 置为正常

@@ -29,13 +29,13 @@ import cn.hutool.extra.spring.SpringUtil;
  * desc： 获取i18n资源文件
  */
 public class MessageResolverUtils {
-
+    
     @Autowired
     private static MessageSource messageSource = SpringUtil.getBean(MessageSource.class);
-
+    
     public MessageResolverUtils() {
     }
-
+    
     /**
      * 根据 messageKey 获取国际化消息 委托给 spring messageSource
      *
@@ -45,7 +45,7 @@ public class MessageResolverUtils {
     public static String getMessage(Object code) {
         return messageSource.getMessage(code.toString(), null, code.toString(), LocaleContextHolder.getLocale());
     }
-
+    
     /**
      * 根据 messageKey 和参数 获取消息 委托给 spring messageSource
      *

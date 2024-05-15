@@ -29,14 +29,14 @@ import java.sql.SQLException;
 import cn.hutool.core.io.FileUtil;
 
 public class KyuubiServerHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
-
+    
     private static final String KEYTAB_NAME = "kyuubi.service.keytab";
     private static final String KEYTAB_PATH = "/etc/security/keytab/" + KEYTAB_NAME;
-
+    
     public KyuubiServerHandlerStrategy(String serviceName, String serviceRoleName) {
         super(serviceName, serviceRoleName);
     }
-
+    
     @Override
     public ExecResult handler(ServiceRoleOperateCommand command) throws SQLException, ClassNotFoundException {
         ExecResult startResult;

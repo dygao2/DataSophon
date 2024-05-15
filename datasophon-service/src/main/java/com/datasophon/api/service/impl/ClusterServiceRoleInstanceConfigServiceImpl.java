@@ -31,5 +31,5 @@ public class ClusterServiceRoleInstanceConfigServiceImpl
             ServiceImpl<ClusterServiceRoleInstanceConfigMapper, ClusterServiceRoleInstanceConfigEntity>
         implements
             ClusterServiceRoleInstanceConfigService {
-
+    
 }

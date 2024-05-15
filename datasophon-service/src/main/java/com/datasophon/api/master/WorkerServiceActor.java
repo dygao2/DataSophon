@@ -46,19 +46,19 @@ import org.slf4j.LoggerFactory;
 import akka.actor.UntypedActor;
 
 public class WorkerServiceActor extends UntypedActor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(WorkerServiceActor.class);
-
+    
     @Override
     public void onReceive(Object message) throws Throwable {
         if (message instanceof ExecuteServiceRoleCommand) {
             ExecuteServiceRoleCommand executeServiceRoleCommand = (ExecuteServiceRoleCommand) message;
-
+            
             ClusterServiceRoleGroupConfigService roleGroupConfigService =
                     SpringTool.getApplicationContext().getBean(ClusterServiceRoleGroupConfigService.class);
             ClusterServiceRoleInstanceService roleInstanceService =
                     SpringTool.getApplicationContext().getBean(ClusterServiceRoleInstanceService.class);
-
+            
             ServiceRoleInfo serviceRoleInfo = executeServiceRoleCommand.getWorkerRole();
             ExecResult execResult = new ExecResult();
             Integer serviceInstanceId = serviceRoleInfo.getServiceInstanceId();
@@ -154,5 +154,5 @@ public class WorkerServiceActor extends UntypedActor {
             unhandled(message);
         }
     }
-
+    
 }

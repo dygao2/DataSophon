@@ -21,8 +21,8 @@ import lombok.Data;
 
 @Data
 public class Links {
-
+    
     private String from;
-
+    
     private String to;
 }

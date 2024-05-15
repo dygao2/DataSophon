@@ -31,18 +31,18 @@ import ch.qos.logback.core.spi.FilterReply;
  * task log filter
  */
 public class TaskLogFilter extends Filter<ILoggingEvent> {
-
+    
     private static Logger logger = LoggerFactory.getLogger(TaskLogFilter.class);
-
+    
     /**
      * level
      */
     private Level level;
-
+    
     public void setLevel(String level) {
         this.level = Level.toLevel(level);
     }
-
+    
     /**
      * Accept or reject based on thread name
      *

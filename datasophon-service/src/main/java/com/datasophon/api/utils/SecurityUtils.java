@@ -29,18 +29,18 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import cn.hutool.core.convert.Convert;
 
 public class SecurityUtils {
-
+    
     public static HttpServletRequest getRequest() {
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         return request;
     }
-
+    
     public static HttpSession getSession() {
         HttpSession session = getRequest().getSession();
         return session;
     }
-
+    
     /**
      * 获取用户
      */
@@ -48,14 +48,14 @@ public class SecurityUtils {
         String username = getAuthUser().getUsername();
         return null == username ? null : ServletUtils.urlDecode(username);
     }
-
+    
     /**
      * 获取用户ID
      */
     public static Long getUserId() {
         return Convert.toLong(ServletUtils.getRequest().getHeader(Constants.DETAILS_USER_ID));
     }
-
+    
     /**
      * 是否为管理员
      *
@@ -66,7 +66,7 @@ public class SecurityUtils {
         Integer userId = userInfoEntity.getId();
         return userId != null && 1 == userId;
     }
-
+    
     public static UserInfoEntity getAuthUser() {
         return (UserInfoEntity) getRequest().getAttribute(Constants.SESSION_USER);
     }

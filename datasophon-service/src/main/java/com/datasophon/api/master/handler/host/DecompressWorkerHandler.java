@@ -30,9 +30,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DecompressWorkerHandler implements DispatcherWorkerHandler {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(DecompressWorkerHandler.class);
-
+    
     @Override
     public boolean handle(ClientSession session, HostInfo hostInfo) {
         String decompressResult = MinaUtils.execCmdWithResult(session, Constants.UNZIP_DDH_WORKER_CMD);

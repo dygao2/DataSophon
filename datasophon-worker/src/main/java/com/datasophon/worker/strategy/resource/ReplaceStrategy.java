@@ -14,15 +14,15 @@ import cn.hutool.core.io.FileUtil;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class ReplaceStrategy extends ResourceStrategy {
-
+    
     public static final String REPLACE_TYPE = "replace";
-
+    
     private String source;
-
+    
     private String regex;
-
+    
     private String replacement;
-
+    
     @Override
     public void exec() {
         File file = new File(basePath + Constants.SLASH + source);

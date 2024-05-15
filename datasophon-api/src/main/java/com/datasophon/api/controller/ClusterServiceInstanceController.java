@@ -30,10 +30,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("cluster/service/instance")
 public class ClusterServiceInstanceController {
-
+    
     @Autowired
     private ClusterServiceInstanceService clusterServiceInstanceService;
-
+    
     /**
      * 列表
      */
@@ -41,7 +41,7 @@ public class ClusterServiceInstanceController {
     public Result list(Integer clusterId) {
         return Result.success(clusterServiceInstanceService.listAll(clusterId));
     }
-
+    
     /**
      * 获取服务角色类型列表
      */
@@ -49,7 +49,7 @@ public class ClusterServiceInstanceController {
     public Result getServiceRoleType(Integer serviceInstanceId) {
         return clusterServiceInstanceService.getServiceRoleType(serviceInstanceId);
     }
-
+    
     /**
      * 获取服务角色类型列表
      */
@@ -57,46 +57,46 @@ public class ClusterServiceInstanceController {
     public Result configVersionCompare(Integer serviceInstanceId, Integer roleGroupId) {
         return clusterServiceInstanceService.configVersionCompare(serviceInstanceId, roleGroupId);
     }
-
+    
     /**
      * 信息
      */
     @RequestMapping("/info/{id}")
     public Result info(@PathVariable("id") Integer id) {
         ClusterServiceInstanceEntity clusterServiceInstance = clusterServiceInstanceService.getById(id);
-
+        
         return Result.success().put("clusterServiceInstance", clusterServiceInstance);
     }
-
+    
     /**
      * 信息
      */
     @RequestMapping("/downloadClientConfig")
     public Result downloadClientConfig(Integer clusterId, String serviceName) {
-
+        
         return clusterServiceInstanceService.downloadClientConfig(clusterId, serviceName);
     }
-
+    
     /**
      * 保存
      */
     @RequestMapping("/save")
     public Result save(@RequestBody ClusterServiceInstanceEntity clusterServiceInstance) {
         clusterServiceInstanceService.save(clusterServiceInstance);
-
+        
         return Result.success();
     }
-
+    
     /**
      * 修改
      */
     @RequestMapping("/update")
     public Result update(@RequestBody ClusterServiceInstanceEntity clusterServiceInstance) {
         clusterServiceInstanceService.updateById(clusterServiceInstance);
-
+        
         return Result.success();
     }
-
+    
     /**
      * 删除
      */
@@ -104,5 +104,5 @@ public class ClusterServiceInstanceController {
     public Result delete(Integer serviceInstanceId) {
         return clusterServiceInstanceService.delServiceInstance(serviceInstanceId);
     }
-
+    
 }

@@ -38,12 +38,12 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 public class UserPermissionHandler implements HandlerInterceptor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(UserPermissionHandler.class);
-
+    
     @Autowired
     private ClusterRoleUserService clusterUserService;
-
+    
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (handler instanceof HandlerMethod) {
@@ -71,7 +71,7 @@ public class UserPermissionHandler implements HandlerInterceptor {
                 }
             }
         }
-
+        
         return true;
     }
 }

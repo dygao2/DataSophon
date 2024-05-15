@@ -27,5 +27,5 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 @Service("roleInfoService")
 public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfoEntity> implements RoleInfoService {
-
+    
 }

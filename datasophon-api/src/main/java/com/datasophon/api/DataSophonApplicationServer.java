@@ -42,7 +42,7 @@ import cn.hutool.extra.spring.EnableSpringUtil;
 @MapperScan("com.datasophon.dao")
 @EnableSpringUtil
 public class DataSophonApplicationServer extends SpringBootServletInitializer {
-
+    
     public static void main(String[] args) {
         SpringApplication.run(DataSophonApplicationServer.class, args);
         // add shutdown hook， close and shutdown resources
@@ -50,14 +50,14 @@ public class DataSophonApplicationServer extends SpringBootServletInitializer {
             shutdown();
         }));
     }
-
+    
     @PostConstruct
     public void run() throws UnknownHostException, NoSuchAlgorithmException {
         String hostName = InetAddress.getLocalHost().getHostName();
         CacheUtils.put(Constants.HOSTNAME, hostName);
         ActorUtils.init();
     }
-
+    
     /**
      * Master 关闭时调用
      */

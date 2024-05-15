@@ -46,16 +46,16 @@ import cn.hutool.core.io.FileUtil;
 @Service("clusterKerberosService")
 @Transactional
 public class ClusterKerberosServiceImpl implements ClusterKerberosService {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(ClusterKerberosServiceImpl.class);
-
+    
     private static final String SSHUSER = "SSHUSER";
-
+    
     private static final String KEYTAB_PATH = "/etc/security/keytab";
-
+    
     @Autowired
     private ClusterServiceRoleInstanceService roleInstanceService;
-
+    
     @Override
     public void downloadKeytab(
                                Integer clusterId,
@@ -87,14 +87,14 @@ public class ClusterKerberosServiceImpl implements ClusterKerberosService {
             out.close();
         }
     }
-
+    
     @Override
     public void uploadKeytab(MultipartFile file, String hostname, String keytabFileName) throws IOException {
         String keytabFilePath =
                 KEYTAB_PATH + Constants.SLASH + hostname + Constants.SLASH + keytabFileName;
         file.transferTo(new File(keytabFilePath));
     }
-
+    
     private void generateKeytabFile(
                                     Integer clusterId,
                                     String keytabFilePath,
@@ -119,6 +119,6 @@ public class ClusterKerberosServiceImpl implements ClusterKerberosService {
                         + principal + "\"";
         logger.info("generate keytab file cmd is : {}", keytabCmd);
         ShellUtils.exceShell(keytabCmd);
-
+        
     }
 }

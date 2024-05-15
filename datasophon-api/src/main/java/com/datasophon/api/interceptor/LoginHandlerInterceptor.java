@@ -37,15 +37,15 @@ import org.springframework.web.servlet.HandlerInterceptor;
  * login interceptor, must login first
  */
 public class LoginHandlerInterceptor implements HandlerInterceptor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(LoginHandlerInterceptor.class);
-
+    
     @Autowired
     private UserInfoMapper userMapper;
-
+    
     @Autowired
     private Authenticator authenticator;
-
+    
     /**
      * Intercept the execution of a handler. Called after HandlerMapping determined
      * @param request   current HTTP request
@@ -78,5 +78,5 @@ public class LoginHandlerInterceptor implements HandlerInterceptor {
         request.setAttribute(Constants.SESSION_USER, user);
         return true;
     }
-
+    
 }

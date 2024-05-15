@@ -25,14 +25,14 @@ import lombok.Data;
 
 @Data
 public class AkkaRemoteReply implements Serializable {
-
+    
     private ReplyType replyType;
-
+    
     private String hostname;
-
+    
     private String serviceRoleName;
-
+    
     private String hostCommandId;
-
+    
     private String msg;
 }

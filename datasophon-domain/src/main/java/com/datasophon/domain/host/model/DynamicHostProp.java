@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 public class DynamicHostProp {
-
+    
     /**
      * 已用内存
      */
@@ -34,6 +34,6 @@ public class DynamicHostProp {
      * 1:受管 2：断线
      */
     private Integer managed;
-
+    
     private List<ServiceRole> serviceRoles;
 }

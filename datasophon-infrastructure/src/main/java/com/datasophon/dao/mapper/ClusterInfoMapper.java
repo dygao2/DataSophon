@@ -33,6 +33,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 @Mapper
 public interface ClusterInfoMapper extends BaseMapper<ClusterInfoEntity> {
-
+    
     ClusterInfoEntity getClusterByClusterCode(@Param("clusterCode") String clusterCode);
 }

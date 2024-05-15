@@ -27,9 +27,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @TableName("t_ddh_install_step")
 @Data
 public class InstallStepEntity implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     /**
      *
      */
@@ -43,5 +43,5 @@ public class InstallStepEntity implements Serializable {
      *
      */
     private String stepDesc;
-
+    
 }

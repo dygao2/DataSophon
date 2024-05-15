@@ -57,17 +57,17 @@ import cn.hutool.http.HttpUtil;
 @Slf4j
 @Data
 public class InstallServiceHandler {
-
+    
     private static final String HADOOP = "hadoop";
-
+    
     private String frameCode;
-
+    
     private String serviceName;
-
+    
     private String serviceRoleName;
-
+    
     private Logger logger;
-
+    
     public InstallServiceHandler(String frameCode, String serviceName, String serviceRoleName) {
         this.frameCode = frameCode;
         this.serviceName = serviceName;
@@ -76,7 +76,7 @@ public class InstallServiceHandler {
                 serviceRoleName);
         logger = LoggerFactory.getLogger(loggerName);
     }
-
+    
     public ExecResult install(InstallServiceRoleCommand command) {
         ExecResult execResult = new ExecResult();
         try {
@@ -84,15 +84,15 @@ public class InstallServiceHandler {
             String packageName = command.getPackageName();
             String packagePath = destDir + packageName;
             String decompressPackageName = command.getDecompressPackageName();
-
+            
             Boolean needDownLoad =
                     !Objects.equals(PropertyUtils.getString(Constants.MASTER_HOST), CacheUtils.get(Constants.HOSTNAME))
                             && isNeedDownloadPkg(packagePath, command.getPackageMd5());
-
+            
             if (Boolean.TRUE.equals(needDownLoad)) {
                 downloadPkg(packageName, packagePath);
             }
-
+            
             boolean result = decompressPkg(packageName, decompressPackageName, destDir);
             if (result) {
                 if (CollUtil.isNotEmpty(command.getResourceStrategies())) {
@@ -130,7 +130,7 @@ public class InstallServiceHandler {
                         rs.exec();
                     }
                 }
-
+                
                 if (Objects.nonNull(command.getRunAs())) {
                     ExecResult chownResult = ShellUtils.exceShell(
                             " chown -R " + command.getRunAs().getUser() + ":" + command.getRunAs().getGroup() + " "
@@ -157,44 +157,44 @@ public class InstallServiceHandler {
         }
         return execResult;
     }
-
+    
     private Boolean isNeedDownloadPkg(String packagePath, String packageMd5) {
         boolean needDownLoad = true;
         logger.info("Remote package md5 is {}", packageMd5);
         if (FileUtil.exist(packagePath)) {
             // check md5
             String md5 = FileUtils.md5(new File(packagePath));
-
+            
             logger.info("Local md5 is {}", md5);
-
+            
             if (StringUtils.isNotBlank(md5) && packageMd5.trim().equals(md5.trim())) {
                 needDownLoad = false;
             }
         }
         return needDownLoad;
     }
-
+    
     private void downloadPkg(String packageName, String packagePath) {
         String masterHost = PropertyUtils.getString(Constants.MASTER_HOST);
         String masterPort = PropertyUtils.getString(Constants.MASTER_WEB_PORT);
         String downloadUrl = "http://" + masterHost + ":" + masterPort
                 + "/ddh/service/install/downloadPackage?packageName=" + packageName;
-
+        
         logger.info("download url is {}", downloadUrl);
-
+        
         HttpUtil.downloadFile(downloadUrl, FileUtil.file(packagePath), new StreamProgress() {
-
+            
             @Override
             public void start() {
                 Console.log("start to install。。。。");
             }
-
+            
             @Override
             public void progress(long progressSize, long l1) {
                 Console.log("installed：{} / {} ", FileUtil.readableFileSize(progressSize),
                         FileUtil.readableFileSize(l1));
             }
-
+            
             @Override
             public void finish() {
                 Console.log("install success！");
@@ -202,7 +202,7 @@ public class InstallServiceHandler {
         });
         logger.info("download package {} success", packageName);
     }
-
+    
     private boolean decompressPkg(String packageName, String decompressPackageName, String destDir) {
         boolean decompressResult = true;
         if (!FileUtil.exist(Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName)) {
@@ -210,7 +210,7 @@ public class InstallServiceHandler {
         }
         return decompressResult;
     }
-
+    
     public boolean decompressTarGz(String sourceTarGzFile, String targetDir) {
         logger.info("Start to use tar -zxvf to decompress {}", sourceTarGzFile);
         ArrayList<String> command = new ArrayList<>();
@@ -222,7 +222,7 @@ public class InstallServiceHandler {
         ExecResult execResult = ShellUtils.execWithStatus(targetDir, command, 120, logger);
         return execResult.getExecResult();
     }
-
+    
     private void changeHadoopInstallPathPerm(String decompressPackageName) {
         ShellUtils.exceShell(
                 " chown -R  root:hadoop " + Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName);

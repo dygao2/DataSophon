@@ -33,9 +33,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @Data
 @Accessors(chain = true)
 public class FrameServiceRoleEntity implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     /**
      * 主键
      */
@@ -57,18 +57,18 @@ public class FrameServiceRoleEntity implements Serializable {
      * 1  1+
      */
     private String cardinality;
-
+    
     private String serviceRoleJson;
-
+    
     private String serviceRoleJsonMd5;
-
+    
     private String frameCode;
-
+    
     private String jmxPort;
-
+    
     @TableField(exist = false)
     private List<String> hosts;
-
+    
     private String logFile;
-
+    
 }

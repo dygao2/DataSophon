@@ -32,11 +32,11 @@ import java.util.ArrayList;
 import cn.hutool.core.io.FileUtil;
 
 public class HbaseHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
-
+    
     public HbaseHandlerStrategy(String serviceName, String serviceRoleName) {
         super(serviceName, serviceRoleName);
     }
-
+    
     @Override
     public ExecResult handler(ServiceRoleOperateCommand command) {
         ExecResult startResult = new ExecResult();
@@ -76,8 +76,8 @@ public class HbaseHandlerStrategy extends AbstractHandlerStrategy implements Ser
         }
         startResult = serviceHandler.start(command.getStartRunner(), command.getStatusRunner(),
                 command.getDecompressPackageName(), command.getRunAs());
-
+        
         return startResult;
-
+        
     }
 }

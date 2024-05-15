@@ -48,10 +48,14 @@ public class KyuubiServerHandlerStrategy extends AbstractHandlerStrategy impleme
                 KerberosUtils.downloadKeytabFromMaster("kyuubi/" + hostname, KEYTAB_NAME);
             }
         }
-        ServiceHandler serviceHandler = new ServiceHandler(command.getServiceName(),
+        ServiceHandler serviceHandler = new ServiceHandler(
+                command.getServiceName(),
                 command.getServiceRoleName());
-        startResult = serviceHandler.start(command.getStartRunner(), command.getStatusRunner(),
-                command.getDecompressPackageName(), command.getRunAs());
+        startResult = serviceHandler.start(
+                command.getStartRunner(),
+                command.getStatusRunner(),
+                command.getDecompressPackageName(),
+                command.getRunAs());
         return startResult;
     }
 }

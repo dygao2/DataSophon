@@ -32,9 +32,7 @@ import cn.hutool.core.io.FileUtil;
  * @author thomasgx
  * @date 2023年10月20日  19:02
  */
-public class KyuubiServerHandlerStrategy extends AbstractHandlerStrategy
-        implements
-            ServiceRoleStrategy {
+public class KyuubiServerHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
 
     private static final String KEYTAB_NAME = "kyuubi.service.keytab";
     private static final String KEYTAB_PATH = "/etc/security/keytab/" + KEYTAB_NAME;

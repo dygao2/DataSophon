@@ -17,9 +17,6 @@
 
 package com.datasophon.api.master.handler.service;
 
-import akka.actor.ActorSelection;
-import akka.pattern.Patterns;
-import akka.util.Timeout;
 import com.datasophon.api.load.GlobalVariables;
 import com.datasophon.api.master.ActorUtils;
 import com.datasophon.common.Constants;
@@ -28,8 +25,7 @@ import com.datasophon.common.command.ServiceRoleOperateCommand;
 import com.datasophon.common.enums.ServiceRoleType;
 import com.datasophon.common.model.ServiceRoleInfo;
 import com.datasophon.common.utils.ExecResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
@@ -37,6 +33,13 @@ import scala.concurrent.duration.Duration;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import akka.actor.ActorSelection;
+import akka.pattern.Patterns;
+import akka.util.Timeout;
 
 public class ServiceStartHandler extends ServiceHandler {
 
@@ -68,12 +71,13 @@ public class ServiceStartHandler extends ServiceHandler {
         serviceRoleOperateCommand.setEnableKerberos(enableKerberos);
         if (serviceRoleInfo.getRoleType() == ServiceRoleType.CLIENT) {
 
-            if(serviceRoleInfo.getName().equals("FlinkClient") && enableKerberos){
+            if (serviceRoleInfo.getName().equals("FlinkClient") && enableKerberos) {
                 logger.info("when serviceRoleInfo name is FlinkClient ,start to startActor!");
                 ActorSelection startActors = ActorUtils.actorSystem.actorSelection(
-                        "akka.tcp://datasophon@" + serviceRoleInfo.getHostname() + ":2552/user/worker/startServiceActor");
+                        "akka.tcp://datasophon@" + serviceRoleInfo.getHostname()
+                                + ":2552/user/worker/startServiceActor");
                 Timeout timeouts = new Timeout(Duration.create(180, TimeUnit.SECONDS));
-                Await.result(Patterns.ask(startActors, serviceRoleOperateCommand, timeouts),timeouts.duration());
+                Await.result(Patterns.ask(startActors, serviceRoleOperateCommand, timeouts), timeouts.duration());
             }
 
             ExecResult execResult = new ExecResult();

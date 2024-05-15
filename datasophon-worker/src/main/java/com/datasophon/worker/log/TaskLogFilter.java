@@ -17,13 +17,15 @@
 
 package com.datasophon.worker.log;
 
+import com.datasophon.worker.utils.TaskConstants;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.spi.FilterReply;
-import com.datasophon.worker.utils.TaskConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * task log filter

@@ -19,8 +19,9 @@
 
 package com.datasophon.api.migration;
 
-import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
+
+import lombok.Getter;
 
 @Getter
 public enum ScriptType {

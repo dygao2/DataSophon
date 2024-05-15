@@ -22,7 +22,7 @@ import com.datasophon.common.model.PromMetricInfo;
 import com.datasophon.common.model.PromResponceInfo;
 import com.datasophon.common.model.PromResultInfo;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -106,7 +106,7 @@ public class PromInfoUtils {
                 "up{job=\"hdfs\",instance=\"172.31.96.16:27001\"}");
         for (PromResultInfo hadoop_nameNode_thread : hadoop_nameNode_threads) {
             PromMetricInfo metric = hadoop_nameNode_thread.getMetric();
-            log.info(metric.get__name__() + ":" + hadoop_nameNode_thread.getValue()[1]);
+            log.info(metric.getName() + ":" + hadoop_nameNode_thread.getValue()[1]);
         }
     }
 

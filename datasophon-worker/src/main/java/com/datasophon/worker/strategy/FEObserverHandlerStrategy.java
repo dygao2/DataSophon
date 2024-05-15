@@ -17,11 +17,6 @@
 
 package com.datasophon.worker.strategy;
 
-import akka.actor.ActorRef;
-import cn.hutool.core.net.NetUtil;
-import cn.hutool.json.JSONUtil;
-import com.datasophon.common.Constants;
-import com.datasophon.common.cache.CacheUtils;
 import com.datasophon.common.command.OlapOpsType;
 import com.datasophon.common.command.OlapSqlExecCommand;
 import com.datasophon.common.command.ServiceRoleOperateCommand;
@@ -33,6 +28,11 @@ import com.datasophon.worker.handler.ServiceHandler;
 import com.datasophon.worker.utils.ActorUtils;
 
 import java.util.ArrayList;
+
+import akka.actor.ActorRef;
+
+import cn.hutool.core.net.NetUtil;
+import cn.hutool.json.JSONUtil;
 
 public class FEObserverHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
 

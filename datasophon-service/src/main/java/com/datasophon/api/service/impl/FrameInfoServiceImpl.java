@@ -17,7 +17,6 @@
 
 package com.datasophon.api.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.service.FrameInfoService;
 import com.datasophon.api.service.FrameServiceService;
 import com.datasophon.common.utils.CollectionUtils;
@@ -25,13 +24,16 @@ import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.FrameInfoEntity;
 import com.datasophon.dao.entity.FrameServiceEntity;
 import com.datasophon.dao.mapper.FrameInfoMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 @Service("frameInfoService")
 public class FrameInfoServiceImpl extends ServiceImpl<FrameInfoMapper, FrameInfoEntity> implements FrameInfoService {
@@ -48,7 +50,9 @@ public class FrameInfoServiceImpl extends ServiceImpl<FrameInfoMapper, FrameInfo
 
         Set<Integer> frameInfoIds = frameInfoEntities.stream().map(FrameInfoEntity::getId).collect(Collectors.toSet());
         Map<Integer, List<FrameServiceEntity>> frameServiceGroupBys = frameServiceService.lambdaQuery()
-                .select(FrameServiceEntity::getId, FrameServiceEntity::getFrameId, FrameServiceEntity::getFrameCode, FrameServiceEntity::getServiceName, FrameServiceEntity::getServiceVersion, FrameServiceEntity::getServiceDesc)
+                .select(FrameServiceEntity::getId, FrameServiceEntity::getFrameId, FrameServiceEntity::getFrameCode,
+                        FrameServiceEntity::getServiceName, FrameServiceEntity::getServiceVersion,
+                        FrameServiceEntity::getServiceDesc)
                 .in(FrameServiceEntity::getFrameId, frameInfoIds)
                 .list()
                 .stream()

@@ -33,7 +33,7 @@ public class GrafanaHandlerStrategy implements ServiceRoleStrategy {
     public void handler(Integer clusterId, List<String> hosts, String serviceName) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
         if (hosts.size() == 1) {
-            ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${grafanaHost}",
+            ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${grafanaHost}",
                     HostUtils.getIp(hosts.get(0)));
         }
     }

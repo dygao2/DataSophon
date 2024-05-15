@@ -27,12 +27,13 @@ import com.datasophon.common.model.ServiceRoleInfo;
 import com.datasophon.common.utils.PlaceholderUtils;
 import com.datasophon.dao.entity.ClusterInfoEntity;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HiveServer2HandlerStrategy extends ServiceHandlerAbstract implements ServiceRoleStrategy {
 
@@ -43,7 +44,8 @@ public class HiveServer2HandlerStrategy extends ServiceHandlerAbstract implement
         CacheUtils.put("enableHiveServer2HA", false);
         if (hosts.size() > 1) {
             CacheUtils.put("enableHiveServer2HA", true);
-            ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${masterHiveServer2}", hosts.get(0));
+            ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${masterHiveServer2}",
+                    hosts.get(0));
         }
     }
 

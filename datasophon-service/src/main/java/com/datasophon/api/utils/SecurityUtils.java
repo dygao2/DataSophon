@@ -17,14 +17,16 @@
 
 package com.datasophon.api.utils;
 
-import cn.hutool.core.convert.Convert;
 import com.datasophon.common.Constants;
 import com.datasophon.dao.entity.UserInfoEntity;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import cn.hutool.core.convert.Convert;
 
 public class SecurityUtils {
 
@@ -38,6 +40,7 @@ public class SecurityUtils {
         HttpSession session = getRequest().getSession();
         return session;
     }
+
     /**
      * 获取用户
      */
@@ -45,6 +48,7 @@ public class SecurityUtils {
         String username = getAuthUser().getUsername();
         return null == username ? null : ServletUtils.urlDecode(username);
     }
+
     /**
      * 获取用户ID
      */

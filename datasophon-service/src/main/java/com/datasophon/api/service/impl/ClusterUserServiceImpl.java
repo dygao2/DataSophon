@@ -17,18 +17,13 @@
 
 package com.datasophon.api.service.impl;
 
-import akka.actor.ActorSelection;
-import akka.pattern.Patterns;
-import akka.util.Timeout;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.enums.Status;
 import com.datasophon.api.exceptions.ServiceException;
 import com.datasophon.api.master.ActorUtils;
 import com.datasophon.api.service.ClusterGroupService;
-import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.service.ClusterUserGroupService;
 import com.datasophon.api.service.ClusterUserService;
+import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.common.Constants;
 import com.datasophon.common.command.remote.CreateUnixUserCommand;
 import com.datasophon.common.command.remote.DelUnixUserCommand;
@@ -39,12 +34,9 @@ import com.datasophon.dao.entity.ClusterHostDO;
 import com.datasophon.dao.entity.ClusterUser;
 import com.datasophon.dao.entity.ClusterUserGroup;
 import com.datasophon.dao.mapper.ClusterUserMapper;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import org.apache.commons.lang3.StringUtils;
+
 import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
@@ -55,6 +47,19 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import akka.actor.ActorSelection;
+import akka.pattern.Patterns;
+import akka.util.Timeout;
 
 @Service("clusterUserService")
 @Transactional

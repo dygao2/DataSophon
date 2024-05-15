@@ -187,7 +187,6 @@ sh /opt/datasophon-manager-1.2.1/bin/datasophon-api.sh restart api
 
 ![f8532b699ebdd66fa94f2a04dc451f5b](https://github.com/javaht/datasophon/assets/54611681/327729d6-ed75-4442-b273-6460e781d8ee)
 
-
 ### 4.1需要我们手动创建数据库并且运行sql
 
 ```
@@ -227,7 +226,6 @@ vim prometheus.yml 检查是否有dinky配置文件  如果没有添加
 通过下图展示的url进去grafana配置图表，默认登陆账户密码：admin ：admin
 
 ![2c74b17dc990845b18cfb7abf7f8312c](https://github.com/javaht/datasophon/assets/54611681/e151c3c1-eedb-4ce1-86b6-4427403ff3b4)
-
 
 ### 5.3 创建Grafana 模板文件
 
@@ -959,9 +957,7 @@ vim dinky.json
 
 ![dee4fd4731a54399166c890f385697dc](https://github.com/javaht/datasophon/assets/54611681/9a18cabf-65aa-4ba5-a6e1-b22c24b3cecd)
 
-
 ![12260a17477d4ade7c3c612e77f2af1c](https://github.com/javaht/datasophon/assets/54611681/3c371705-0fc9-4a73-a3d4-25903c10fcdb)
-
 
 **查看datasophon数据库中t_ddh_cluster_service_dashboard表中是否原就存在dinky 如果不存在添加**
 

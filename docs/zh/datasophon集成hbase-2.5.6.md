@@ -1,10 +1,10 @@
 ### 1、上传安装包
+
 将编译好的安装包hbase-2.5.6.tar.gz和md5文件hbase-2.5.6.tar.gz.md5放到安装包目录/opt/datasophon/DDP/packages下
 
 ```shell
 scp hbase-2.5.6.tar.gz hbase-2.5.6.tar.gz.md5 /opt/datasophon/DDP/packages
 ```
-
 
 ### 2、修改源码HBASE的service_ddl.json，重新打包api包
 
@@ -493,6 +493,7 @@ scp hbase-2.5.6.tar.gz hbase-2.5.6.tar.gz.md5 /opt/datasophon/DDP/packages
   ]
 }
 ```
+
 ### 3、修改源码的datasophon-env.sh和hbase-env.ftl，重新打包worker包
 
 修改datasophon-env.sh,代码路径是datasophon\datasophon-worker\src\main\resources\script\datasophon-env.sh
@@ -515,7 +516,8 @@ export HADOOP_CONF_DIR=/opt/datasophon/hadoop-3.3.3/etc/hadoop
 export PATH=$PATH:$JAVA_HOME/bin:$SPARK_HOME/bin:$HADOOP_HOME/bin:$HIVE_HOME/bin:$FLINK_HOME/bin:$KAFKA_HOME/bin:$HBASE_HOME/bin
 
 ```
-  修改hbase-env.ftl，代码路径是datasophon\datasophon-worker\src\main\resources\templates\hbase-env.ftl
+
+修改hbase-env.ftl，代码路径是datasophon\datasophon-worker\src\main\resources\templates\hbase-env.ftl
 
 ```shell
 #!/usr/bin/env bash
@@ -668,27 +670,23 @@ export ${item.name}=${item.value}
 </#list>
 ```
 
-
-
 ### 4、修改service源码，重新打包api包
 
 修改ZkServerHandlerStrategy.java,代码路径是 datasophon\datasophon-service\src\main\java\com\datasophon\api\strategy\ZkServerHandlerStrategy.java,修改hamdler方法
 
 ```java
-    @Override
-    public void handler(Integer clusterId, List<String> hosts) {
-        // 保存zkUrls到全局变量
-        Map<String, String> globalVariables = GlobalVariables.get(clusterId);
-        String join = String.join(":2181,", hosts);
-        String zkUrls = join + ":2181";
-        ProcessUtils.generateClusterVariable(globalVariables, clusterId, "${zkUrls}", zkUrls);
-        // 保存zkHostsUrl到全局变量
-        String zkHostsUrl=String.join(",", hosts);
-        ProcessUtils.generateClusterVariable(globalVariables, clusterId, "${zkHostsUrl}", zkHostsUrl);
-    }
+@Override
+public void handler(Integer clusterId, List<String> hosts) {
+    // 保存zkUrls到全局变量
+    Map<String, String> globalVariables = GlobalVariables.get(clusterId);
+    String join = String.join(":2181,", hosts);
+    String zkUrls = join + ":2181";
+    ProcessUtils.generateClusterVariable(globalVariables, clusterId, "${zkUrls}", zkUrls);
+    // 保存zkHostsUrl到全局变量
+    String zkHostsUrl=String.join(",", hosts);
+    ProcessUtils.generateClusterVariable(globalVariables, clusterId, "${zkHostsUrl}", zkHostsUrl);
+}
 ```
-
-
 
 ### 5、重启DataSophonApplicationServer服务
 

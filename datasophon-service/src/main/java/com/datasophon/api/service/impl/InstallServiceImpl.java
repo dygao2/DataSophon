@@ -19,21 +19,15 @@
 
 package com.datasophon.api.service.impl;
 
-import akka.actor.ActorRef;
-import cn.hutool.core.date.DateUnit;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.crypto.SecureUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.datasophon.api.enums.Status;
 import com.datasophon.api.load.GlobalVariables;
 import com.datasophon.api.master.ActorUtils;
 import com.datasophon.api.master.DispatcherWorkerActor;
 import com.datasophon.api.master.HostConnectActor;
 import com.datasophon.api.master.WorkerStartActor;
-import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.service.ClusterInfoService;
 import com.datasophon.api.service.InstallService;
+import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.utils.MessageResolverUtils;
 import com.datasophon.api.utils.MinaUtils;
 import com.datasophon.api.utils.ProcessUtils;
@@ -54,12 +48,9 @@ import com.datasophon.dao.entity.ClusterHostDO;
 import com.datasophon.dao.entity.ClusterInfoEntity;
 import com.datasophon.dao.entity.InstallStepEntity;
 import com.datasophon.dao.mapper.InstallStepMapper;
-import org.apache.commons.lang.StringUtils;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sshd.client.session.ClientSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,6 +61,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
+import akka.actor.ActorRef;
+
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.crypto.SecureUtil;
 
 @Service("installService")
 public class InstallServiceImpl implements InstallService {
@@ -106,12 +111,12 @@ public class InstallServiceImpl implements InstallService {
      */
     @Override
     public Result analysisHostList(
-            Integer clusterId,
-            String hosts,
-            String sshUser,
-            Integer sshPort,
-            Integer page,
-            Integer pageSize) {
+                                   Integer clusterId,
+                                   String hosts,
+                                   String sshUser,
+                                   Integer sshPort,
+                                   Integer page,
+                                   Integer pageSize) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
         ProcessUtils.generateClusterVariable(globalVariables, clusterId, null, SSHUSER, sshUser);
 
@@ -199,7 +204,7 @@ public class InstallServiceImpl implements InstallService {
     }
 
     public HostInfo createHostInfo(
-            String host, Integer sshPort, String sshUser, String clusterCode) {
+                                   String host, Integer sshPort, String sshUser, String clusterCode) {
         HostInfo hostInfo = new HostInfo();
 
         hostInfo.setHostname(HostUtils.getHostName(host));
@@ -248,7 +253,7 @@ public class InstallServiceImpl implements InstallService {
 
     @Override
     public Result rehostCheck(
-            Integer clusterId, String hostnames, String sshUser, Integer sshPort) {
+                              Integer clusterId, String hostnames, String sshUser, Integer sshPort) {
         // 开启主机校验
         ClusterInfoEntity clusterInfo = clusterInfoService.getById(clusterId);
         String clusterCode = clusterInfo.getClusterCode();
@@ -271,7 +276,7 @@ public class InstallServiceImpl implements InstallService {
 
     @Override
     public Result dispatcherHostAgentList(
-            Integer clusterId, Integer installStateCode, Integer page, Integer pageSize) {
+                                          Integer clusterId, Integer installStateCode, Integer page, Integer pageSize) {
 
         ClusterInfoEntity clusterInfo = clusterInfoService.getById(clusterId);
         String clusterCode = clusterInfo.getClusterCode();
@@ -380,7 +385,7 @@ public class InstallServiceImpl implements InstallService {
             HostInfo value = hostInfoEntry.getValue();
             if (Objects.isNull(value.getCheckResult())
                     || (Objects.nonNull(value.getCheckResult())
-                    && value.getCheckResult().getCode() != 10001)) {
+                            && value.getCheckResult().getCode() != 10001)) {
                 return Result.success().put("hostCheckCompleted", false);
             }
         }
@@ -389,7 +394,7 @@ public class InstallServiceImpl implements InstallService {
 
     @Override
     public Result cancelDispatcherHostAgent(
-            Integer clusterId, String hostname, Integer installStateCode) {
+                                            Integer clusterId, String hostname, Integer installStateCode) {
 
         return null;
     }
@@ -453,7 +458,8 @@ public class InstallServiceImpl implements InstallService {
         List<ClusterHostDO> clusterHostList = hostService.getHostListByIds(Arrays.asList(clusterHostIdArray));
         Result result = null;
 
-        CommandType serviceCommandType = "start".equalsIgnoreCase(commandType) ? CommandType.START_SERVICE : CommandType.STOP_SERVICE;
+        CommandType serviceCommandType =
+                "start".equalsIgnoreCase(commandType) ? CommandType.START_SERVICE : CommandType.STOP_SERVICE;
         for (ClusterHostDO clusterHostDO : clusterHostList) {
             WorkerServiceMessage serviceMessage = new WorkerServiceMessage(
                     clusterHostDO.getHostname(), clusterHostDO.getClusterId(), serviceCommandType);

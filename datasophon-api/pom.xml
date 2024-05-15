@@ -32,6 +32,10 @@
     </properties>
     <dependencies>
         <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.datasophon</groupId>
             <artifactId>datasophon-service</artifactId>
             <version>${revision}</version>
@@ -49,7 +53,8 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <excludes>
-                    <exclude>front/**</exclude> <!-- 替换为您要排除的文件夹名称 -->
+                    <exclude>front/**</exclude>
+                    <!-- 替换为您要排除的文件夹名称 -->
                 </excludes>
             </resource>
         </resources>
@@ -72,7 +77,8 @@
                         <fileset>
                             <directory>${project.basedir}/src/main/resources</directory>
                             <includes>
-                                <include>front/**</include> <!-- 替换为要删除的文件名 -->
+                                <include>front/**</include>
+                                <!-- 替换为要删除的文件名 -->
                             </includes>
                         </fileset>
                     </filesets>

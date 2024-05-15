@@ -75,8 +75,6 @@ public class TaskConstants {
      */
     public static final String SINGLE_SLASH = "/";
 
-
-
     /**
      * pstree, get pud and sub pid
      */
@@ -108,9 +106,5 @@ public class TaskConstants {
      * get output log service
      */
     public static final String GET_OUTPUT_LOG_SERVICE = "-getOutputLogService";
-
-
-
-
 
 }

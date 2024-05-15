@@ -17,7 +17,7 @@
 
 package com.datasophon.api.strategy;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -63,7 +63,6 @@ public class ServiceRoleStrategyContext {
         strategyMap.put("FLINK", new FlinkHandlerStrategy());
         strategyMap.put("KYUUBI", new KyuubiServerHandlerStrategy());
 
-
         // serviceNameMap
         serviceNameMap.put("NameNode", "HDFS");
         serviceNameMap.put("ResourceManager", "YARN");
@@ -89,15 +88,14 @@ public class ServiceRoleStrategyContext {
         serviceNameMap.put("Prometheus", "PROMETHEUS");
         serviceNameMap.put("AlertManager", "ALERTMANAGER");
 
-
-        serviceNameMap.put("FLINK","FLINK");
-        serviceNameMap.put("RANGER","RANGER");
-        serviceNameMap.put("YARN","YARN");
-        serviceNameMap.put("HDFS","HDFS");
-        serviceNameMap.put("HIVE","HIVE");
-        serviceNameMap.put("KAFKA","KAFKA");
-        serviceNameMap.put("HBASE","HBASE");
-        serviceNameMap.put("KYUUBI","KYUUBI");
+        serviceNameMap.put("FLINK", "FLINK");
+        serviceNameMap.put("RANGER", "RANGER");
+        serviceNameMap.put("YARN", "YARN");
+        serviceNameMap.put("HDFS", "HDFS");
+        serviceNameMap.put("HIVE", "HIVE");
+        serviceNameMap.put("KAFKA", "KAFKA");
+        serviceNameMap.put("HBASE", "HBASE");
+        serviceNameMap.put("KYUUBI", "KYUUBI");
 
     }
 

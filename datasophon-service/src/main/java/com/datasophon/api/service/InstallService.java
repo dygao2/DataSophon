@@ -42,7 +42,6 @@ public interface InstallService {
 
     Result generateHostAgentCommand(String clusterHostIds, String commandType) throws Exception;
 
-
     /**
      * 启动/停止 主机上安装的服务启动
      * @param clusterHostIds

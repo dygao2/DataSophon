@@ -17,19 +17,14 @@
 
 package com.datasophon.api.service.host.impl;
 
-import akka.actor.ActorRef;
-import cn.hutool.crypto.SecureUtil;
-import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.enums.Status;
 import com.datasophon.api.master.ActorUtils;
 import com.datasophon.api.master.PrometheusActor;
 import com.datasophon.api.master.RackActor;
-import com.datasophon.api.service.ClusterRackService;
-import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.service.ClusterInfoService;
+import com.datasophon.api.service.ClusterRackService;
 import com.datasophon.api.service.ClusterServiceRoleInstanceService;
+import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.service.host.dto.QueryHostListPageDTO;
 import com.datasophon.common.Constants;
 import com.datasophon.common.cache.CacheUtils;
@@ -42,15 +37,13 @@ import com.datasophon.dao.entity.ClusterHostDO;
 import com.datasophon.dao.entity.ClusterInfoEntity;
 import com.datasophon.dao.entity.ClusterRack;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
-import com.datasophon.domain.host.enums.HostState;
 import com.datasophon.dao.enums.RoleType;
 import com.datasophon.dao.enums.ServiceRoleState;
 import com.datasophon.dao.mapper.ClusterHostMapper;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.datasophon.domain.host.enums.HostState;
+
+import org.apache.commons.lang3.StringUtils;
+
 import scala.concurrent.duration.FiniteDuration;
 
 import java.util.ArrayList;
@@ -61,11 +54,23 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import akka.actor.ActorRef;
+import cn.hutool.crypto.SecureUtil;
+
 @Service("clusterHostService")
 @Transactional
 public class ClusterHostServiceImpl extends ServiceImpl<ClusterHostMapper, ClusterHostDO>
         implements
-        ClusterHostService {
+            ClusterHostService {
 
     @Autowired
     ClusterHostMapper hostMapper;
@@ -79,7 +84,7 @@ public class ClusterHostServiceImpl extends ServiceImpl<ClusterHostMapper, Clust
     @Autowired
     ClusterRackService clusterRackService;
 
-    private final String IP = "ip";
+    private final String ip = "ip";
 
     @Override
     public ClusterHostDO getClusterHostByHostname(String hostname) {
@@ -96,7 +101,7 @@ public class ClusterHostServiceImpl extends ServiceImpl<ClusterHostMapper, Clust
                         .eq(Constants.MANAGED, 1)
                         .eq(StringUtils.isNotBlank(cpuArchitecture), Constants.CPU_ARCHITECTURE, cpuArchitecture)
                         .eq(hostState != null, Constants.HOST_STATE, hostState)
-                        .like(StringUtils.isNotBlank(ip), IP, ip)
+                        .like(StringUtils.isNotBlank(ip), this.ip, ip)
                         .like(StringUtils.isNotBlank(hostname), Constants.HOSTNAME, hostname)
                         .orderByAsc("asc".equals(orderType), orderField)
                         .orderByDesc("desc".equals(orderType), orderField)
@@ -104,16 +109,16 @@ public class ClusterHostServiceImpl extends ServiceImpl<ClusterHostMapper, Clust
 
         // 回显rack的名称 而不是ID
         Map<String, String> rackMap = clusterRackService.queryClusterRack(clusterId).stream()
-            .collect(Collectors.toMap(obj->obj.getId()+"", ClusterRack::getRack));
+                .collect(Collectors.toMap(obj -> obj.getId() + "", ClusterRack::getRack));
         for (ClusterHostDO clusterHostDO : list) {
             QueryHostListPageDTO queryHostListPageDTO = new QueryHostListPageDTO();
-            BeanUtils.copyProperties(clusterHostDO,queryHostListPageDTO);
+            BeanUtils.copyProperties(clusterHostDO, queryHostListPageDTO);
             // 查询主机上服务角色数
             int serviceRoleNum = roleInstanceService.count(new QueryWrapper<ClusterServiceRoleInstanceEntity>()
                     .eq(Constants.HOSTNAME, clusterHostDO.getHostname()));
             queryHostListPageDTO.setServiceRoleNum(serviceRoleNum);
             queryHostListPageDTO.setHostState(clusterHostDO.getHostState().getValue());
-            queryHostListPageDTO.setRack(rackMap.getOrDefault(queryHostListPageDTO.getRack(),"/default-rack"));
+            queryHostListPageDTO.setRack(rackMap.getOrDefault(queryHostListPageDTO.getRack(), "/default-rack"));
             hostListPageDTOS.add(queryHostListPageDTO);
         }
         int count = this.count(new QueryWrapper<ClusterHostDO>().eq(Constants.CLUSTER_ID, clusterId)
@@ -141,7 +146,6 @@ public class ClusterHostServiceImpl extends ServiceImpl<ClusterHostMapper, Clust
         return Result.success(list);
     }
 
-
     /**
      * 批量删除主机。
      * 删除主机，首先停止主机上的服务
@@ -165,7 +169,8 @@ public class ClusterHostServiceImpl extends ServiceImpl<ClusterHostMapper, Clust
                             .eq(Constants.HOSTNAME, host.getHostname())
                             .eq(Constants.SERVICE_ROLE_STATE, ServiceRoleState.RUNNING)
                             .ne(Constants.ROLE_TYPE, RoleType.CLIENT));
-            List<String> roles = list.stream().map(ClusterServiceRoleInstanceEntity::getServiceRoleName).collect(Collectors.toList());
+            List<String> roles = list.stream().map(ClusterServiceRoleInstanceEntity::getServiceRoleName)
+                    .collect(Collectors.toList());
             if (!list.isEmpty()) {
                 return Result.error(host.getHostname() + Status.HOST_EXIT_ONE_RUNNING_ROLE.getMsg() + roles);
             }
@@ -179,7 +184,7 @@ public class ClusterHostServiceImpl extends ServiceImpl<ClusterHostMapper, Clust
             this.removeById(hostId);
 
             if (host.getHostState() != HostState.OFFLINE) {
-                //stop the worker on this host
+                // stop the worker on this host
                 ActorRef execCmdActor = ActorUtils.getRemoteActor(host.getHostname(), "executeCmdActor");
                 ExecuteCmdCommand command = new ExecuteCmdCommand();
                 ArrayList<String> commands = new ArrayList<>();
@@ -190,7 +195,7 @@ public class ClusterHostServiceImpl extends ServiceImpl<ClusterHostMapper, Clust
                 command.setCommands(commands);
                 execCmdActor.tell(command, ActorRef.noSender());
             }
-            //remove host from prometheus
+            // remove host from prometheus
             ActorRef prometheusActor =
                     ActorUtils.getLocalActor(PrometheusActor.class, ActorUtils.getActorRefName(PrometheusActor.class));
 
@@ -219,7 +224,6 @@ public class ClusterHostServiceImpl extends ServiceImpl<ClusterHostMapper, Clust
         }
         return Result.success();
     }
-
 
     @Override
     public Result getRack(Integer clusterId) {

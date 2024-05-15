@@ -45,6 +45,7 @@ public class ClusterInfoController {
     public Result list() {
         return clusterInfoService.getClusterList();
     }
+
     /**
      * 配置好的集群列表
      */

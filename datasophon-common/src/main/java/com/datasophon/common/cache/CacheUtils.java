@@ -34,7 +34,7 @@ public class CacheUtils {
     public static Object get(String key) {
         Object data = cache.get(key);
         return data;
-    };
+    }
 
     public static void put(String key, Object value) {
         cache.put(key, value);

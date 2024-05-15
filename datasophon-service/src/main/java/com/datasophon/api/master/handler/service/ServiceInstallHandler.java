@@ -18,8 +18,8 @@
 package com.datasophon.api.master.handler.service;
 
 import com.datasophon.api.master.ActorUtils;
-import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.service.ClusterServiceRoleInstanceService;
+import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.utils.SpringTool;
 import com.datasophon.common.Constants;
 import com.datasophon.common.command.InstallServiceRoleCommand;
@@ -71,14 +71,14 @@ public class ServiceInstallHandler extends ServiceHandler {
         installServiceRoleCommand.setServiceRoleType(serviceRoleInfo.getRoleType());
         installServiceRoleCommand.setResourceStrategies(serviceRoleInfo.getResourceStrategies());
 
-        String md5 ;
+        String md5;
         if ("aarch64".equals(hostEntity.getCpuArchitecture()) && FileUtil.exist(Constants.MASTER_MANAGE_PACKAGE_PATH
                 + Constants.SLASH + serviceRoleInfo.getDecompressPackageName() + "-arm.tar.gz")) {
             installServiceRoleCommand.setPackageName(serviceRoleInfo.getDecompressPackageName() + "-arm.tar.gz");
             logger.info("find arm package {}", installServiceRoleCommand.getPackageName());
             md5 = FileUtil.readString(Constants.MASTER_MANAGE_PACKAGE_PATH + Constants.SLASH
                     + serviceRoleInfo.getDecompressPackageName() + "-arm.tar.gz.md5", Charset.defaultCharset());
-        }else {
+        } else {
             installServiceRoleCommand.setPackageName(serviceRoleInfo.getPackageName());
             md5 = FileUtil.readString(
                     Constants.MASTER_MANAGE_PACKAGE_PATH + Constants.SLASH + serviceRoleInfo.getPackageName() + ".md5",

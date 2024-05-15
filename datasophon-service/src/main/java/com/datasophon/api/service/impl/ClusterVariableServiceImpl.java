@@ -17,22 +17,24 @@
 
 package com.datasophon.api.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.service.ClusterVariableService;
 import com.datasophon.common.Constants;
 import com.datasophon.dao.entity.ClusterVariable;
 import com.datasophon.dao.mapper.ClusterVariableMapper;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
 @Service("clusterVariableService")
 public class ClusterVariableServiceImpl extends ServiceImpl<ClusterVariableMapper, ClusterVariable>
         implements
-        ClusterVariableService {
+            ClusterVariableService {
 
     @Override
     public ClusterVariable getVariableByVariableName(String variableName, Integer clusterId) {
@@ -48,7 +50,6 @@ public class ClusterVariableServiceImpl extends ServiceImpl<ClusterVariableMappe
     public List<ClusterVariable> getVariables(Integer clusterId, String serviceName) {
         return this.list(new LambdaQueryWrapper<ClusterVariable>()
                 .eq(ClusterVariable::getClusterId, clusterId)
-                .eq(ClusterVariable::getServiceName, serviceName)
-        );
+                .eq(ClusterVariable::getServiceName, serviceName));
     }
 }

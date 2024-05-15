@@ -17,11 +17,13 @@
 
 package com.datasophon.api.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.service.RoleInfoService;
 import com.datasophon.dao.entity.RoleInfoEntity;
 import com.datasophon.dao.mapper.RoleInfoMapper;
+
 import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 @Service("roleInfoService")
 public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfoEntity> implements RoleInfoService {

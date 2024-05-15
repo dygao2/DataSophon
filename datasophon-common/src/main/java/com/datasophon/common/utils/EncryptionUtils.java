@@ -14,10 +14,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package com.datasophon.common.utils;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * encryption utils
@@ -25,7 +26,7 @@ import org.apache.commons.lang.StringUtils;
 public class EncryptionUtils {
 
     /**
-     * 
+     *
      * @param rawStr raw string
      * @return md5(rawStr)
      */

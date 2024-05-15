@@ -79,6 +79,7 @@ public class Result extends HashMap<String, Object> {
         result.put("data", data);
         return result;
     }
+
     public static Result success() {
         Result result = new Result();
         result.put(Constants.CODE, 200);

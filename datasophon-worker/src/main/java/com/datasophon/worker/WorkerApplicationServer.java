@@ -19,15 +19,6 @@
 
 package com.datasophon.worker;
 
-import akka.actor.ActorRef;
-import akka.actor.ActorSelection;
-import akka.actor.ActorSystem;
-import akka.actor.Props;
-import akka.event.EventStream;
-import akka.remote.AssociatedEvent;
-import akka.remote.AssociationErrorEvent;
-import akka.remote.DisassociatedEvent;
-import com.alibaba.fastjson.JSONObject;
 import com.datasophon.common.Constants;
 import com.datasophon.common.cache.CacheUtils;
 import com.datasophon.common.lifecycle.ServerLifeCycleManager;
@@ -39,16 +30,28 @@ import com.datasophon.worker.actor.RemoteEventActor;
 import com.datasophon.worker.actor.WorkerActor;
 import com.datasophon.worker.utils.ActorUtils;
 import com.datasophon.worker.utils.UnixUtils;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.alibaba.fastjson.JSONObject;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+
+import akka.actor.ActorRef;
+import akka.actor.ActorSelection;
+import akka.actor.ActorSystem;
+import akka.actor.Props;
+import akka.event.EventStream;
+import akka.remote.AssociatedEvent;
+import akka.remote.AssociationErrorEvent;
+import akka.remote.DisassociatedEvent;
 
 public class WorkerApplicationServer {
 
@@ -108,7 +111,7 @@ public class WorkerApplicationServer {
         userMap.put("hive", HADOOP);
         userMap.put("mapred", HADOOP);
         userMap.put("hbase", HADOOP);
-        userMap.put("kyuubi",HADOOP);
+        userMap.put("kyuubi", HADOOP);
         userMap.put("flink", HADOOP);
         userMap.put("elastic", "elastic");
     }
@@ -142,19 +145,19 @@ public class WorkerApplicationServer {
     }
 
     private static void tellToMaster(
-            String hostname,
-            String workDir,
-            String masterHost,
-            String cpuArchitecture,
-            ActorSystem system) {
+                                     String hostname,
+                                     String workDir,
+                                     String masterHost,
+                                     String cpuArchitecture,
+                                     ActorSystem system) {
         ActorSelection workerStartActor =
                 system.actorSelection(
                         "akka.tcp://datasophon@" + masterHost + ":2551/user/workerStartActor");
         ExecResult result = ShellUtils.exceShell(workDir + "/script/host-info-collect.sh");
-        if(!result.getExecResult()){
-            logger.error("host info collect error:{}",result.getExecErrOut());
-        }else {
-            logger.info("host info collect success:{}",result.getExecOut());
+        if (!result.getExecResult()) {
+            logger.error("host info collect error:{}", result.getExecErrOut());
+        } else {
+            logger.info("host info collect success:{}", result.getExecOut());
         }
         StartWorkerMessage startWorkerMessage =
                 JSONObject.parseObject(result.getExecOut(), StartWorkerMessage.class);
@@ -180,10 +183,10 @@ public class WorkerApplicationServer {
     }
 
     private static void operateNodeExporter(
-            String workDir, String cpuArchitecture, String operate) {
+                                            String workDir, String cpuArchitecture, String operate) {
         ArrayList<String> commands = new ArrayList<>();
         commands.add(SH);
-        if (Constants.x86_64.equals(cpuArchitecture)) {
+        if (Constants.X86_64.equals(cpuArchitecture)) {
             commands.add(workDir + "/node/x86/control.sh");
         } else {
             commands.add(workDir + "/node/arm/control.sh");

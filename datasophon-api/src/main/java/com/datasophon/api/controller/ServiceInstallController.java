@@ -17,19 +17,26 @@
 
 package com.datasophon.api.controller;
 
-import com.alibaba.fastjson.JSONArray;
 import com.datasophon.api.security.UserPermission;
 import com.datasophon.api.service.ServiceInstallService;
 import com.datasophon.common.model.HostServiceRoleMapping;
 import com.datasophon.common.model.ServiceConfig;
 import com.datasophon.common.model.ServiceRoleHostMapping;
 import com.datasophon.common.utils.Result;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.alibaba.fastjson.JSONArray;
 
 @RestController
 @RequestMapping("service/install")

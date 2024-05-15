@@ -23,7 +23,10 @@ import com.datasophon.common.Constants;
 import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.ClusterYarnQueue;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;

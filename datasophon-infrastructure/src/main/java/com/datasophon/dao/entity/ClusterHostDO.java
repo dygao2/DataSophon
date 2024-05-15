@@ -17,15 +17,17 @@
 
 package com.datasophon.dao.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.datasophon.domain.host.enums.HostState;
 import com.datasophon.domain.host.enums.MANAGED;
-import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import lombok.Data;
+
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 
 @TableName("t_ddh_cluster_host")
 @Data

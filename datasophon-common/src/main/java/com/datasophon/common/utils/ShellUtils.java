@@ -18,9 +18,6 @@
 package com.datasophon.common.utils;
 
 import com.datasophon.common.Constants;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -33,6 +30,9 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ShellUtils {
 
@@ -115,7 +115,6 @@ public class ShellUtils {
         }
         return null;
     }
-
 
     public static ExecResult execWithStatus(String workPath, List<String> command, long timeout) {
         Process process = null;

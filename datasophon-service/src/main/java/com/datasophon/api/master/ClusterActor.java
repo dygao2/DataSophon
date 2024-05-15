@@ -17,10 +17,6 @@
 
 package com.datasophon.api.master;
 
-import akka.actor.UntypedActor;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.extra.spring.SpringUtil;
-import com.alibaba.fastjson.JSONArray;
 import com.datasophon.api.service.ClusterInfoService;
 import com.datasophon.api.service.ClusterServiceInstanceService;
 import com.datasophon.api.service.ClusterServiceRoleGroupConfigService;
@@ -41,8 +37,6 @@ import com.datasophon.dao.entity.ClusterServiceRoleGroupConfig;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
 import com.datasophon.dao.enums.ClusterState;
 import com.datasophon.dao.enums.ServiceRoleState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -50,6 +44,15 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.alibaba.fastjson.JSONArray;
+
+import akka.actor.UntypedActor;
+
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.extra.spring.SpringUtil;
 
 /**
  * 节点状态监测
@@ -80,10 +83,12 @@ public class ClusterActor extends UntypedActor {
                 for (ClusterInfoEntity clusterInfoEntity : clusterList) {
                     // 获取集群上正在运行的服务
                     int clusterId = clusterInfoEntity.getId();
-                    List<ClusterServiceRoleInstanceEntity> roleInstanceList = roleInstanceService.getServiceRoleInstanceListByClusterId(clusterId);
+                    List<ClusterServiceRoleInstanceEntity> roleInstanceList =
+                            roleInstanceService.getServiceRoleInstanceListByClusterId(clusterId);
                     if (!ClusterState.NEED_CONFIG.equals(clusterInfoEntity.getClusterState())) {
                         if (!roleInstanceList.isEmpty()) {
-                            if (roleInstanceList.stream().allMatch(roleInstance -> ServiceRoleState.STOP.equals(roleInstance.getServiceRoleState()))) {
+                            if (roleInstanceList.stream().allMatch(
+                                    roleInstance -> ServiceRoleState.STOP.equals(roleInstance.getServiceRoleState()))) {
                                 clusterInfoService.updateClusterState(clusterId, ClusterState.STOP.getValue());
                             } else {
                                 clusterInfoService.updateClusterState(clusterId, ClusterState.RUNNING.getValue());
@@ -99,16 +104,21 @@ public class ClusterActor extends UntypedActor {
                     ClusterInfoEntity clusterInfo = clusterInfoService.getById(clusterId);
                     if (Objects.nonNull(clusterInfo)) {
                         ClusterHostService clusterHostService = SpringUtil.getBean(ClusterHostService.class);
-                        ClusterServiceInstanceService clusterServiceInstanceService = SpringUtil.getBean(ClusterServiceInstanceService.class);
-                        ClusterServiceRoleInstanceService clusterServiceRoleInstanceService = SpringUtil.getBean(ClusterServiceRoleInstanceService.class);
-                        ClusterServiceRoleGroupConfigService clusterServiceRoleGroupConfigService = SpringUtil.getBean(ClusterServiceRoleGroupConfigService.class);
+                        ClusterServiceInstanceService clusterServiceInstanceService =
+                                SpringUtil.getBean(ClusterServiceInstanceService.class);
+                        ClusterServiceRoleInstanceService clusterServiceRoleInstanceService =
+                                SpringUtil.getBean(ClusterServiceRoleInstanceService.class);
+                        ClusterServiceRoleGroupConfigService clusterServiceRoleGroupConfigService =
+                                SpringUtil.getBean(ClusterServiceRoleGroupConfigService.class);
 
                         // 检查服务实例配置与目录
-                        List<ClusterServiceRoleInstanceEntity> roleInstanceList = clusterServiceRoleInstanceService.getServiceRoleInstanceListByClusterId(clusterId);
+                        List<ClusterServiceRoleInstanceEntity> roleInstanceList =
+                                clusterServiceRoleInstanceService.getServiceRoleInstanceListByClusterId(clusterId);
                         for (ClusterServiceRoleInstanceEntity roleInstance : roleInstanceList) {
                             String roleName = roleInstance.getServiceRoleName();
                             String hostname = roleInstance.getHostname();
-                            ClusterServiceRoleGroupConfig config = clusterServiceRoleGroupConfigService.getConfigByRoleGroupId(roleInstance.getRoleGroupId());
+                            ClusterServiceRoleGroupConfig config = clusterServiceRoleGroupConfigService
+                                    .getConfigByRoleGroupId(roleInstance.getRoleGroupId());
                             Map<Generators, List<ServiceConfig>> configFileMap = new ConcurrentHashMap<>();
                             ProcessUtils.generateConfigFileMap(configFileMap, config, clusterId);
                             for (Map.Entry<Generators, List<ServiceConfig>> configFile : configFileMap.entrySet()) {
@@ -118,17 +128,20 @@ public class ClusterActor extends UntypedActor {
                                             if (Constants.INPUT.equals(c.getType())) {
                                                 String oldPath = (String) c.getValue();
                                                 if (!oldPath.contains(DEPRECATED)) {
-                                                    String newPath = String.format("%s_%s_%s_%s", oldPath, DEPRECATED, clusterId, DateUtil.today());
+                                                    String newPath = String.format("%s_%s_%s_%s", oldPath, DEPRECATED,
+                                                            clusterId, DateUtil.today());
                                                     c.setValue(newPath);
                                                     c.setConfigType(Constants.MV_PATH);
                                                 }
                                             } else if (Constants.MULTIPLE.equals(c.getType())) {
                                                 JSONArray value = (JSONArray) c.getValue();
                                                 List<String> oldPaths = value.toJavaList(String.class);
-                                                List<String> newPaths = oldPaths.stream().map(path -> !path.contains(DEPRECATED) ?
-                                                        String.format("%s_%s_%s_%s", path, DEPRECATED, clusterId, DateUtil.today())
-                                                        : path
-                                                ).collect(Collectors.toList());
+                                                List<String> newPaths = oldPaths.stream()
+                                                        .map(path -> !path.contains(DEPRECATED)
+                                                                ? String.format("%s_%s_%s_%s", path, DEPRECATED,
+                                                                        clusterId, DateUtil.today())
+                                                                : path)
+                                                        .collect(Collectors.toList());
                                                 c.setValue(newPaths);
                                                 c.setConfigType(Constants.MV_PATH);
                                             }
@@ -150,7 +163,8 @@ public class ClusterActor extends UntypedActor {
                                             "start to uninstall {} in host {}",
                                             roleName,
                                             hostname);
-                                    execResult = ProcessUtils.configServiceRoleInstance(clusterInfo, configFileMap, roleInstance);
+                                    execResult = ProcessUtils.configServiceRoleInstance(clusterInfo, configFileMap,
+                                            roleInstance);
                                     if (Objects.nonNull(execResult) && execResult.getExecResult()) {
                                         logger.info(
                                                 "{} uninstall success in {}",
@@ -174,10 +188,13 @@ public class ClusterActor extends UntypedActor {
                                 }
                             }
                         }
-                        List<ClusterServiceInstanceEntity> serviceInstanceList = clusterServiceInstanceService.listAll(clusterId);
-                        if (serviceInstanceList.stream().allMatch(instance -> clusterServiceInstanceService.delServiceInstance(instance.getId()).isSuccess())) {
+                        List<ClusterServiceInstanceEntity> serviceInstanceList =
+                                clusterServiceInstanceService.listAll(clusterId);
+                        if (serviceInstanceList.stream().allMatch(instance -> clusterServiceInstanceService
+                                .delServiceInstance(instance.getId()).isSuccess())) {
                             List<ClusterHostDO> hostList = clusterHostService.getHostListByClusterId(clusterId);
-                            clusterHostService.deleteHosts(hostList.stream().map(h -> String.valueOf(h.getId())).collect(Collectors.joining(Constants.COMMA)));
+                            clusterHostService.deleteHosts(hostList.stream().map(h -> String.valueOf(h.getId()))
+                                    .collect(Collectors.joining(Constants.COMMA)));
                             clusterInfoService.removeById(clusterId);
                         }
                     }

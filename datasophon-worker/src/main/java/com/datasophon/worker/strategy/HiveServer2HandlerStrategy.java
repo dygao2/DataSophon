@@ -17,7 +17,6 @@
 
 package com.datasophon.worker.strategy;
 
-import cn.hutool.core.io.FileUtil;
 import com.datasophon.common.Constants;
 import com.datasophon.common.cache.CacheUtils;
 import com.datasophon.common.command.ServiceRoleOperateCommand;
@@ -29,6 +28,8 @@ import com.datasophon.worker.handler.ServiceHandler;
 import com.datasophon.worker.utils.KerberosUtils;
 
 import java.util.ArrayList;
+
+import cn.hutool.core.io.FileUtil;
 
 public class HiveServer2HandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
 
@@ -70,7 +71,8 @@ public class HiveServer2HandlerStrategy extends AbstractHandlerStrategy implemen
             commands.add("mysql");
             commands.add("-initSchema");
             ExecResult execResult = ShellUtils.execWithStatus(
-                    Constants.INSTALL_PATH + Constants.SLASH + command.getDecompressPackageName(), commands, 60L, logger);
+                    Constants.INSTALL_PATH + Constants.SLASH + command.getDecompressPackageName(), commands, 60L,
+                    logger);
             if (execResult.getExecResult()) {
                 logger.info("init hive schema success");
             } else {
@@ -90,7 +92,8 @@ public class HiveServer2HandlerStrategy extends AbstractHandlerStrategy implemen
             String hadoopHome = PropertyUtils.getString("HADOOP_HOME");
             ShellUtils.exceShell("sudo -u hdfs " + hadoopHome + "/bin/hdfs dfs -mkdir -p /user/hive/warehouse");
             ShellUtils.exceShell("sudo -u hdfs " + hadoopHome + "/bin/hdfs dfs -mkdir -p /tmp/hive");
-            ShellUtils.exceShell("sudo -u hdfs " + hadoopHome + "/bin/hdfs dfs -mkdir -p /tmp/hadoop-yarn/staging/history/done");
+            ShellUtils.exceShell(
+                    "sudo -u hdfs " + hadoopHome + "/bin/hdfs dfs -mkdir -p /tmp/hadoop-yarn/staging/history/done");
             ShellUtils.exceShell("sudo -u hdfs " + hadoopHome + "/bin/hdfs dfs -chown -R hdfs:hadoop /tmp");
             ShellUtils.exceShell("sudo -u hdfs " + hadoopHome + "/bin/hdfs dfs -chmod -R 775 /tmp");
             ShellUtils

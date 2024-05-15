@@ -26,11 +26,12 @@ import com.datasophon.common.utils.OlapUtils;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
 import com.datasophon.dao.enums.AlertLevel;
 import com.datasophon.dao.enums.ServiceRoleState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BEHandlerStartegy implements ServiceRoleStrategy {
 

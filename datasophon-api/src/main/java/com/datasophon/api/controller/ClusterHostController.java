@@ -22,10 +22,12 @@ import com.datasophon.common.Constants;
 import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.ClusterHostDO;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -118,7 +120,7 @@ public class ClusterHostController {
      */
     @RequestMapping("/delete")
     public Result delete(String hostIds) {
-        if(StringUtils.isBlank(hostIds)) {
+        if (StringUtils.isBlank(hostIds)) {
             return Result.error("请选择移除的主机!");
         }
         try {

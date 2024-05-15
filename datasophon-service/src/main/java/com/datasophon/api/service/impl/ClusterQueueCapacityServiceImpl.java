@@ -17,10 +17,6 @@
 
 package com.datasophon.api.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
-import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.enums.Status;
 import com.datasophon.api.service.ClusterQueueCapacityService;
 import com.datasophon.api.service.ClusterServiceRoleInstanceService;
@@ -37,15 +33,23 @@ import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
 import com.datasophon.dao.mapper.ClusterQueueCapacityMapper;
 import com.datasophon.dao.model.ClusterQueueCapacityList;
 import com.datasophon.dao.model.Links;
-import org.apache.commons.lang.StringUtils;
+
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import cn.hutool.core.bean.BeanUtil;
 
 @Service("clusterQueueCapacityService")
 public class ClusterQueueCapacityServiceImpl extends ServiceImpl<ClusterQueueCapacityMapper, ClusterQueueCapacity>

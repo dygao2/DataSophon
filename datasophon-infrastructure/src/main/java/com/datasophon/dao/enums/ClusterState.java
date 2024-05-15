@@ -17,10 +17,10 @@
 
 package com.datasophon.dao.enums;
 
+import java.util.Arrays;
+
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonValue;
-
-import java.util.Arrays;
 
 public enum ClusterState {
 

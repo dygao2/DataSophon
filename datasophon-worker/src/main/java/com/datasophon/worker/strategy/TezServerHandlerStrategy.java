@@ -24,7 +24,8 @@ import com.datasophon.common.utils.ExecResult;
 import com.datasophon.common.utils.PropertyUtils;
 import com.datasophon.common.utils.ShellUtils;
 import com.datasophon.worker.handler.ServiceHandler;
-import org.apache.commons.lang.StringUtils;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 
@@ -51,7 +52,8 @@ public class TezServerHandlerStrategy extends AbstractHandlerStrategy implements
         String workPath = Constants.INSTALL_PATH + Constants.SLASH + command.getDecompressPackageName();
         if (command.getCommandType().equals(CommandType.INSTALL_SERVICE)) {
             final String hadoopHome = PropertyUtils.getString("HADOOP_HOME");
-            final String tezLibPath = Optional.ofNullable(StringUtils.trimToNull(createEnvPath(workPath))).orElse("hdfs:///user/tez/tez.tar.gz");
+            final String tezLibPath = Optional.ofNullable(StringUtils.trimToNull(createEnvPath(workPath)))
+                    .orElse("hdfs:///user/tez/tez.tar.gz");
             final String tezLibParentDir = new Path(URI.create(tezLibPath).getPath()).getParent().toString();
             logger.info("Start to execute hdfs dfs -mkdir {}", tezLibParentDir);
             ArrayList<String> commands = new ArrayList<>();
@@ -100,7 +102,6 @@ public class TezServerHandlerStrategy extends AbstractHandlerStrategy implements
                 command.getDecompressPackageName(), command.getRunAs());
         return startResult;
     }
-
 
     /**
      * tez 的元数据

@@ -22,7 +22,7 @@ import com.datasophon.api.utils.MinaUtils;
 import com.datasophon.common.Constants;
 import com.datasophon.common.model.HostInfo;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sshd.client.session.ClientSession;
 
 import org.slf4j.Logger;

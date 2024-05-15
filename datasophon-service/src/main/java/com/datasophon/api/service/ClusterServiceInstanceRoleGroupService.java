@@ -19,12 +19,13 @@
 
 package com.datasophon.api.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.ClusterServiceInstanceRoleGroup;
 import com.datasophon.dao.entity.ClusterServiceRoleGroupConfig;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.extension.service.IService;
 
 public interface ClusterServiceInstanceRoleGroupService
         extends

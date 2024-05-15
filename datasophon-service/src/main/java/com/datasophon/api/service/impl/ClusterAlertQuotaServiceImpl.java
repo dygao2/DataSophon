@@ -17,12 +17,6 @@
 
 package com.datasophon.api.service.impl;
 
-import akka.actor.ActorRef;
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.additional.query.impl.LambdaQueryChainWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.master.ActorUtils;
 import com.datasophon.api.master.PrometheusActor;
 import com.datasophon.api.service.AlertGroupService;
@@ -37,12 +31,8 @@ import com.datasophon.dao.entity.AlertGroupEntity;
 import com.datasophon.dao.entity.ClusterAlertQuota;
 import com.datasophon.dao.enums.QuotaState;
 import com.datasophon.dao.mapper.ClusterAlertQuotaMapper;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,6 +47,21 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.additional.query.impl.LambdaQueryChainWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import akka.actor.ActorRef;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 
 @Service("clusterAlertQuotaService")
 public class ClusterAlertQuotaServiceImpl extends ServiceImpl<ClusterAlertQuotaMapper, ClusterAlertQuota>
@@ -161,7 +166,7 @@ public class ClusterAlertQuotaServiceImpl extends ServiceImpl<ClusterAlertQuotaM
     @Override
     public void start(Integer clusterId, String alertQuotaIds) {
         List<String> ids = Arrays.asList(alertQuotaIds.split(","));
-        if(CollUtil.isEmpty(ids)) {
+        if (CollUtil.isEmpty(ids)) {
             return;
         }
 
@@ -174,12 +179,12 @@ public class ClusterAlertQuotaServiceImpl extends ServiceImpl<ClusterAlertQuotaM
     @Override
     public void stop(Integer clusterId, String alertQuotaIds) {
         List<String> ids = Arrays.asList(alertQuotaIds.split(StrUtil.COMMA));
-        if(CollUtil.isEmpty(ids)) {
+        if (CollUtil.isEmpty(ids)) {
             return;
         }
 
         Set<String> categories = new HashSet<>(ids.size());
-        //1、修改禁用状态 & 更新
+        // 1、修改禁用状态 & 更新
         Collection<ClusterAlertQuota> alertQuotas = this.listByIds(ids);
         alertQuotas.forEach(q -> {
             q.setQuotaState(QuotaState.STOPPED);
@@ -187,12 +192,12 @@ public class ClusterAlertQuotaServiceImpl extends ServiceImpl<ClusterAlertQuotaM
         });
         this.updateBatchById(alertQuotas);
 
-        //2、查询需要重新生成 alert rule file 的告警指标
+        // 2、查询需要重新生成 alert rule file 的告警指标
         Collection<ClusterAlertQuota> clusterAlertQuotas = this.lambdaQuery()
                 .eq(ClusterAlertQuota::getQuotaState, QuotaState.RUNNING)
                 .in(ClusterAlertQuota::getServiceCategory, categories)
                 .list();
-        if(CollUtil.isEmpty(clusterAlertQuotas)) {
+        if (CollUtil.isEmpty(clusterAlertQuotas)) {
             return;
         }
 

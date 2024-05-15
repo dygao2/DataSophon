@@ -17,9 +17,6 @@
 
 package com.datasophon.api.master;
 
-import akka.actor.ActorRef;
-import akka.actor.UntypedActor;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.datasophon.api.load.GlobalVariables;
 import com.datasophon.api.service.ClusterAlertQuotaService;
 import com.datasophon.api.service.ClusterInfoService;
@@ -41,15 +38,23 @@ import com.datasophon.dao.entity.ClusterServiceCommandHostEntity;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceWebuis;
 import com.datasophon.dao.enums.ClusterState;
 import com.datasophon.dao.enums.CommandState;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.commons.lang3.StringUtils;
+
 import scala.Option;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
+import akka.actor.ActorRef;
+import akka.actor.UntypedActor;
 
 public class ServiceCommandActor extends UntypedActor {
 
@@ -133,7 +138,7 @@ public class ServiceCommandActor extends UntypedActor {
                 ClusterInfoEntity clusterInfo = clusterInfoService.getById(command.getClusterId());
 
                 if (command.getCommandType() == 4 && HDFS.equalsIgnoreCase(serviceName)) {
-                    //update web ui
+                    // update web ui
                     updateHDFSWebUi(clusterInfo.getId(), command.getServiceInstanceId());
                 }
 
@@ -206,7 +211,8 @@ public class ServiceCommandActor extends UntypedActor {
         if (variables.containsKey(ENABLE_HDFS_KERBEROS)) {
             ClusterServiceRoleInstanceWebuisService webuisService =
                     SpringTool.getApplicationContext().getBean(ClusterServiceRoleInstanceWebuisService.class);
-            List<ClusterServiceRoleInstanceWebuis> webUis = webuisService.listWebUisByServiceInstanceId(serviceInstanceId);
+            List<ClusterServiceRoleInstanceWebuis> webUis =
+                    webuisService.listWebUisByServiceInstanceId(serviceInstanceId);
             for (ClusterServiceRoleInstanceWebuis webUi : webUis) {
                 if (TRUE.equals(variables.get(ENABLE_HDFS_KERBEROS)) && webUi.getWebUrl().contains("9870")) {
                     String newWebUi = webUi.getWebUrl().replace(HTTP, HTTPS).replace("9870", "9871");

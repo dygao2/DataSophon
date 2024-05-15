@@ -17,8 +17,9 @@
 
 package com.datasophon.api.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.datasophon.dao.entity.NoticeGroupUserEntity;
+
+import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * 通知组-用户中间表

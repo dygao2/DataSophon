@@ -19,17 +19,11 @@
 
 package com.datasophon.api.master;
 
-import akka.actor.ActorSelection;
-import akka.actor.UntypedActor;
-import akka.pattern.Patterns;
-import akka.util.Timeout;
-import cn.hutool.http.HttpUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.datasophon.api.load.ServiceRoleJmxMap;
 import com.datasophon.api.master.handler.service.ServiceConfigureHandler;
-import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.service.ClusterServiceInstanceService;
 import com.datasophon.api.service.ClusterServiceRoleInstanceService;
+import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.utils.SpringTool;
 import com.datasophon.common.Constants;
 import com.datasophon.common.cache.CacheUtils;
@@ -44,8 +38,7 @@ import com.datasophon.common.utils.ExecResult;
 import com.datasophon.dao.entity.ClusterHostDO;
 import com.datasophon.dao.entity.ClusterServiceInstanceEntity;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
@@ -56,6 +49,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
+import akka.actor.ActorSelection;
+import akka.actor.UntypedActor;
+import akka.pattern.Patterns;
+import akka.util.Timeout;
+import cn.hutool.http.HttpUtil;
 
 public class PrometheusActor extends UntypedActor {
 
@@ -198,7 +202,7 @@ public class PrometheusActor extends UntypedActor {
 
                 configFileMap.put(workerGenerators, workerServiceConfigs);
                 configFileMap.put(nodeGenerators, nodeServiceConfigs);
-                configFileMap.put(masterGenerators,masterServiceConfigs);
+                configFileMap.put(masterGenerators, masterServiceConfigs);
 
                 ServiceRoleInfo serviceRoleInfo = new ServiceRoleInfo();
                 serviceRoleInfo.setName("Prometheus");

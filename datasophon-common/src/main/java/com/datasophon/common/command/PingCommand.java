@@ -17,9 +17,9 @@
 
 package com.datasophon.common.command;
 
-import lombok.Data;
-
 import java.io.Serializable;
+
+import lombok.Data;
 
 /**
  *

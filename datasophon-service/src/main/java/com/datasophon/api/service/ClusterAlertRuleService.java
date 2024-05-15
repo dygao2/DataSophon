@@ -17,8 +17,9 @@
 
 package com.datasophon.api.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.datasophon.dao.entity.ClusterAlertRule;
+
+import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * 规则表

@@ -30,11 +30,16 @@ import com.datasophon.common.utils.HostUtils;
 import com.datasophon.common.utils.PlaceholderUtils;
 import com.datasophon.dao.entity.ClusterInfoEntity;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-
-import java.util.*;
 
 public class ZkServerHandlerStrategy implements ServiceRoleStrategy {
 
@@ -46,14 +51,14 @@ public class ZkServerHandlerStrategy implements ServiceRoleStrategy {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
         String join = String.join(":2181,", hosts);
         String zkUrls = join + ":2181";
-        ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${zkUrls}", zkUrls);
+        ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${zkUrls}", zkUrls);
         // 保存hbaseZkUrls到全局变量
-        String hbaseZkUrls=String.join(",", hosts);
-        ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${zkHostsUrl}", hbaseZkUrls);
+        String hbaseZkUrls = String.join(",", hosts);
+        ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${zkHostsUrl}", hbaseZkUrls);
     }
 
     @Override
-    public void handlerConfig(Integer clusterId, List<ServiceConfig> list,String serviceName) {
+    public void handlerConfig(Integer clusterId, List<ServiceConfig> list, String serviceName) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
         ClusterInfoEntity clusterInfo = ProcessUtils.getClusterInfo(clusterId);
         boolean enableKerberos = false;
@@ -63,10 +68,12 @@ public class ZkServerHandlerStrategy implements ServiceRoleStrategy {
             if ("enableKerberos".equals(config.getName())) {
                 if ((Boolean) config.getValue()) {
                     enableKerberos = true;
-                    ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${enableZOOKEEPERKerberos}",
+                    ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,
+                            "${enableZOOKEEPERKerberos}",
                             "true");
                 } else {
-                    ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${enableZOOKEEPERKerberos}",
+                    ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,
+                            "${enableZOOKEEPERKerberos}",
                             "false");
                 }
             }
@@ -107,6 +114,7 @@ public class ZkServerHandlerStrategy implements ServiceRoleStrategy {
         }
         list.addAll(kbConfigs);
     }
+
     /**
      *
      * @param clusterId

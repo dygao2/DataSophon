@@ -17,18 +17,19 @@
 
 package com.datasophon.worker.actor;
 
+import org.apache.commons.lang3.StringUtils;
+
+import scala.Option;
+
+import java.io.IOException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.actor.Terminated;
 import akka.actor.UntypedActor;
-import com.alibaba.fastjson.JSONObject;
-import com.datasophon.common.model.StartWorkerMessage;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import scala.Option;
-
-import java.io.IOException;
 
 public class WorkerActor extends UntypedActor {
 
@@ -85,7 +86,7 @@ public class WorkerActor extends UntypedActor {
         getContext().watch(kerberosActor);
         getContext().watch(rMStateActor);
         getContext().watch(nMStateActor);
-		getContext().watch(pingActor);
+        getContext().watch(pingActor);
     }
 
     /** Get ActorRef name from Class name. */

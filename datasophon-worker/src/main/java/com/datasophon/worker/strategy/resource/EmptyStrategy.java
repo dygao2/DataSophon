@@ -1,6 +1,5 @@
 package com.datasophon.worker.strategy.resource;
 
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

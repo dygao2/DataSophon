@@ -18,9 +18,9 @@
 
 package com.datasophon.domain.alert.model;
 
-import lombok.Data;
-
 import java.util.List;
+
+import lombok.Data;
 
 @Data
 public class AlertMessage {

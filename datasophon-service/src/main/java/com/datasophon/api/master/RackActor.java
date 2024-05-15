@@ -18,9 +18,9 @@
 package com.datasophon.api.master;
 
 import com.datasophon.api.master.handler.service.ServiceConfigureHandler;
-import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.service.ClusterInfoService;
 import com.datasophon.api.service.ClusterServiceRoleInstanceService;
+import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.utils.PackageUtils;
 import com.datasophon.api.utils.ProcessUtils;
 import com.datasophon.api.utils.SpringTool;

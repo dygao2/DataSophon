@@ -27,8 +27,8 @@ import java.sql.SQLException;
 
 public class KAdminHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
 
-    public KAdminHandlerStrategy(String serviceName,String serviceRoleName) {
-        super(serviceName,serviceRoleName);
+    public KAdminHandlerStrategy(String serviceName, String serviceRoleName) {
+        super(serviceName, serviceRoleName);
     }
 
     @Override

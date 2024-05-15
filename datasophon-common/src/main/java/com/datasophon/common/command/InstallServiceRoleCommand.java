@@ -21,11 +21,12 @@ import com.datasophon.common.enums.ServiceRoleType;
 import com.datasophon.common.model.Generators;
 import com.datasophon.common.model.RunAs;
 import com.datasophon.common.model.ServiceConfig;
-import lombok.Data;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+
+import lombok.Data;
 
 @Data
 public class InstallServiceRoleCommand extends BaseCommand implements Serializable {
@@ -46,6 +47,6 @@ public class InstallServiceRoleCommand extends BaseCommand implements Serializab
 
     private ServiceRoleType serviceRoleType;
 
-    private List<Map<String,Object>> resourceStrategies;
+    private List<Map<String, Object>> resourceStrategies;
 
 }

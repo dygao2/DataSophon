@@ -19,7 +19,7 @@ package com.datasophon.common.utils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.*;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import com.google.common.net.InetAddresses;

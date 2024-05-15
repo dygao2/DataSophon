@@ -22,9 +22,9 @@ import lombok.Data;
 @Data
 public class ProcInfo {
 
-    private String HostName;
+    private String hostName;
 
-    private Boolean Alive;
+    private Boolean alive;
 
-    private String ErrMsg;
+    private String errMsg;
 }

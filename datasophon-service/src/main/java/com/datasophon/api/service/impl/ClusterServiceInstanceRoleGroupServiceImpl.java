@@ -19,8 +19,6 @@
 
 package com.datasophon.api.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.enums.Status;
 import com.datasophon.api.service.ClusterServiceInstanceRoleGroupService;
 import com.datasophon.api.service.ClusterServiceInstanceService;
@@ -34,14 +32,18 @@ import com.datasophon.dao.entity.ClusterServiceRoleGroupConfig;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
 import com.datasophon.dao.enums.NeedRestart;
 import com.datasophon.dao.mapper.ClusterServiceInstanceRoleGroupMapper;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 @Service("clusterServiceInstanceRoleGroupService")
 public class ClusterServiceInstanceRoleGroupServiceImpl

@@ -24,8 +24,8 @@ import com.datasophon.api.utils.MinaUtils;
 import com.datasophon.common.command.HostCheckCommand;
 import com.datasophon.common.model.CheckResult;
 import com.datasophon.common.model.HostInfo;
-
 import com.datasophon.common.utils.HostUtils;
+
 import org.apache.sshd.client.session.ClientSession;
 
 import scala.Option;
@@ -51,17 +51,17 @@ public class HostConnectActor extends UntypedActor {
         if (message instanceof HostCheckCommand) {
             String localIp = HostUtils.getLocalIp();
             String localHostName = HostUtils.getLocalHostName();
-            logger.info("datasophon manager install hostname and ip :"+localHostName+",",localIp);
+            logger.info("datasophon manager install hostname and ip :" + localHostName + ",", localIp);
             HostCheckCommand hostCheckCommand = (HostCheckCommand) message;
             HostInfo hostInfo = hostCheckCommand.getHostInfo();
             logger.info("start host check:{}", hostInfo.getHostname());
-            if(hostInfo.getIp().equals(localIp)){
+            if (hostInfo.getIp().equals(localIp)) {
                 logger.info("datasophon manager node doesn't need to be checked");
                 hostInfo.setCheckResult(
                         new CheckResult(
                                 Status.CHECK_HOST_SUCCESS.getCode(),
                                 Status.CHECK_HOST_SUCCESS.getMsg()));
-            }else {
+            } else {
                 ClientSession session =
                         MinaUtils.openConnection(
                                 hostInfo.getHostname(), hostInfo.getSshPort(), hostInfo.getSshUser());

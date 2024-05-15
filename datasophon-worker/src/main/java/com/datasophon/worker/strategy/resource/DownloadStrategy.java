@@ -1,16 +1,16 @@
 package com.datasophon.worker.strategy.resource;
 
-
-import cn.hutool.core.map.MapUtil;
-import cn.hutool.http.HttpUtil;
 import com.datasophon.common.Constants;
 import com.datasophon.common.utils.FileUtils;
 import com.datasophon.common.utils.PropertyUtils;
+
+import java.io.File;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.File;
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.http.HttpUtil;
 
 @Slf4j
 @EqualsAndHashCode(callSuper = true)

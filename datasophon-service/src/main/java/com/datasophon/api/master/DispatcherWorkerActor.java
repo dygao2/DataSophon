@@ -19,7 +19,6 @@
 
 package com.datasophon.api.master;
 
-import cn.hutool.core.io.FileUtil;
 import com.datasophon.api.master.handler.host.CheckWorkerMd5Handler;
 import com.datasophon.api.master.handler.host.DecompressWorkerHandler;
 import com.datasophon.api.master.handler.host.DispatcherWorkerHandlerChain;
@@ -34,19 +33,21 @@ import com.datasophon.common.Constants;
 import com.datasophon.common.command.DispatcherHostAgentCommand;
 import com.datasophon.common.enums.InstallState;
 import com.datasophon.common.model.HostInfo;
-
 import com.datasophon.common.utils.HostUtils;
+
 import org.apache.sshd.client.session.ClientSession;
 
 import scala.Option;
+
+import java.nio.charset.Charset;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import akka.actor.UntypedActor;
-import cn.hutool.core.util.ObjectUtil;
 
-import java.nio.charset.Charset;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.ObjectUtil;
 
 public class DispatcherWorkerActor extends UntypedActor {
 
@@ -72,23 +73,25 @@ public class DispatcherWorkerActor extends UntypedActor {
                 MinaUtils.openConnection(
                         hostInfo.getHostname(), hostInfo.getSshPort(), hostInfo.getSshUser());
         DispatcherWorkerHandlerChain handlerChain = new DispatcherWorkerHandlerChain();
-        if(localIp.equals(hostInfo.getIp())){
+        if (localIp.equals(hostInfo.getIp())) {
             String currDir = System.getProperty("user.dir");
-            String executeShellPath = currDir+ Constants.SHELL_SCRIPT_PATH + Constants.SLASH+Constants.DISPATCHER_WORK;
+            String executeShellPath =
+                    currDir + Constants.SHELL_SCRIPT_PATH + Constants.SLASH + Constants.DISPATCHER_WORK;
             logger.info("start dispatcher manage node host agent,execute shell path :{}", executeShellPath);
             String md5 = FileUtil.readString(
                     Constants.MASTER_MANAGE_PACKAGE_PATH +
                             Constants.SLASH +
-                            Constants.WORKER_PACKAGE_NAME + ".md5", Charset.defaultCharset()).trim();
-            int exeCode = ExecuteShellScriptUtils.executeShellScript(executeShellPath,md5);
-            if(0 == exeCode){
+                            Constants.WORKER_PACKAGE_NAME + ".md5",
+                    Charset.defaultCharset()).trim();
+            int exeCode = ExecuteShellScriptUtils.executeShellScript(executeShellPath, md5);
+            if (0 == exeCode) {
                 logger.info("distribution  datasophon-worker.tar.gz success");
                 logger.info("md5.verification datasophon-worker.tar.gz success");
                 logger.info("decompress datasophon-worker.tar.gz success");
                 hostInfo.setProgress(50);
                 hostInfo.setMessage(MessageResolverUtils
                         .getMessage("installation.package.decompressed.success.and.modify.configuration.file"));
-            }else {
+            } else {
                 logger.error("dispatcher manage node host agent failed");
                 hostInfo.setErrMsg("dispatcher manage node host agent failed");
                 hostInfo.setMessage(MessageResolverUtils
@@ -97,7 +100,7 @@ public class DispatcherWorkerActor extends UntypedActor {
                 throw new RuntimeException("---- dispatcher manage node host agent failed ----");
             }
 
-        }else {
+        } else {
             handlerChain.addHandler(new UploadWorkerHandler());
             handlerChain.addHandler(new CheckWorkerMd5Handler());
             handlerChain.addHandler(new DecompressWorkerHandler());

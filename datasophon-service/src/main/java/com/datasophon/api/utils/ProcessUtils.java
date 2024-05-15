@@ -17,19 +17,6 @@
 
 package com.datasophon.api.utils;
 
-import akka.actor.ActorRef;
-import akka.actor.ActorSelection;
-import akka.actor.Props;
-import akka.dispatch.OnComplete;
-import akka.pattern.Patterns;
-import akka.util.Timeout;
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.util.IdUtil;
-import cn.hutool.crypto.SecureUtil;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.datasophon.api.load.GlobalVariables;
 import com.datasophon.api.load.ServiceConfigMap;
 import com.datasophon.api.master.ActorUtils;
@@ -37,8 +24,23 @@ import com.datasophon.api.master.CancelCommandMap;
 import com.datasophon.api.master.MasterServiceActor;
 import com.datasophon.api.master.ServiceCommandActor;
 import com.datasophon.api.master.ServiceExecuteResultActor;
-import com.datasophon.api.master.handler.service.*;
-import com.datasophon.api.service.*;
+import com.datasophon.api.master.handler.service.ServiceConfigureAsyncHandler;
+import com.datasophon.api.master.handler.service.ServiceConfigureHandler;
+import com.datasophon.api.master.handler.service.ServiceHandler;
+import com.datasophon.api.master.handler.service.ServiceInstallHandler;
+import com.datasophon.api.master.handler.service.ServiceStartHandler;
+import com.datasophon.api.master.handler.service.ServiceStopHandler;
+import com.datasophon.api.service.ClusterAlertHistoryService;
+import com.datasophon.api.service.ClusterInfoService;
+import com.datasophon.api.service.ClusterServiceCommandHostCommandService;
+import com.datasophon.api.service.ClusterServiceInstanceConfigService;
+import com.datasophon.api.service.ClusterServiceInstanceRoleGroupService;
+import com.datasophon.api.service.ClusterServiceInstanceService;
+import com.datasophon.api.service.ClusterServiceRoleInstanceService;
+import com.datasophon.api.service.ClusterServiceRoleInstanceWebuisService;
+import com.datasophon.api.service.ClusterVariableService;
+import com.datasophon.api.service.ClusterZkService;
+import com.datasophon.api.service.FrameServiceService;
 import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.common.Constants;
 import com.datasophon.common.cache.CacheUtils;
@@ -48,18 +50,45 @@ import com.datasophon.common.command.FileOperateCommand;
 import com.datasophon.common.enums.CommandType;
 import com.datasophon.common.enums.ServiceExecuteState;
 import com.datasophon.common.enums.ServiceRoleType;
-import com.datasophon.common.model.*;
+import com.datasophon.common.model.DAGGraph;
+import com.datasophon.common.model.ExternalLink;
+import com.datasophon.common.model.Generators;
+import com.datasophon.common.model.ServiceConfig;
+import com.datasophon.common.model.ServiceExecuteResultMessage;
+import com.datasophon.common.model.ServiceNode;
+import com.datasophon.common.model.ServiceRoleInfo;
+import com.datasophon.common.model.StartWorkerMessage;
+import com.datasophon.common.model.UpdateCommandHostMessage;
 import com.datasophon.common.utils.ExecResult;
 import com.datasophon.common.utils.HostUtils;
 import com.datasophon.common.utils.PlaceholderUtils;
 import com.datasophon.common.utils.PropertyUtils;
-import com.datasophon.dao.entity.*;
-import com.datasophon.dao.enums.*;
+import com.datasophon.dao.entity.ClusterAlertHistory;
+import com.datasophon.dao.entity.ClusterHostDO;
+import com.datasophon.dao.entity.ClusterInfoEntity;
+import com.datasophon.dao.entity.ClusterServiceCommandEntity;
+import com.datasophon.dao.entity.ClusterServiceCommandHostCommandEntity;
+import com.datasophon.dao.entity.ClusterServiceCommandHostEntity;
+import com.datasophon.dao.entity.ClusterServiceInstanceConfigEntity;
+import com.datasophon.dao.entity.ClusterServiceInstanceEntity;
+import com.datasophon.dao.entity.ClusterServiceInstanceRoleGroup;
+import com.datasophon.dao.entity.ClusterServiceRoleGroupConfig;
+import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
+import com.datasophon.dao.entity.ClusterServiceRoleInstanceWebuis;
+import com.datasophon.dao.entity.ClusterVariable;
+import com.datasophon.dao.entity.ClusterZk;
+import com.datasophon.dao.entity.FrameServiceEntity;
+import com.datasophon.dao.enums.AlertLevel;
+import com.datasophon.dao.enums.CommandState;
+import com.datasophon.dao.enums.NeedRestart;
+import com.datasophon.dao.enums.RoleType;
+import com.datasophon.dao.enums.ServiceRoleState;
+import com.datasophon.dao.enums.ServiceState;
 import com.datasophon.domain.host.enums.HostState;
 import com.datasophon.domain.host.enums.MANAGED;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.commons.lang3.StringUtils;
+
 import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
@@ -67,9 +96,36 @@ import scala.concurrent.duration.FiniteDuration;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
+import akka.actor.ActorRef;
+import akka.actor.ActorSelection;
+import akka.actor.Props;
+import akka.dispatch.OnComplete;
+import akka.pattern.Patterns;
+import akka.util.Timeout;
+
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.crypto.SecureUtil;
 
 public class ProcessUtils {
 
@@ -291,19 +347,19 @@ public class ProcessUtils {
     }
 
     public static void buildExecuteServiceRoleCommand(
-            Integer clusterId,
-            CommandType commandType,
-            String clusterCode,
-            DAGGraph<String, ServiceNode, String> dag,
-            Map<String, ServiceExecuteState> activeTaskList,
-            Map<String, String> errorTaskList,
-            Map<String, String> readyToSubmitTaskList,
-            Map<String, String> completeTaskList,
-            String node,
-            List<ServiceRoleInfo> masterRoles,
-            ServiceRoleInfo workerRole,
-            ActorRef serviceActor,
-            ServiceRoleType serviceRoleType) {
+                                                      Integer clusterId,
+                                                      CommandType commandType,
+                                                      String clusterCode,
+                                                      DAGGraph<String, ServiceNode, String> dag,
+                                                      Map<String, ServiceExecuteState> activeTaskList,
+                                                      Map<String, String> errorTaskList,
+                                                      Map<String, String> readyToSubmitTaskList,
+                                                      Map<String, String> completeTaskList,
+                                                      String node,
+                                                      List<ServiceRoleInfo> masterRoles,
+                                                      ServiceRoleInfo workerRole,
+                                                      ActorRef serviceActor,
+                                                      ServiceRoleType serviceRoleType) {
         ExecuteServiceRoleCommand executeServiceRoleCommand =
                 new ExecuteServiceRoleCommand(clusterId, node, masterRoles);
         executeServiceRoleCommand.setServiceRoleType(serviceRoleType);
@@ -386,7 +442,7 @@ public class ProcessUtils {
     }
 
     public static void generateClusterVariable(Map<String, String> globalVariables, Integer clusterId,
-                                               String serviceName,String variableName, String value) {
+                                               String serviceName, String variableName, String value) {
         ClusterVariableService variableService =
                 SpringTool.getApplicationContext().getBean(ClusterVariableService.class);
         ClusterVariable clusterVariable = variableService.getVariableByVariableName(variableName, clusterId);
@@ -454,7 +510,7 @@ public class ProcessUtils {
             logger.info("create {} actor",
                     clusterInfo.getClusterCode() + "-serviceActor-" + frameServiceEntity.getServiceName());
             ActorUtils.actorSystem.actorOf(Props.create(MasterServiceActor.class)
-                            .withDispatcher("my-forkjoin-dispatcher"),
+                    .withDispatcher("my-forkjoin-dispatcher"),
                     clusterInfo.getClusterCode() + "-serviceActor-" + frameServiceEntity.getServiceName());
         }
     }
@@ -516,7 +572,8 @@ public class ProcessUtils {
         serviceRoleInfo.setName(roleInstanceEntity.getServiceRoleName());
         serviceRoleInfo.setParentName(roleInstanceEntity.getServiceName());
         serviceRoleInfo.setConfigFileMap(configFileMap);
-        serviceRoleInfo.setDecompressPackageName(PackageUtils.getServiceDcPackageName(clusterInfo.getClusterFrame(), "YARN"));
+        serviceRoleInfo
+                .setDecompressPackageName(PackageUtils.getServiceDcPackageName(clusterInfo.getClusterFrame(), "YARN"));
         serviceRoleInfo.setHostname(roleInstanceEntity.getHostname());
         ServiceConfigureHandler configureHandler = new ServiceConfigureHandler();
         return configureHandler.handlerRequest(serviceRoleInfo);
@@ -530,7 +587,8 @@ public class ProcessUtils {
         serviceRoleInfo.setName(roleInstanceEntity.getServiceRoleName());
         serviceRoleInfo.setParentName(roleInstanceEntity.getServiceName());
         serviceRoleInfo.setConfigFileMap(configFileMap);
-        serviceRoleInfo.setDecompressPackageName(PackageUtils.getServiceDcPackageName(clusterInfo.getClusterFrame(), "YARN"));
+        serviceRoleInfo
+                .setDecompressPackageName(PackageUtils.getServiceDcPackageName(clusterInfo.getClusterFrame(), "YARN"));
         serviceRoleInfo.setHostname(roleInstanceEntity.getHostname());
         ServiceConfigureAsyncHandler configureAsyncHandler = new ServiceConfigureAsyncHandler(onComplete);
         configureAsyncHandler.handlerRequest(serviceRoleInfo);
@@ -542,21 +600,21 @@ public class ProcessUtils {
      * @Description: 生成configFileMap
      */
     public static void generateConfigFileMap(Map<Generators, List<ServiceConfig>> configFileMap,
-                                             ClusterServiceRoleGroupConfig config,Integer clusterId) {
+                                             ClusterServiceRoleGroupConfig config, Integer clusterId) {
         Map<JSONObject, JSONArray> map = JSONObject.parseObject(config.getConfigFileJson(), Map.class);
         for (JSONObject fileJson : map.keySet()) {
             Generators generators = fileJson.toJavaObject(Generators.class);
             List<ServiceConfig> serviceConfigs = map.get(fileJson).toJavaList(ServiceConfig.class);
-            //replace variable
-            replaceVariable(serviceConfigs,clusterId);
+            // replace variable
+            replaceVariable(serviceConfigs, clusterId);
             configFileMap.put(generators, serviceConfigs);
         }
     }
 
-    private static void replaceVariable(List<ServiceConfig> serviceConfigs,Integer clusterId) {
+    private static void replaceVariable(List<ServiceConfig> serviceConfigs, Integer clusterId) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
         for (ServiceConfig serviceConfig : serviceConfigs) {
-            if(Constants.INPUT.equals(serviceConfig.getType())){
+            if (Constants.INPUT.equals(serviceConfig.getType())) {
                 String name = PlaceholderUtils.replacePlaceholders(serviceConfig.getName(), globalVariables,
                         Constants.REGEX_VARIABLE);
                 serviceConfig.setName(name);

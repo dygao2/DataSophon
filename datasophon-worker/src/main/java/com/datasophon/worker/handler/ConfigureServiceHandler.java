@@ -17,10 +17,6 @@
 
 package com.datasophon.worker.handler;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.IdUtil;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.datasophon.common.Constants;
 import com.datasophon.common.model.Generators;
 import com.datasophon.common.model.RunAs;
@@ -30,10 +26,8 @@ import com.datasophon.common.utils.PlaceholderUtils;
 import com.datasophon.common.utils.ShellUtils;
 import com.datasophon.worker.utils.FreemakerUtils;
 import com.datasophon.worker.utils.TaskConstants;
-import lombok.Data;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.net.InetAddress;
@@ -45,9 +39,19 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import lombok.Data;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.IdUtil;
+
 @Data
 public class ConfigureServiceHandler {
-
 
     private static final String RANGER_ADMIN = "RangerAdmin";
 
@@ -135,14 +139,16 @@ public class ConfigureServiceHandler {
                         config.setName("priority_networks");
                     }
 
-                    if("KyuubiServer".equals(serviceRoleName) && "sparkHome".equals(config.getName())){
+                    if ("KyuubiServer".equals(serviceRoleName) && "sparkHome".equals(config.getName())) {
                         // add hive-site.xml link in kerberos module
-                        final String targetPath = Constants.INSTALL_PATH + File.separator + decompressPackageName+"/conf/hive-site.xml";
-                        if(!FileUtil.exist(targetPath)){
+                        final String targetPath =
+                                Constants.INSTALL_PATH + File.separator + decompressPackageName + "/conf/hive-site.xml";
+                        if (!FileUtil.exist(targetPath)) {
                             logger.info("Add hive-site.xml link");
-                            ExecResult result = ShellUtils.exceShell("ln -s "+config.getValue()+"/conf/hive-site.xml "+targetPath);
-                            if(!result.getExecResult()){
-                                logger.warn("Add hive-site.xml link failed,msg: "+result.getExecErrOut());
+                            ExecResult result = ShellUtils
+                                    .exceShell("ln -s " + config.getValue() + "/conf/hive-site.xml " + targetPath);
+                            if (!result.getExecResult()) {
+                                logger.warn("Add hive-site.xml link failed,msg: " + result.getExecErrOut());
                             }
                         }
                     }
@@ -172,7 +178,8 @@ public class ConfigureServiceHandler {
                         FreemakerUtils.generateConfigFile(generators, configs, decompressPackageName);
                     }
                 } else if (!generators.getFilename().endsWith(SH)) {
-                    String packagePath = Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName + Constants.SLASH;
+                    String packagePath =
+                            Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName + Constants.SLASH;
                     String outputFile =
                             packagePath + generators.getOutputDirectory() + Constants.SLASH + generators.getFilename();
                     FileUtil.writeUtf8String("", outputFile);

@@ -17,7 +17,6 @@
 
 package com.datasophon.api.master;
 
-import akka.actor.UntypedActor;
 import com.datasophon.api.master.handler.service.ServiceHandler;
 import com.datasophon.api.master.handler.service.ServiceStopHandler;
 import com.datasophon.api.service.ClusterServiceRoleGroupConfigService;
@@ -35,13 +34,16 @@ import com.datasophon.dao.entity.ClusterServiceRoleGroupConfig;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
 import com.datasophon.dao.enums.NeedRestart;
 import com.datasophon.dao.enums.ServiceRoleState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import akka.actor.UntypedActor;
 
 public class WorkerServiceActor extends UntypedActor {
 

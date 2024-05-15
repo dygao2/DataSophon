@@ -17,17 +17,12 @@
 
 package com.datasophon.api.service.impl;
 
-import akka.actor.ActorRef;
-import akka.pattern.Patterns;
-import akka.util.Timeout;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.enums.Status;
 import com.datasophon.api.exceptions.ServiceException;
 import com.datasophon.api.master.ActorUtils;
 import com.datasophon.api.service.ClusterGroupService;
-import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.service.ClusterUserGroupService;
+import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.utils.ProcessUtils;
 import com.datasophon.common.Constants;
 import com.datasophon.common.command.remote.CreateUnixGroupCommand;
@@ -38,12 +33,9 @@ import com.datasophon.dao.entity.ClusterGroup;
 import com.datasophon.dao.entity.ClusterHostDO;
 import com.datasophon.dao.entity.ClusterUser;
 import com.datasophon.dao.mapper.ClusterGroupMapper;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import org.apache.commons.lang3.StringUtils;
+
 import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
@@ -53,11 +45,24 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import akka.actor.ActorRef;
+import akka.pattern.Patterns;
+import akka.util.Timeout;
+
 @Service("clusterGroupService")
 @Transactional
 public class ClusterGroupServiceImpl extends ServiceImpl<ClusterGroupMapper, ClusterGroup>
         implements
-        ClusterGroupService {
+            ClusterGroupService {
 
     private static final Logger logger = LoggerFactory.getLogger(ClusterGroupServiceImpl.class);
 
@@ -167,8 +172,8 @@ public class ClusterGroupServiceImpl extends ServiceImpl<ClusterGroupMapper, Clu
                 clusterGroup.setClusterUsers(clusterUsers);
             }
         }
-        int total = this.count(new QueryWrapper<ClusterGroup>().
-                like(StringUtils.isNotBlank(groupName), Constants.GROUP_NAME, groupName)
+        int total = this.count(new QueryWrapper<ClusterGroup>()
+                .like(StringUtils.isNotBlank(groupName), Constants.GROUP_NAME, groupName)
                 .eq(Constants.CLUSTER_ID, clusterId));
         return Result.success(list).put(Constants.TOTAL, total);
     }

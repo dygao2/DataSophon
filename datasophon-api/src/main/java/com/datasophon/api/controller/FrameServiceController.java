@@ -17,8 +17,6 @@
 
 package com.datasophon.api.controller;
 
-import cn.hutool.core.io.FileUtil;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.datasophon.api.service.ClusterServiceInstanceService;
 import com.datasophon.api.service.FrameServiceRoleService;
 import com.datasophon.api.service.FrameServiceService;
@@ -27,15 +25,21 @@ import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.ClusterServiceInstanceEntity;
 import com.datasophon.dao.entity.FrameServiceEntity;
 import com.datasophon.dao.entity.FrameServiceRoleEntity;
+
+import java.io.File;
+import java.util.List;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.File;
-import java.util.List;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+
+import cn.hutool.core.io.FileUtil;
 
 @Slf4j
 @RestController
@@ -45,10 +49,8 @@ public class FrameServiceController {
     @Autowired
     private FrameServiceService frameVersionServiceService;
 
-
     @Autowired
     private FrameServiceRoleService frameServiceRoleService;
-
 
     @Autowired
     private ClusterServiceInstanceService clusterServiceInstanceService;
@@ -120,7 +122,8 @@ public class FrameServiceController {
         File targetPackageFile = new File(Constants.MASTER_MANAGE_PACKAGE_PATH, serviceEntity.getPackageName());
         FileUtil.del(targetPackageFile);
         log.info("delete package file to: {}", targetPackageFile.getAbsolutePath());
-        File targetPackageFileMd5 = new File(Constants.MASTER_MANAGE_PACKAGE_PATH, serviceEntity.getPackageName() + ".md5");
+        File targetPackageFileMd5 =
+                new File(Constants.MASTER_MANAGE_PACKAGE_PATH, serviceEntity.getPackageName() + ".md5");
         FileUtil.del(targetPackageFileMd5);
         log.info("delete package md5 file to: {}", targetPackageFileMd5.getAbsolutePath());
 

@@ -50,6 +50,7 @@ public enum CommandType {
     public void setValue(int value) {
         this.value = value;
     }
+
     @JsonValue
     public String getDesc() {
         return desc;

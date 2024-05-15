@@ -17,8 +17,6 @@
 
 package com.datasophon.api.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.enums.Status;
 import com.datasophon.api.service.UserInfoService;
 import com.datasophon.api.utils.CheckUtils;
@@ -27,13 +25,18 @@ import com.datasophon.common.utils.EncryptionUtils;
 import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.UserInfoEntity;
 import com.datasophon.dao.mapper.UserInfoMapper;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 @Service("userInfoService")
 public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoEntity> implements UserInfoService {

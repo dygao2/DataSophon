@@ -34,7 +34,7 @@ public class FreemarkerTest {
         serviceConfigs.add(serviceConfig);
         serviceConfigs.add(serviceConfig2);
 
-        FreemakerUtils.generateConfigFile(generators,serviceConfigs,"");
+        FreemakerUtils.generateConfigFile(generators, serviceConfigs, "");
     }
 
 
@@ -63,6 +63,7 @@ public class FreemarkerTest {
         nodeServiceConfigs.add(nodeServiceConfig);
 
     }
+
     @Test
     public void generateSRCustomTemplate() throws IOException, TemplateException {
 
@@ -94,7 +95,7 @@ public class FreemarkerTest {
         beServiceConfig.setConfigType("map");
         serviceConfigs.add(feServiceConfig);
         serviceConfigs.add(beServiceConfig);
-        configFileMap.put(generators,serviceConfigs);
+        configFileMap.put(generators, serviceConfigs);
 
     }
 
@@ -107,13 +108,13 @@ public class FreemarkerTest {
         generators.setTemplateName("fair-scheduler.ftl");
         ArrayList<JSONObject> queueList = new ArrayList<>();
         JSONObject queue = new JSONObject();
-        queue.put("queueName","test6");
-        queue.put("minResources","1cores,1024mb");
-        queue.put("maxResources","4cores,4096mb");
-        queue.put("amShare","0.1");
-        queue.put("weight",1);
-        queue.put("schedulePolicy","fair");
-        queue.put("appNum",4);
+        queue.put("queueName", "test6");
+        queue.put("minResources", "1cores,1024mb");
+        queue.put("maxResources", "4cores,4096mb");
+        queue.put("amShare", "0.1");
+        queue.put("weight", 1);
+        queue.put("schedulePolicy", "fair");
+        queue.put("appNum", 4);
         queueList.add(queue);
         ServiceConfig serviceConfig = new ServiceConfig();
         serviceConfig.setName("queueList");
@@ -125,7 +126,7 @@ public class FreemarkerTest {
         serviceConfigs.add(serviceConfig);
 
 
-        FreemakerUtils.generateConfigFile(generators,serviceConfigs,"");
+        FreemakerUtils.generateConfigFile(generators, serviceConfigs, "");
     }
 
     @Test
@@ -146,8 +147,9 @@ public class FreemarkerTest {
         serviceConfigs.add(serviceConfig);
         serviceConfigs.add(serviceConfig2);
 
-        FreemakerUtils.generateConfigFile(generators,serviceConfigs,"");
+        FreemakerUtils.generateConfigFile(generators, serviceConfigs, "");
     }
+
     @Test
     public void generateHadoopEnv() throws IOException, TemplateException {
         Generators generators = new Generators();
@@ -180,7 +182,7 @@ public class FreemarkerTest {
         serviceConfigs.add(serviceConfig2);
         serviceConfigs.add(serviceConfig3);
         serviceConfigs.add(serviceConfig4);
-        FreemakerUtils.generateConfigFile(generators,serviceConfigs,"");
+        FreemakerUtils.generateConfigFile(generators, serviceConfigs, "");
     }
 
     @Test
@@ -222,7 +224,7 @@ public class FreemarkerTest {
         serviceConfigs.add(serviceConfig3);
         serviceConfigs.add(serviceConfig4);
         serviceConfigs.add(serviceConfig5);
-        FreemakerUtils.generateConfigFile(generators,serviceConfigs,"");
+        FreemakerUtils.generateConfigFile(generators, serviceConfigs, "");
     }
 
 

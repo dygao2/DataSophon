@@ -17,8 +17,6 @@
 
 package com.datasophon.api.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.service.ClusterGroupService;
 import com.datasophon.api.service.ClusterUserGroupService;
 import com.datasophon.api.service.ClusterUserService;
@@ -27,13 +25,17 @@ import com.datasophon.dao.entity.ClusterGroup;
 import com.datasophon.dao.entity.ClusterUser;
 import com.datasophon.dao.entity.ClusterUserGroup;
 import com.datasophon.dao.mapper.ClusterUserGroupMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 @Service("clusterUserGroupService")
 public class ClusterUserGroupServiceImpl extends ServiceImpl<ClusterUserGroupMapper, ClusterUserGroup>

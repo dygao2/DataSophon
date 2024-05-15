@@ -17,11 +17,6 @@
 
 package com.datasophon.api.service.impl;
 
-import akka.actor.ActorSelection;
-import akka.pattern.Patterns;
-import akka.util.Timeout;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.master.ActorUtils;
 import com.datasophon.api.service.ClusterInfoService;
 import com.datasophon.api.service.ClusterServiceCommandHostCommandService;
@@ -37,10 +32,7 @@ import com.datasophon.dao.entity.ClusterServiceCommandEntity;
 import com.datasophon.dao.entity.ClusterServiceCommandHostCommandEntity;
 import com.datasophon.dao.enums.CommandState;
 import com.datasophon.dao.mapper.ClusterServiceCommandHostCommandMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+
 import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
@@ -48,6 +40,18 @@ import scala.concurrent.duration.Duration;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import akka.actor.ActorSelection;
+import akka.pattern.Patterns;
+import akka.util.Timeout;
 
 @Service("clusterServiceCommandHostCommandService")
 public class ClusterServiceCommandHostCommandServiceImpl
@@ -130,7 +134,7 @@ public class ClusterServiceCommandHostCommandServiceImpl
 
         String serviceName = commandEntity.getServiceName();
         String serviceRoleName = hostCommand.getServiceRoleName();
-        String logFile = String.format("%s/%s/%s.log","logs",serviceName,serviceRoleName);
+        String logFile = String.format("%s/%s/%s.log", "logs", serviceName, serviceRoleName);
 
         GetLogCommand command = new GetLogCommand();
         command.setLogFile(logFile);

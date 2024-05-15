@@ -17,9 +17,10 @@
 
 package com.datasophon.api.master;
 
-import akka.actor.ActorRef;
-import akka.actor.UntypedActor;
-import cn.hutool.core.util.ObjectUtil;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toList;
+
 import com.datasophon.api.service.ClusterGroupService;
 import com.datasophon.api.service.ClusterInfoService;
 import com.datasophon.api.service.ClusterServiceCommandService;
@@ -43,19 +44,20 @@ import com.datasophon.dao.entity.ClusterHostDO;
 import com.datasophon.dao.entity.ClusterInfoEntity;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
 import com.datasophon.dao.entity.ClusterUser;
-import com.datasophon.domain.host.enums.MANAGED;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.datasophon.dao.enums.ServiceRoleState;
+import com.datasophon.domain.host.enums.MANAGED;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import akka.actor.ActorRef;
+import akka.actor.UntypedActor;
+import cn.hutool.core.util.ObjectUtil;
 
 public class WorkerStartActor extends UntypedActor {
 
@@ -109,11 +111,11 @@ public class WorkerStartActor extends UntypedActor {
             prometheusActor.tell(prometheusConfigCommand, getSelf());
 
             // tell to worker what need to start
-            autoAddServiceOperatorNeeded(msg.getHostname(), cluster.getId(), CommandType.START_SERVICE,false);
-        } else if(message instanceof WorkerServiceMessage) {
+            autoAddServiceOperatorNeeded(msg.getHostname(), cluster.getId(), CommandType.START_SERVICE, false);
+        } else if (message instanceof WorkerServiceMessage) {
             WorkerServiceMessage msg = (WorkerServiceMessage) message;
             // tell to worker what need to start/stop
-            autoAddServiceOperatorNeeded(msg.getHostname(), msg.getClusterId(), msg.getCommandType(),true);
+            autoAddServiceOperatorNeeded(msg.getHostname(), msg.getClusterId(), msg.getCommandType(), true);
         }
     }
 
@@ -122,8 +124,8 @@ public class WorkerStartActor extends UntypedActor {
      *
      * @param clusterId
      */
-    private void autoAddServiceOperatorNeeded(String hostname, Integer clusterId,CommandType commandType,
-        boolean needRestart) {
+    private void autoAddServiceOperatorNeeded(String hostname, Integer clusterId, CommandType commandType,
+                                              boolean needRestart) {
         ClusterServiceRoleInstanceService roleInstanceService =
                 SpringTool.getApplicationContext().getBean(ClusterServiceRoleInstanceService.class);
         ClusterServiceCommandService serviceCommandService =
@@ -133,19 +135,20 @@ public class WorkerStartActor extends UntypedActor {
         // 启动服务
         if (CommandType.START_SERVICE.equals(commandType)) {
             serviceRoleList = roleInstanceService
-                .listStoppedServiceRoleListByHostnameAndClusterId(hostname, clusterId);
+                    .listStoppedServiceRoleListByHostnameAndClusterId(hostname, clusterId);
             // 重启时重刷服务配置以支持磁盘故障等问题
-            if(needRestart){
+            if (needRestart) {
                 roleInstanceService.updateToNeedRestartByHost(hostname);
             }
         }
 
         // 停止运行状态的服务
-        if(commandType.STOP_SERVICE.equals(commandType)){
+        if (commandType.STOP_SERVICE.equals(commandType)) {
             serviceRoleList = roleInstanceService
-                .getServiceRoleListByHostnameAndClusterId(hostname, clusterId).stream()
-                .filter(roleInstance -> (!ServiceRoleState.STOP.equals(roleInstance.getServiceRoleState()) &&
-                    !ServiceRoleState.DECOMMISSIONED.equals(roleInstance.getServiceRoleState()))).collect(toList());
+                    .getServiceRoleListByHostnameAndClusterId(hostname, clusterId).stream()
+                    .filter(roleInstance -> (!ServiceRoleState.STOP.equals(roleInstance.getServiceRoleState()) &&
+                            !ServiceRoleState.DECOMMISSIONED.equals(roleInstance.getServiceRoleState())))
+                    .collect(toList());
         }
 
         if (CollectionUtils.isEmpty(serviceRoleList)) {

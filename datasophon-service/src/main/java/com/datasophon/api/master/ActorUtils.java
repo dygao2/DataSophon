@@ -17,21 +17,14 @@
 
 package com.datasophon.api.master;
 
-import akka.actor.ActorRef;
-import akka.actor.ActorSelection;
-import akka.actor.ActorSystem;
-import akka.actor.Props;
-import akka.util.Timeout;
 import com.datasophon.api.master.alert.ServiceRoleCheckActor;
 import com.datasophon.common.command.ClusterCommand;
 import com.datasophon.common.command.HostCheckCommand;
 import com.datasophon.common.command.ServiceRoleCheckCommand;
 import com.datasophon.common.enums.ClusterCommandType;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.commons.lang3.StringUtils;
+
 import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
@@ -44,6 +37,18 @@ import java.security.SecureRandom;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+
+import akka.actor.ActorRef;
+import akka.actor.ActorSelection;
+import akka.actor.ActorSystem;
+import akka.actor.Props;
+import akka.util.Timeout;
 
 public class ActorUtils {
 
@@ -100,7 +105,6 @@ public class ActorUtils {
                 new ClusterCommand(ClusterCommandType.CHECK),
                 actorSystem.dispatcher(),
                 ActorRef.noSender());
-
 
         rand = SecureRandom.getInstanceStrong();
     }

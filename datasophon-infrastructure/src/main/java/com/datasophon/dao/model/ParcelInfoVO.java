@@ -17,9 +17,9 @@
 
 package com.datasophon.dao.model;
 
-import lombok.Data;
-
 import java.util.List;
+
+import lombok.Data;
 
 /**
  *

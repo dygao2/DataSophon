@@ -17,7 +17,6 @@
 
 package com.datasophon.api.strategy;
 
-import com.alibaba.fastjson.JSONObject;
 import com.datasophon.api.load.GlobalVariables;
 import com.datasophon.api.load.ServiceConfigMap;
 import com.datasophon.api.service.ClusterInfoService;
@@ -34,14 +33,17 @@ import com.datasophon.dao.entity.ClusterInfoEntity;
 import com.datasophon.dao.entity.ClusterServiceInstanceEntity;
 import com.datasophon.dao.entity.ClusterServiceRoleGroupConfig;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.alibaba.fastjson.JSONObject;
 
 public class RangerAdminHandlerStrategy extends ServiceHandlerAbstract implements ServiceRoleStrategy {
 
@@ -53,7 +55,8 @@ public class RangerAdminHandlerStrategy extends ServiceHandlerAbstract implement
         if (hosts.size() == 1) {
             String rangerAdminUrl = "http://" + hosts.get(0) + ":6080";
             logger.info("rangerAdminUrl is {}", rangerAdminUrl);
-            ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${rangerAdminUrl}", rangerAdminUrl);
+            ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${rangerAdminUrl}",
+                    rangerAdminUrl);
         }
     }
 
@@ -67,22 +70,26 @@ public class RangerAdminHandlerStrategy extends ServiceHandlerAbstract implement
         for (ServiceConfig config : list) {
             if ("enableHDFSPlugin".equals(config.getName()) && ((Boolean) config.getValue()).booleanValue()) {
                 logger.info("enableHdfsPlugin");
-                ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${enableHDFSPlugin}", "true");
+                ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${enableHDFSPlugin}",
+                        "true");
                 enableRangerPlugin(clusterId, "HDFS", "NameNode");
             }
             if ("enableHIVEPlugin".equals(config.getName()) && ((Boolean) config.getValue()).booleanValue()) {
                 logger.info("enableHivePlugin");
-                ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${enableHIVEPlugin}", "true");
+                ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${enableHIVEPlugin}",
+                        "true");
                 enableRangerPlugin(clusterId, "HIVE", "HiveServer2");
             }
             if ("enableHBASEPlugin".equals(config.getName()) && ((Boolean) config.getValue()).booleanValue()) {
                 logger.info("enableHbasePlugin");
-                ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${enableHBASEPlugin}", "true");
+                ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${enableHBASEPlugin}",
+                        "true");
                 enableRangerPlugin(clusterId, "HBASE", "HbaseMaster");
             }
             if (config.getName().contains("Plugin") && !(Boolean) config.getValue()) {
                 String configName = config.getName();
-                ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${" + configName + "}", "false");
+                ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${" + configName + "}",
+                        "false");
             }
             if ("enableKerberos".equals(config.getName())) {
                 enableKerberos = isEnableKerberos(clusterId, globalVariables, enableKerberos, config, "RANGER");

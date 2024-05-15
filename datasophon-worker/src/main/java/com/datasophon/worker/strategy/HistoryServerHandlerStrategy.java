@@ -17,7 +17,6 @@
 
 package com.datasophon.worker.strategy;
 
-import cn.hutool.core.io.FileUtil;
 import com.datasophon.common.Constants;
 import com.datasophon.common.cache.CacheUtils;
 import com.datasophon.common.command.ServiceRoleOperateCommand;
@@ -27,10 +26,12 @@ import com.datasophon.common.utils.ShellUtils;
 import com.datasophon.worker.handler.ServiceHandler;
 import com.datasophon.worker.utils.KerberosUtils;
 
+import cn.hutool.core.io.FileUtil;
+
 public class HistoryServerHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
 
-    public HistoryServerHandlerStrategy(String serviceName,String serviceRoleName) {
-        super(serviceName,serviceRoleName);
+    public HistoryServerHandlerStrategy(String serviceName, String serviceRoleName) {
+        super(serviceName, serviceRoleName);
     }
 
     @Override

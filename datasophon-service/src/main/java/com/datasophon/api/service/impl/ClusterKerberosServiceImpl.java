@@ -19,13 +19,21 @@
 
 package com.datasophon.api.service.impl;
 
-import cn.hutool.core.io.FileUtil;
 import com.datasophon.api.load.GlobalVariables;
 import com.datasophon.api.service.ClusterKerberosService;
 import com.datasophon.api.service.ClusterServiceRoleInstanceService;
 import com.datasophon.common.Constants;
 import com.datasophon.common.utils.ExecResult;
 import com.datasophon.common.utils.ShellUtils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +41,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Map;
+import cn.hutool.core.io.FileUtil;
 
 @Service("clusterKerberosService")
 @Transactional
@@ -55,11 +58,11 @@ public class ClusterKerberosServiceImpl implements ClusterKerberosService {
 
     @Override
     public void downloadKeytab(
-            Integer clusterId,
-            String principal,
-            String keytabName,
-            String hostname,
-            HttpServletResponse response) throws IOException {
+                               Integer clusterId,
+                               String principal,
+                               String keytabName,
+                               String hostname,
+                               HttpServletResponse response) throws IOException {
         String keytabFilePath =
                 KEYTAB_PATH + Constants.SLASH + hostname + Constants.SLASH + keytabName;
         File file = new File(keytabFilePath);
@@ -93,9 +96,9 @@ public class ClusterKerberosServiceImpl implements ClusterKerberosService {
     }
 
     private void generateKeytabFile(
-            Integer clusterId,
-            String keytabFilePath,
-            String principal) {
+                                    Integer clusterId,
+                                    String keytabFilePath,
+                                    String principal) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
         String kadminPrincipal = globalVariables.get("${kadminPrincipal}");
         String kadminPassword = globalVariables.get("${kadminPassword}");
@@ -103,15 +106,17 @@ public class ClusterKerberosServiceImpl implements ClusterKerberosService {
         ExecResult execResult = ShellUtils.exceShell(listPrinc);
         String execOut = execResult.getExecOut();
         if (!execOut.contains(principal)) {
-            String addprinc = "kadmin -p" + kadminPrincipal + " -w" + kadminPassword + " -q \"addprinc -randkey " + principal + "\"";
+            String addprinc = "kadmin -p" + kadminPrincipal + " -w" + kadminPassword + " -q \"addprinc -randkey "
+                    + principal + "\"";
             logger.info("add principal cmd is : {}", addprinc);
             ShellUtils.exceShell(addprinc);
         }
         if (!FileUtil.exist(keytabFilePath)) {
             FileUtil.mkParentDirs(keytabFilePath);
         }
-        String keytabCmd = "kadmin -p" + kadminPrincipal + " -w" + kadminPassword + " -q \"xst -k " + keytabFilePath + " "
-                + principal + "\"";
+        String keytabCmd =
+                "kadmin -p" + kadminPrincipal + " -w" + kadminPassword + " -q \"xst -k " + keytabFilePath + " "
+                        + principal + "\"";
         logger.info("generate keytab file cmd is : {}", keytabCmd);
         ShellUtils.exceShell(keytabCmd);
 

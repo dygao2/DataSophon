@@ -17,23 +17,25 @@
 
 package com.datasophon.api.interceptor;
 
-import com.datasophon.api.exceptions.ServiceException;
 import com.datasophon.api.enums.Status;
+import com.datasophon.api.exceptions.ServiceException;
 import com.datasophon.api.security.UserPermission;
 import com.datasophon.api.service.ClusterRoleUserService;
 import com.datasophon.api.utils.SecurityUtils;
 import com.datasophon.common.Constants;
 import com.datasophon.dao.entity.UserInfoEntity;
+
+import java.util.Map;
+import java.util.Objects;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
-import java.util.Objects;
 
 public class UserPermissionHandler implements HandlerInterceptor {
 

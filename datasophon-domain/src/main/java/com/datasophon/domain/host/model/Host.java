@@ -1,8 +1,8 @@
 package com.datasophon.domain.host.model;
 
-import lombok.Data;
-
 import java.util.Date;
+
+import lombok.Data;
 
 @Data
 public class Host {

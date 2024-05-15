@@ -23,7 +23,7 @@ import com.datasophon.dao.entity.UserInfoEntity;
 import com.datasophon.dao.mapper.UserInfoMapper;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

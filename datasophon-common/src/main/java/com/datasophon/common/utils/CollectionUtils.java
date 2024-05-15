@@ -14,12 +14,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package com.datasophon.common.utils;
 
 import org.apache.commons.collections.BeanMap;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Provides utility methods and decorators for {@link Collection} instances.
@@ -38,6 +46,7 @@ public class CollectionUtils {
     private CollectionUtils() {
         throw new IllegalStateException("CollectionUtils class");
     }
+
     /**
      * Returns a new {@link Collection} containing <i>a</i> minus a subset of
      * <i>b</i>.  Only the elements of <i>b</i> that satisfy the predicate

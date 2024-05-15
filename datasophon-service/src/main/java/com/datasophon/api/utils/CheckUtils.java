@@ -14,12 +14,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package com.datasophon.api.utils;
 
 import com.datasophon.api.enums.Status;
 import com.datasophon.common.Constants;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -31,6 +32,7 @@ public class CheckUtils {
     private CheckUtils() {
         throw new IllegalStateException("CheckUtils class");
     }
+
     /**
      * check username
      *
@@ -86,6 +88,7 @@ public class CheckUtils {
     /**
      * check phone
      * phone can be empty.
+     *
      * @param phone phone
      * @return true if phone regex valid, otherwise return false
      */
@@ -95,10 +98,11 @@ public class CheckUtils {
 
     /**
      * check params
+     *
      * @param userName user name
      * @param password password
-     * @param email email
-     * @param phone phone
+     * @param email    email
+     * @param phone    phone
      * @return true if user parameters are valid, other return false
      */
     public static boolean checkUserParams(String userName, String password, String email, String phone) {
@@ -111,7 +115,7 @@ public class CheckUtils {
     /**
      * regex check
      *
-     * @param str input string
+     * @param str     input string
      * @param pattern regex pattern
      * @return true if regex pattern is right, otherwise return false
      */

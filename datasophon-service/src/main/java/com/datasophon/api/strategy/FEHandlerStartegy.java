@@ -17,7 +17,6 @@
 
 package com.datasophon.api.strategy;
 
-import cn.hutool.core.util.ObjUtil;
 import com.datasophon.api.load.GlobalVariables;
 import com.datasophon.api.utils.ProcessUtils;
 import com.datasophon.common.model.ProcInfo;
@@ -27,11 +26,14 @@ import com.datasophon.common.utils.OlapUtils;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
 import com.datasophon.dao.enums.AlertLevel;
 import com.datasophon.dao.enums.ServiceRoleState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import cn.hutool.core.util.ObjUtil;
 
 public class FEHandlerStartegy implements ServiceRoleStrategy {
 
@@ -41,10 +43,11 @@ public class FEHandlerStartegy implements ServiceRoleStrategy {
     public void handler(Integer clusterId, List<String> hosts, String serviceName) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
         // if feMaster is null, set the first host as feMaster
-        //Prevent FE Observer nodes from starting and FE Master nodes from changing
+        // Prevent FE Observer nodes from starting and FE Master nodes from changing
         if (!globalVariables.containsKey("${feMaster}") || ObjUtil.isNull(globalVariables.get("${feMaster}"))) {
             if (!hosts.isEmpty()) {
-                ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${feMaster}", hosts.get(0));
+                ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${feMaster}",
+                        hosts.get(0));
             }
         }
     }
@@ -89,9 +92,9 @@ public class FEHandlerStartegy implements ServiceRoleStrategy {
 
             }
 
-
         }
     }
+
     private void resolveProcInfoAlert(String serviceRoleName, List<ProcInfo> frontends,
                                       Map<String, ClusterServiceRoleInstanceEntity> map) {
         for (ProcInfo frontend : frontends) {

@@ -22,11 +22,12 @@ import com.datasophon.api.utils.ProcessUtils;
 import com.datasophon.common.model.ServiceConfig;
 import com.datasophon.common.model.ServiceRoleInfo;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ZKFCHandlerStrategy implements ServiceRoleStrategy {
 

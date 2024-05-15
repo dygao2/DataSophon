@@ -17,9 +17,6 @@
 
 package com.datasophon.api.strategy;
 
-import akka.actor.ActorSelection;
-import akka.pattern.Patterns;
-import akka.util.Timeout;
 import com.datasophon.api.load.ServiceInfoMap;
 import com.datasophon.api.load.ServiceRoleMap;
 import com.datasophon.api.master.ActorUtils;
@@ -33,6 +30,7 @@ import com.datasophon.common.utils.ExecResult;
 import com.datasophon.dao.entity.ClusterInfoEntity;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
 import com.datasophon.dao.enums.AlertLevel;
+
 import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
@@ -41,6 +39,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import akka.actor.ActorSelection;
+import akka.pattern.Patterns;
+import akka.util.Timeout;
 
 public class PrometheusHandlerStrategy implements ServiceRoleStrategy {
 

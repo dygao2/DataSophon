@@ -57,7 +57,6 @@ public class ServiceRoleStrategyContext {
 
         // DolphinScheduler
         map.put("MasterServer", new DSMasterHandlerStrategy("DS", "MasterServer"));
-
     }
 
     public static ServiceRoleStrategy getServiceRoleHandler(String type) {

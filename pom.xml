@@ -409,7 +409,7 @@
                             <replacement>project</replacement>
                         </replace>
                     </pom>
-                    <markdown>
+                    <!--<markdown>
                         <includes>
                             <include>docs/**/*.md</include>
                         </includes>
@@ -417,7 +417,7 @@
                             <exclude>**/.github/**/*.md</exclude>
                         </excludes>
                         <flexmark />
-                    </markdown>
+                    </markdown>-->
                 </configuration>
                 <executions>
                     <execution>

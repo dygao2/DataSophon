@@ -53,8 +53,7 @@ public class ClusterServiceDashboardServiceImpl
                 .getOne(new QueryWrapper<ClusterServiceDashboard>().eq(Constants.SERVICE_NAME, "TOTAL"));
 //        String dashboardUrl = PlaceholderUtils.replacePlaceholders(dashboard.getDashboardUrl(), globalVariables,
 //                Constants.REGEX_VARIABLE);
-        String dashboardUrl = contextPath + GRAFANA_PATH + "/" + clusterId + dashboard.getDashboardUrl();
-        return Result.success(dashboardUrl);
+        return Result.success(getDashboardUrl(clusterId, dashboard));
     }
 
     @Override

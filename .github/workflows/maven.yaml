@@ -34,7 +34,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - name: Check Code
+      - name: Check Code Style
         run: |
           ./mvnw -T 2C -B --no-snapshot-updates clean checkstyle:check
       - name: Build and Package

@@ -59,8 +59,15 @@
     }
   ],
   "configWriter": {
-    "generators": [
-    ]
+    "generators": [{
+       "filename": "custom.ini",
+       "configFormat": "custom",
+       "outputDirectory": "conf",
+       "templateName": "grafana.ftl",
+       "includeParams": [
+
+       ]
+    }]
   },
   "parameters": [
   ]

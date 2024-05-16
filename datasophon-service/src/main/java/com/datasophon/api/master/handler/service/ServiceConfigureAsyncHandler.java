@@ -45,6 +45,7 @@ public class ServiceConfigureAsyncHandler extends ServiceHandler {
     execResult.setExecResult(true);
     // config
     GenerateServiceConfigCommand generateServiceConfigCommand = new GenerateServiceConfigCommand();
+    generateServiceConfigCommand.setClusterId(serviceRoleInfo.getClusterId());
     generateServiceConfigCommand.setServiceName(serviceRoleInfo.getParentName());
     generateServiceConfigCommand.setCofigFileMap(serviceRoleInfo.getConfigFileMap());
     generateServiceConfigCommand.setDecompressPackageName(serviceRoleInfo.getDecompressPackageName());

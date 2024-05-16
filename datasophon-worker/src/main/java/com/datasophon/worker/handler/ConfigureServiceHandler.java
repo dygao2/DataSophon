@@ -34,6 +34,7 @@ import lombok.Data;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import scala.Int;
 
 import java.io.File;
 import java.net.InetAddress;
@@ -68,6 +69,7 @@ public class ConfigureServiceHandler {
 
     public ExecResult configure(Map<Generators, List<ServiceConfig>> cofigFileMap,
                                 String decompressPackageName,
+                                Integer clusterId,
                                 Integer myid,
                                 String serviceRoleName,
                                 RunAs runAs) {
@@ -75,16 +77,24 @@ public class ConfigureServiceHandler {
         try {
 
             String hostName = InetAddress.getLocalHost().getHostName();
+            String ip = InetAddress.getLocalHost().getHostAddress();
             HashMap<String, String> paramMap = new HashMap<>();
+            paramMap.put("${clusterId}", String.valueOf(clusterId));
             paramMap.put("${host}", hostName);
+            paramMap.put("${ip}", ip);
             paramMap.put("${user}", "root");
-            paramMap.put("${myid}", myid + "");
+            paramMap.put("${myid}", String.valueOf(myid));
             logger.info("Start to configure service role {}", serviceRoleName);
             for (Generators generators : cofigFileMap.keySet()) {
                 List<ServiceConfig> configs = cofigFileMap.get(generators);
                 String dataDir = "";
                 Iterator<ServiceConfig> iterator = configs.iterator();
                 ArrayList<ServiceConfig> customConfList = new ArrayList<>();
+                ServiceConfig clusterIdConfig = new ServiceConfig();
+                clusterIdConfig.setName("clusterId");
+                clusterIdConfig.setValue(String.valueOf(clusterId));
+                clusterIdConfig.setConfigType("map");
+                customConfList.add(clusterIdConfig);
                 while (iterator.hasNext()) {
                     ServiceConfig config = iterator.next();
                     if (StringUtils.isNotBlank(config.getType())) {

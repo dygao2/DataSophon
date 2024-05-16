@@ -96,6 +96,7 @@ public class AppConfiguration implements WebMvcConfigurer {
         // login
         registry.addInterceptor(loginInterceptor())
                 .addPathPatterns("/**").excludePathPatterns("/login", "/error",
+                        "/grafana/**",
                         "/service/install/downloadPackage",
                         "/service/install/downloadResource",
                         "/cluster/alert/history/save",

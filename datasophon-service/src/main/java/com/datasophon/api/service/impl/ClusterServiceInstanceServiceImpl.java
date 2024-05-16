@@ -26,7 +26,6 @@ import com.datasophon.api.service.*;
 import com.datasophon.common.Constants;
 import com.datasophon.common.model.SimpleServiceConfig;
 import com.datasophon.common.utils.CollectionUtils;
-import com.datasophon.common.utils.PlaceholderUtils;
 import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.*;
 import com.datasophon.dao.enums.NeedRestart;
@@ -34,6 +33,7 @@ import com.datasophon.dao.enums.ServiceRoleState;
 import com.datasophon.dao.enums.ServiceState;
 import com.datasophon.dao.mapper.ClusterServiceInstanceMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,6 +50,9 @@ public class ClusterServiceInstanceServiceImpl
         ServiceImpl<ClusterServiceInstanceMapper, ClusterServiceInstanceEntity>
         implements
         ClusterServiceInstanceService {
+
+    @Value("${server.servlet.context-path}")
+    private String contextPath;
 
     @Autowired
     private ClusterServiceInstanceMapper serviceInstanceMapper;
@@ -106,9 +109,9 @@ public class ClusterServiceInstanceServiceImpl
             ClusterServiceDashboard dashboard = dashboardService.getOne(new QueryWrapper<ClusterServiceDashboard>()
                     .eq(Constants.SERVICE_NAME, serviceInstance.getServiceName()));
             if (Objects.nonNull(dashboard)) {
-                String dashboardUrl = PlaceholderUtils.replacePlaceholders(dashboard.getDashboardUrl(), globalVariables,
-                        Constants.REGEX_VARIABLE);
-                serviceInstance.setDashboardUrl(dashboardUrl);
+//                String dashboardUrl = PlaceholderUtils.replacePlaceholders(dashboard.getDashboardUrl(), globalVariables,
+//                        Constants.REGEX_VARIABLE);
+                serviceInstance.setDashboardUrl(dashboardService.getDashboardUrl(clusterId, dashboard));
             }
             // 查询告警数量
             int alertNum = alertHistoryService.count(new QueryWrapper<ClusterAlertHistory>()

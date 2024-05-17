@@ -36,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -108,7 +109,7 @@ public class ClusterServiceInstanceServiceImpl
             // 查询dashboard
             ClusterServiceDashboard dashboard = dashboardService.getOne(new QueryWrapper<ClusterServiceDashboard>()
                     .eq(Constants.SERVICE_NAME, serviceInstance.getServiceName()));
-            if (Objects.nonNull(dashboard)) {
+            if (Objects.nonNull(dashboard) && StringUtils.hasText(dashboard.getDashboardUrl())) {
 //                String dashboardUrl = PlaceholderUtils.replacePlaceholders(dashboard.getDashboardUrl(), globalVariables,
 //                        Constants.REGEX_VARIABLE);
                 serviceInstance.setDashboardUrl(dashboardService.getDashboardUrl(clusterId, dashboard));

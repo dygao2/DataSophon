@@ -28,8 +28,10 @@ import com.datasophon.dao.mapper.ClusterServiceDashboardMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Map;
+import java.util.Objects;
 
 import static com.datasophon.common.Constants.GRAFANA_PATH;
 
@@ -48,12 +50,17 @@ public class ClusterServiceDashboardServiceImpl
 
     @Override
     public Result getDashboardUrl(Integer clusterId) {
-        Map<String, String> globalVariables = GlobalVariables.get(clusterId);
+//        Map<String, String> globalVariables = GlobalVariables.get(clusterId);
         ClusterServiceDashboard dashboard = dashboardService
                 .getOne(new QueryWrapper<ClusterServiceDashboard>().eq(Constants.SERVICE_NAME, "TOTAL"));
 //        String dashboardUrl = PlaceholderUtils.replacePlaceholders(dashboard.getDashboardUrl(), globalVariables,
 //                Constants.REGEX_VARIABLE);
-        return Result.success(getDashboardUrl(clusterId, dashboard));
+        if (Objects.nonNull(dashboard) && StringUtils.hasText(dashboard.getDashboardUrl())) {
+            return Result.success(getDashboardUrl(clusterId, dashboard));
+        }
+        else {
+            return Result.error("缺少集群总览");
+        }
     }
 
     @Override

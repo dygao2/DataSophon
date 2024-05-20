@@ -33,8 +33,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 @Mapper
 public interface ClusterServiceRoleInstanceMapper extends BaseMapper<ClusterServiceRoleInstanceEntity> {
-
+    
     void updateToNeedRestart(@Param("roleGroupId") Integer roleGroupId);
-
+    
     void updateToNeedRestartByHost(@Param("hostName") String hostName);
 }

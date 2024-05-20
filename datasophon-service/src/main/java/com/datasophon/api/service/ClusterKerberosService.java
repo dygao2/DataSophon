@@ -17,15 +17,16 @@
 
 package com.datasophon.api.service;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public interface ClusterKerberosService {
+import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.web.multipart.MultipartFile;
+
+public interface ClusterKerberosService {
+    
     void downloadKeytab(Integer clusterId, String principal, String keytabName, String hostname,
                         HttpServletResponse response) throws IOException;
-
+    
     void uploadKeytab(MultipartFile file, String hostname, String keytabFileName) throws IOException;
 }

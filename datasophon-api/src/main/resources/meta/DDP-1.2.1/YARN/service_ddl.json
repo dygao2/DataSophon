@@ -230,10 +230,10 @@
       "description": "Node Label存储目录",
       "required": true,
       "type": "input",
-      "value": "",
+      "value": "hdfs://${dfs.nameservices}/user/yarn/nodeLabels",
       "configurableInWizard": true,
       "hidden": false,
-      "defaultValue": "hdfs://nameservice1/user/yarn/nodeLabels"
+      "defaultValue": "hdfs://${dfs.nameservices}/user/yarn/nodeLabels"
     },
     {
       "name": "yarn.nodemanager.resource.cpu-vcores",
@@ -651,7 +651,7 @@
       "value":"",
       "configurableInWizard": true,
       "hidden": false,
-      "defaultValue": "${fs.defaultFS}/user/yarn/yarn-logs/"
+      "defaultValue": "hdfs://${dfs.nameservices}/user/yarn/yarn-logs/"
     },
     {
       "name": "yarn.nodemanager.local-dirs",

@@ -27,11 +27,11 @@ import lombok.Data;
 
 @Data
 public class CheckCommandExecuteProgressCommand {
-
+    
     private List<ServiceRoleInfo> serviceRoleInfoList;
-
+    
     private Map<String, ServiceExecuteState> completeTaskList;
-
+    
     public CheckCommandExecuteProgressCommand(Map<String, ServiceExecuteState> completeTaskList,
                                               List<ServiceRoleInfo> serviceRoleInfoList) {
         this.completeTaskList = completeTaskList;

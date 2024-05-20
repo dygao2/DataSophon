@@ -27,9 +27,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @Data
 @TableName("t_ddh_cluster_alert_group_map")
 public class ClusterAlertGroupMap implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     /**
      * 
      */
@@ -43,5 +43,5 @@ public class ClusterAlertGroupMap implements Serializable {
      * 
      */
     private Integer alertGroupId;
-
+    
 }

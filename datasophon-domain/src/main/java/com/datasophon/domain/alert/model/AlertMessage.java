@@ -18,13 +18,13 @@
 
 package com.datasophon.domain.alert.model;
 
-import lombok.Data;
-
 import java.util.List;
+
+import lombok.Data;
 
 @Data
 public class AlertMessage {
-
+    
     private String receiver;
     private String status;
     private List<Alerts> alerts;
@@ -32,5 +32,5 @@ public class AlertMessage {
     private String version;
     private String groupKey;
     private int truncatedAlerts;
-
+    
 }

@@ -27,17 +27,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("cluster/service/dashboard")
 public class ClusterServiceDashboardController {
-
+    
     @Autowired
     private ClusterServiceDashboardService clusterServiceDashboardService;
-
+    
     /**
      * 列表
      */
     @RequestMapping("/getDashboardUrl")
     public Result getDashboardUrl(Integer clusterId) {
-
+        
         return clusterServiceDashboardService.getDashboardUrl(clusterId);
     }
-
+    
 }

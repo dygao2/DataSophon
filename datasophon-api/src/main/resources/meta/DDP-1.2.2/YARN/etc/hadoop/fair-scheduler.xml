@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<allocations>
+	<!--
+	<queue name="test">
+		<minResources>2048mb,2vcores</minResources>
+		<maxResources>4096mb,4vcores</maxResources>
+		<maxRunningApps>4</maxRunningApps>
+		<maxAMShare>0.5</maxAMShare>
+		<weight>1.0</weight>
+		<schedulingPolicy>fair</schedulingPolicy>
+	</queue> -->
+	<queuePlacementPolicy>
+		<rule name="specified" create="false"/>
+		<rule name="default" />
+	</queuePlacementPolicy>
+</allocations>

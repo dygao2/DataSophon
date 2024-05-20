@@ -1,29 +1,40 @@
 ### 1、打包安装包
+
 解压安装包，可以在这里对解压后的文件做修改，更改文件名，这里的文件名是和后面的配置文件对应的：
+
 ```shell
 tar -zxvf presto-server-0.283.tar.gz
 mv presto-server-0.283 presto-0.283
 ```
+
 将文件打包，注意这里的压缩包名也和后面配置文件对应：
+
 ```shell
 tar czf presto-0.283.tar.gz presto-0.283
 ```
+
 编写md5文件：
+
 ```shell
 md5sum presto-0.283.tar.gz
 echo '84666ba9ef9b9024fa7c385af0823101' > presto-0.283.tar.gz.md5
 ```
+
 将两个文件拷贝进对应文件夹中：
+
 ```shell
 cp ./presto-0.283.tar.gz ./presto-0.283.tar.gz.md5 /opt/datasophon/DDP/packages
 ```
+
 ### 2、编写presto元数据
+
 ```shell
 cd /opt/apps/datasophon/datasophon-manager-1.1.2/conf/meta/DDP-1.1.2
 mkdir PRESTO
 cd PRESTO
 vim service_ddl.json
 ```
+
 ```shell
 {
   "name": "PRESTO",
@@ -282,10 +293,12 @@ vim service_ddl.json
   ]
 }
 ```
+
 ```shell
 cd /opt/datasophon/datasophon-worker/conf/templates
 vim presto.jvm.config.ftl
 ```
+
 ```shell
 -server
 -Xmx${prestoHeapSize}G
@@ -303,41 +316,53 @@ vim presto.jvm.config.ftl
 -XX:+UnlockDiagnosticVMOptions
 -XX:+UseAESCTRIntrinsics
 ```
+
 ### 3、修改worker源码，重新打包worker包
+
 修改 datasophon-worker/src/main/java/com/datasophon/worker/handler/ConfigureServiceHandler.java
 新增代码
 
 ![image](https://github.com/datavane/datasophon/assets/62798940/0fbf7d09-e351-4789-9aff-f911610e117f)
 
 ```shell
-                    if ("PrestoCoordinator".equals(serviceRoleName) && "coordinator".equals(config.getName())) {
-                        logger.info("Start config presto coordinator");
-                        config.setValue("true");
-                        ServiceConfig serviceConfig = new ServiceConfig();
-                        serviceConfig.setName("node-scheduler.include-coordinator");
-                        serviceConfig.setValue("false");
-                        ServiceConfig serviceConfig1 = new ServiceConfig();
-                        serviceConfig1.setName("discovery-server.enabled");
-                        serviceConfig1.setValue("true");
-                        customConfList.add(serviceConfig);
-                        customConfList.add(serviceConfig1);
-                    }
+if ("PrestoCoordinator".equals(serviceRoleName) && "coordinator".equals(config.getName())) {
+    logger.info("Start config presto coordinator");
+    config.setValue("true");
+    ServiceConfig serviceConfig = new ServiceConfig();
+    serviceConfig.setName("node-scheduler.include-coordinator");
+    serviceConfig.setValue("false");
+    ServiceConfig serviceConfig1 = new ServiceConfig();
+    serviceConfig1.setName("discovery-server.enabled");
+    serviceConfig1.setValue("true");
+    customConfList.add(serviceConfig);
+    customConfList.add(serviceConfig1);
+}
 ```
+
 将重新打包的 datasophon-worker-1.1.2.jar 文件替换到每个worker节点的 /opt/datasophon/datasophon-worker/lib
 1.2.0版本worker包名为datasophon-worker-1.1.3.jar，需要上传后改名
+
 ### 4、重启
+
 各节点worker重启
+
 ```shell
 sh /opt/datasophon/datasophon-worker/bin/datasophon-worker.sh restart worker
 ```
+
 主节点重启api
+
 ```shell
 sh /opt/apps/datasophon/datasophon-manager-1.1.2/bin/datasophon-api.sh restart api
 ```
+
 此时可以看到mysql元数据库中 t_ddh_frame_service 和 t_ddh_frame_service_role 两个表已经添加了presto的元数据。
 搭建需要注意一点节点不能既是master又是worker
+
 ### 5、集成监控
+
 #### 5.1 presto安装目录创建jmx配置文件
+
 ```shell
 pwd
 /opt/datasophon/presto
@@ -345,6 +370,7 @@ mkdir jmx
 cd jmx
 vim prometheus_config.yml
 ```
+
 ```shell
 ---
 lowercaseOutputLabelNames: true
@@ -361,6 +387,7 @@ rules:
     type: GAUGE
     attrNameSnakeCase: true
 ```
+
 将 jmx_prometheus_javaagent-0.16.1.jar 放入jmx文件夹
 
 ![image](https://github.com/datavane/datasophon/assets/62798940/16b9dd5d-8957-45b6-b0fc-163e47d49a25)
@@ -845,22 +872,28 @@ if __name__ == '__main__':
     main()
 
 ```
+
 #### 5.3 修改Prometheus配置文件
+
 ```shell
 vim /opt/datasophon/prometheus/prometheus.yml
 ```
+
 新增presto配置
+
 ```shell
-  - job_name: 'prestocoordinator'
-    file_sd_configs:
-     - files:
-       - configs/prestocoordinator.json
-  - job_name: 'prestoworker'
-    file_sd_configs:
-     - files:
-       - configs/prestoworker.json
+- job_name: 'prestocoordinator'
+  file_sd_configs:
+   - files:
+     - configs/prestocoordinator.json
+- job_name: 'prestoworker'
+  file_sd_configs:
+   - files:
+     - configs/prestoworker.json
 ```
+
 在 /opt/datasophon/prometheus/configs 目录新增 prestocoordinator.json 和 prestoworker.json 配置文件
+
 ```shell
 [
  {
@@ -868,6 +901,7 @@ vim /opt/datasophon/prometheus/prometheus.yml
  }
 ]
 ```
+
 ```shell
 [
  {
@@ -875,17 +909,20 @@ vim /opt/datasophon/prometheus/prometheus.yml
  }
 ]
 ```
+
 重启prometheus,访问webui可看到采集过来的指标
 [http://hadoop1:9090/targets](http://hadoop1:9090/targets)
 
 ![image](https://github.com/datavane/datasophon/assets/62798940/f93a3ad1-64c6-463c-b989-c7c7af93cd82)
 
 #### 5.4 绘制grafana
+
 打开grafana ui
 
 ![image](https://github.com/datavane/datasophon/assets/62798940/369c0997-5a5e-44ce-bcc8-5163360b240c)
 
 将下面json粘贴进去
+
 ```shell
 {
   "annotations": {
@@ -1834,7 +1871,9 @@ vim /opt/datasophon/prometheus/prometheus.yml
   "weekStart": ""
 }
 ```
+
 #### 5.5 添加dotasophon presto模块总览
+
 在grafana中复制面板链接
 
 ![image](https://github.com/datavane/datasophon/assets/62798940/02443af5-90ff-4dc8-9cbd-d42fee7b2ca4)
@@ -1849,7 +1888,9 @@ vim /opt/datasophon/prometheus/prometheus.yml
 ![image](https://github.com/datavane/datasophon/assets/62798940/d15fcc17-16bf-4604-acf8-014f29ae7713)
 
 #### 5.6 集成告警
+
 在 /opt/datasophon/prometheus/alert_rules 目录中添加presto告警配置文件 presto.yml
+
 ```shell
 groups:
 - name: PRESTO
@@ -1883,6 +1924,7 @@ groups:
       summary: 重新启动
       description: "{{ $labels.job }}的{{ $labels.instance }}实例产生告警"
 ```
+
 重启prometheus，可以在UI上看到已经添加了告警
 
 ![image](https://github.com/datavane/datasophon/assets/62798940/75709858-b641-425c-b87f-f838a5dea1fc)

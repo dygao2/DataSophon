@@ -19,50 +19,43 @@
 
 package com.datasophon.api.service.impl;
 
-import akka.actor.ActorRef;
-import akka.pattern.Patterns;
-import akka.util.Timeout;
-import cn.hutool.core.io.FileUtil;
 import com.datasophon.api.load.GlobalVariables;
-import com.datasophon.api.master.ActorUtils;
 import com.datasophon.api.service.ClusterKerberosService;
 import com.datasophon.api.service.ClusterServiceRoleInstanceService;
 import com.datasophon.common.Constants;
-import com.datasophon.common.cache.CacheUtils;
-import com.datasophon.common.command.remote.GenerateKeytabFileCommand;
 import com.datasophon.common.utils.ExecResult;
 import com.datasophon.common.utils.ShellUtils;
-import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import scala.concurrent.Await;
-import scala.concurrent.Future;
-import scala.concurrent.duration.Duration;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.concurrent.TimeUnit;
+import cn.hutool.core.io.FileUtil;
 
 @Service("clusterKerberosService")
 @Transactional
 public class ClusterKerberosServiceImpl implements ClusterKerberosService {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(ClusterKerberosServiceImpl.class);
-
+    
     private static final String SSHUSER = "SSHUSER";
-
+    
     private static final String KEYTAB_PATH = "/etc/security/keytab";
-
+    
     @Autowired
     private ClusterServiceRoleInstanceService roleInstanceService;
-
+    
     @Override
     public void downloadKeytab(
                                Integer clusterId,
@@ -74,7 +67,7 @@ public class ClusterKerberosServiceImpl implements ClusterKerberosService {
                 KEYTAB_PATH + Constants.SLASH + hostname + Constants.SLASH + keytabName;
         File file = new File(keytabFilePath);
         if (!file.exists()) {
-            generateKeytabFile(clusterId, keytabFilePath, principal, keytabName, hostname);
+            generateKeytabFile(clusterId, keytabFilePath, principal);
         }
         FileInputStream inputStream = new FileInputStream(file);
         response.reset();
@@ -94,54 +87,38 @@ public class ClusterKerberosServiceImpl implements ClusterKerberosService {
             out.close();
         }
     }
-
+    
     @Override
     public void uploadKeytab(MultipartFile file, String hostname, String keytabFileName) throws IOException {
         String keytabFilePath =
                 KEYTAB_PATH + Constants.SLASH + hostname + Constants.SLASH + keytabFileName;
         file.transferTo(new File(keytabFilePath));
     }
-
+    
     private void generateKeytabFile(
                                     Integer clusterId,
                                     String keytabFilePath,
-                                    String principal,
-                                    String keytabName,
-                                    String hostname) {
-        ClusterServiceRoleInstanceEntity roleInstanceEntity =
-                roleInstanceService.getKAdminRoleIns(clusterId);
-        ActorRef kerberosActor =
-                ActorUtils.getRemoteActor(roleInstanceEntity.getHostname(), "kerberosActor");
-        GenerateKeytabFileCommand command = new GenerateKeytabFileCommand();
-        command.setKeytabName(keytabName);
-        command.setPrincipal(principal);
-        command.setHostname(hostname);
-        Timeout timeout = new Timeout(Duration.create(180, TimeUnit.SECONDS));
-        Future<Object> execFuture = Patterns.ask(kerberosActor, command, timeout);
-        ExecResult execResult = null;
-        try {
-            execResult = (ExecResult) Await.result(execFuture, timeout.duration());
-            String localHostname = CacheUtils.getString(Constants.HOSTNAME);
-            if (execResult.getExecResult()
-                    && !localHostname.equals(roleInstanceEntity.getHostname())) {
-                String keytabFileDir = KEYTAB_PATH + Constants.SLASH + hostname + Constants.SLASH;
-                if (!FileUtil.exist(keytabFileDir)) {
-                    FileUtil.mkdir(keytabFileDir);
-                }
-                String sshuser = GlobalVariables.get(clusterId).get(SSHUSER);
-                ShellUtils.exceShell(
-                        "scp "
-                                + sshuser
-                                + "@"
-                                + roleInstanceEntity.getHostname()
-                                + ":"
-                                + keytabFilePath
-                                + " "
-                                + keytabFileDir);
-            }
-        } catch (Exception e) {
-            logger.error(
-                    "Failed to generate keytab file: {} with hostname {}", keytabName, hostname);
+                                    String principal) {
+        Map<String, String> globalVariables = GlobalVariables.get(clusterId);
+        String kadminPrincipal = globalVariables.get("${kadminPrincipal}");
+        String kadminPassword = globalVariables.get("${kadminPassword}");
+        String listPrinc = "kadmin -p" + kadminPrincipal + " -w" + kadminPassword + " -q \"listprincs\"";
+        ExecResult execResult = ShellUtils.exceShell(listPrinc);
+        String execOut = execResult.getExecOut();
+        if (!execOut.contains(principal)) {
+            String addprinc = "kadmin -p" + kadminPrincipal + " -w" + kadminPassword + " -q \"addprinc -randkey "
+                    + principal + "\"";
+            logger.info("add principal cmd is : {}", addprinc);
+            ShellUtils.exceShell(addprinc);
         }
+        if (!FileUtil.exist(keytabFilePath)) {
+            FileUtil.mkParentDirs(keytabFilePath);
+        }
+        String keytabCmd =
+                "kadmin -p" + kadminPrincipal + " -w" + kadminPassword + " -q \"xst -k " + keytabFilePath + " "
+                        + principal + "\"";
+        logger.info("generate keytab file cmd is : {}", keytabCmd);
+        ShellUtils.exceShell(keytabCmd);
+        
     }
 }

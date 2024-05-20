@@ -17,9 +17,6 @@
 
 package com.datasophon.api.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.service.ClusterServiceInstanceConfigService;
 import com.datasophon.api.service.ClusterServiceRoleGroupConfigService;
 import com.datasophon.common.Constants;
@@ -28,12 +25,17 @@ import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.ClusterServiceInstanceConfigEntity;
 import com.datasophon.dao.entity.ClusterServiceRoleGroupConfig;
 import com.datasophon.dao.mapper.ClusterServiceInstanceConfigMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 @Service("clusterServiceInstanceConfigService")
 public class ClusterServiceInstanceConfigServiceImpl
@@ -41,10 +43,10 @@ public class ClusterServiceInstanceConfigServiceImpl
             ServiceImpl<ClusterServiceInstanceConfigMapper, ClusterServiceInstanceConfigEntity>
         implements
             ClusterServiceInstanceConfigService {
-
+    
     @Autowired
     private ClusterServiceRoleGroupConfigService roleGroupConfigService;
-
+    
     @Override
     public Result getServiceInstanceConfig(Integer serviceInstanceId, Integer version, Integer roleGroupId,
                                            Integer page, Integer pageSize) {
@@ -57,7 +59,7 @@ public class ClusterServiceInstanceConfigServiceImpl
         }
         return Result.success();
     }
-
+    
     @Override
     public ClusterServiceInstanceConfigEntity getServiceConfigByServiceId(Integer id) {
         return this.lambdaQuery()
@@ -66,10 +68,10 @@ public class ClusterServiceInstanceConfigServiceImpl
                 .last("limit 1")
                 .one();
     }
-
+    
     @Override
     public Result getConfigVersion(Integer serviceInstanceId, Integer roleGroupId) {
-
+        
         List<ClusterServiceRoleGroupConfig> list =
                 roleGroupConfigService.list(new QueryWrapper<ClusterServiceRoleGroupConfig>()
                         .eq(Constants.ROLE_GROUP_ID, roleGroupId)

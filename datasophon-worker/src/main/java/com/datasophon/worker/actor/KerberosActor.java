@@ -29,9 +29,9 @@ import akka.actor.UntypedActor;
 import cn.hutool.core.io.FileUtil;
 
 public class KerberosActor extends UntypedActor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(KerberosActor.class);
-
+    
     @Override
     public void onReceive(Object message) throws Throwable {
         if (message instanceof GenerateKeytabFileCommand) {
@@ -48,7 +48,7 @@ public class KerberosActor extends UntypedActor {
                 ShellUtils.exceShell(addprinc);
                 String keytabCmd = "kadmin -padmin/admin -wadmin -q \"xst -k " + keytabFilePath + " "
                         + command.getPrincipal() + "\"";
-
+                
                 logger.info("generate keytab file cmd :{}", keytabCmd);
                 ShellUtils.exceShell(keytabCmd);
             }

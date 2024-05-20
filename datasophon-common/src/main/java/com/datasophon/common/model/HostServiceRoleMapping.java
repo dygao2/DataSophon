@@ -20,10 +20,11 @@ package com.datasophon.common.model;
 import java.util.List;
 
 import lombok.Data;
+
 @Data
 public class HostServiceRoleMapping {
-
+    
     private String host;
-
+    
     private List<String> serviceRoles;
 }

@@ -29,9 +29,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @Data
 @TableName("t_ddh_cluster_role_user")
 public class ClusterRoleUserEntity implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     /**
      * 主键
      */
@@ -49,5 +49,5 @@ public class ClusterRoleUserEntity implements Serializable {
      * 用户id
      */
     private Integer userId;
-
+    
 }

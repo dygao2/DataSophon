@@ -29,7 +29,7 @@ import java.util.List;
 import akka.actor.UntypedActor;
 
 public class AlertConfigActor extends UntypedActor {
-
+    
     @Override
     public void onReceive(Object message) throws Throwable, Throwable {
         if (message instanceof GenerateAlertConfigCommand) {

@@ -32,19 +32,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("cluster/webuis")
 public class ClusterServiceRoleInstanceWebuisController {
-
+    
     @Autowired
     private ClusterServiceRoleInstanceWebuisService clusterServiceRoleInstanceWebuisService;
-
+    
     /**
      * 列表
      */
     @RequestMapping("/getWebUis")
     public Result getWebUis(Integer serviceInstanceId) {
-
+        
         return clusterServiceRoleInstanceWebuisService.getWebUis(serviceInstanceId);
     }
-
+    
     /**
      * 信息
      */
@@ -52,39 +52,39 @@ public class ClusterServiceRoleInstanceWebuisController {
     public Result info(@PathVariable("id") Integer id) {
         ClusterServiceRoleInstanceWebuis clusterServiceRoleInstanceWebuis =
                 clusterServiceRoleInstanceWebuisService.getById(id);
-
+        
         return Result.success().put("clusterServiceRoleInstanceWebuis", clusterServiceRoleInstanceWebuis);
     }
-
+    
     /**
      * 保存
      */
     @RequestMapping("/save")
     public Result save(@RequestBody ClusterServiceRoleInstanceWebuis clusterServiceRoleInstanceWebuis) {
         clusterServiceRoleInstanceWebuisService.save(clusterServiceRoleInstanceWebuis);
-
+        
         return Result.success();
     }
-
+    
     /**
      * 修改
      */
     @RequestMapping("/update")
     public Result update(@RequestBody ClusterServiceRoleInstanceWebuis clusterServiceRoleInstanceWebuis) {
-
+        
         clusterServiceRoleInstanceWebuisService.updateById(clusterServiceRoleInstanceWebuis);
-
+        
         return Result.success();
     }
-
+    
     /**
      * 删除
      */
     @RequestMapping("/delete")
     public Result delete(@RequestBody Integer[] ids) {
         clusterServiceRoleInstanceWebuisService.removeByIds(Arrays.asList(ids));
-
+        
         return Result.success();
     }
-
+    
 }

@@ -33,6 +33,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 @Mapper
 public interface ClusterServiceCommandHostMapper extends BaseMapper<ClusterServiceCommandHostEntity> {
-
+    
     Integer getCommandHostTotalProgressByCommandId(@Param("commandId") String commandId);
 }

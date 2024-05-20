@@ -17,11 +17,13 @@
 
 package com.datasophon.worker.actor;
 
-import akka.actor.UntypedActor;
 import com.datasophon.common.command.PingCommand;
 import com.datasophon.common.utils.ExecResult;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import akka.actor.UntypedActor;
 
 /**
  * 发送 ping，返回 pong
@@ -29,9 +31,9 @@ import org.slf4j.LoggerFactory;
  * @author zhenqin
  */
 public class PingActor extends UntypedActor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(PingActor.class);
-
+    
     @Override
     public void onReceive(Object msg) throws Throwable {
         if (msg instanceof PingCommand) {

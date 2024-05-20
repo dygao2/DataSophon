@@ -14,6 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package com.datasophon.api.enums;
 
 import com.alibaba.fastjson.JSONObject;
@@ -22,11 +23,11 @@ import com.alibaba.fastjson.JSONObject;
  * status enum
  */
 public enum Status {
-
+    
     SUCCESS(200, "success", "成功"),
-
+    
     INTERNAL_SERVER_ERROR_ARGS(10000, "Internal Server Error: {0}", "服务端异常: {0}"),
-
+    
     USER_NAME_EXIST(10003, "user name already exists", "用户名已存在"),
     USER_NAME_NULL(10004, "user name is null", "用户名不能为空"),
     USER_NOT_EXIST(10010, "user {0} not exists", "用户[{0}]不存在"),
@@ -39,7 +40,7 @@ public enum Status {
     LOGIN_SUCCESS(10042, "login success", "登录成功"),
     IP_IS_EMPTY(10125, "ip is empty", "IP地址不能为空"),
     DELETE_USER_BY_ID_ERROR(10093, "delete user by id error", "删除用户错误"),
-
+    
     START_CHECK_HOST(10000, "start check host", "开始主机校验"),
     CHECK_HOST_SUCCESS(10001, "check host success", "主机校验成功"),
     NEED_JAVA_ENVIRONMENT(10002, "need java environment", "缺少Java环境"),
@@ -47,7 +48,7 @@ public enum Status {
     NEED_HOSTNAME(10004, "need hostname", "无法获取主机名"),
     CAN_NOT_GET_IP(10005, "can not get ip", "无法获取ip地址"),
     INSTALL_SERVICE(10006, "Install Service ", "安装服务"),
-
+    
     CLUSTER_CODE_EXISTS(10007, "cluster code exists", "集群编码已存在"),
     ALERT_GROUP_TIPS_ONE(10008,
             "an alarm group has been bound to an alarm indicator, delete the bound alarm indicator first",
@@ -87,30 +88,30 @@ public enum Status {
             "同一个服务在同一台机器上的所有实例需要在同一个角色组内"),
     ODD_NUMBER_ARE_REQUIRED_FOR_DORISFE(10040, "The Number of DorisFE must be an odd number.", "DorisFE个数必须是奇数"),
     NO_SERVICE_ROLE_SELECTED(10041, "No service role selected", "未选择需要安装的服务实例"),
-    TWO_KYUUBISERVERS_NEED_TO_BE_DEPLOYED(10042, "two kyuubiServer deployments are required", "KyuubiServer需要两个节点"),;
-
-
+    TWO_KYUUBISERVERS_NEED_TO_BE_DEPLOYED(10042, "two kyuubiServer deployments are required", "KyuubiServer需要两个节点"),
+    ;
+    
     private final int code;
     private final String enMsg;
     private final String zhMsg;
-
+    
     Status(int code, String enMsg, String zhMsg) {
         this.code = code;
         this.enMsg = enMsg;
         this.zhMsg = zhMsg;
     }
-
+    
     public int getCode() {
         return this.code;
     }
-
+    
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         json.put("code", this.code);
         json.put("msg", getMsg());
         return json;
     }
-
+    
     public String getMsg() {
         return this.zhMsg;
     }

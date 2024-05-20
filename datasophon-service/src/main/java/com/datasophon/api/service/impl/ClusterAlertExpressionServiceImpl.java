@@ -17,15 +17,17 @@
 
 package com.datasophon.api.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.service.ClusterAlertExpressionService;
 import com.datasophon.dao.entity.ClusterAlertExpression;
 import com.datasophon.dao.mapper.ClusterAlertExpressionMapper;
+
 import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 @Service("clusterAlertExpressionService")
 public class ClusterAlertExpressionServiceImpl extends ServiceImpl<ClusterAlertExpressionMapper, ClusterAlertExpression>
         implements
             ClusterAlertExpressionService {
-
+    
 }

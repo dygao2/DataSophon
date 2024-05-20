@@ -17,9 +17,6 @@
 
 package com.datasophon.api.service.impl;
 
-import akka.actor.ActorRef;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.master.ActorUtils;
 import com.datasophon.api.master.PrometheusActor;
 import com.datasophon.api.master.alert.AlertActor;
@@ -33,28 +30,37 @@ import com.datasophon.dao.entity.ClusterAlertHistory;
 import com.datasophon.dao.entity.ClusterInfoEntity;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
 import com.datasophon.dao.mapper.ClusterAlertHistoryMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 import scala.concurrent.duration.FiniteDuration;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import akka.actor.ActorRef;
+
 @Service("clusterAlertHistoryService")
 @Transactional
-public class ClusterAlertHistoryServiceImpl extends ServiceImpl<ClusterAlertHistoryMapper, ClusterAlertHistory> implements ClusterAlertHistoryService {
-
+public class ClusterAlertHistoryServiceImpl extends ServiceImpl<ClusterAlertHistoryMapper, ClusterAlertHistory>
+        implements
+            ClusterAlertHistoryService {
+    
     private static final Logger logger = LoggerFactory.getLogger(ClusterAlertHistoryServiceImpl.class);
-
+    
     @Autowired
     private ClusterServiceRoleInstanceService roleInstanceService;
-
+    
     @Autowired
     private ClusterInfoService clusterInfoService;
-
+    
     @Override
     public void saveAlertHistory(String alertMessage) {
         logger.warn("Receive Alert Message : {}", alertMessage);
@@ -65,8 +71,7 @@ public class ClusterAlertHistoryServiceImpl extends ServiceImpl<ClusterAlertHist
                 ActorUtils.actorSystem.dispatcher(),
                 ActorRef.noSender());
     }
-
-
+    
     @Override
     public Result getAlertList(Integer serviceInstanceId) {
         List<ClusterAlertHistory> list = this.list(new QueryWrapper<ClusterAlertHistory>()
@@ -74,7 +79,7 @@ public class ClusterAlertHistoryServiceImpl extends ServiceImpl<ClusterAlertHist
                 .eq(Constants.IS_ENABLED, 1));
         return Result.success(list);
     }
-
+    
     @Override
     public Result getAllAlertList(Integer clusterId, Integer page, Integer pageSize) {
         Integer offset = (page - 1) * pageSize;
@@ -88,7 +93,7 @@ public class ClusterAlertHistoryServiceImpl extends ServiceImpl<ClusterAlertHist
                 .eq(Constants.IS_ENABLED, 1));
         return Result.success(list).put(Constants.TOTAL, count);
     }
-
+    
     @Override
     public void removeAlertByRoleInstanceIds(List<Integer> ids) {
         ClusterServiceRoleInstanceEntity roleInstanceEntity = roleInstanceService.getById(ids.get(0));

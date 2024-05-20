@@ -23,8 +23,8 @@ import lombok.Data;
 
 @Data
 public class ServiceCheckCommand extends BaseCommand implements Serializable {
-
+    
     private Integer serviceRoleInstanceId;
-
+    
     private Long deliveryId;
 }

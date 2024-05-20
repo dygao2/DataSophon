@@ -17,18 +17,13 @@
 
 package com.datasophon.api.service.impl;
 
-import akka.actor.ActorSelection;
-import akka.pattern.Patterns;
-import akka.util.Timeout;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.enums.Status;
 import com.datasophon.api.exceptions.BusinessException;
 import com.datasophon.api.master.ActorUtils;
-import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.service.ClusterInfoService;
 import com.datasophon.api.service.ClusterNodeLabelService;
 import com.datasophon.api.service.ClusterServiceRoleInstanceService;
+import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.utils.PackageUtils;
 import com.datasophon.common.Constants;
 import com.datasophon.common.command.ExecuteCmdCommand;
@@ -39,11 +34,7 @@ import com.datasophon.dao.entity.ClusterInfoEntity;
 import com.datasophon.dao.entity.ClusterNodeLabelEntity;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
 import com.datasophon.dao.mapper.ClusterNodeLabelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
@@ -54,23 +45,36 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import akka.actor.ActorSelection;
+import akka.pattern.Patterns;
+import akka.util.Timeout;
+
 @Service("clusterNodeLabelService")
 @Transactional
 public class ClusterNodeLabelServiceImpl extends ServiceImpl<ClusterNodeLabelMapper, ClusterNodeLabelEntity>
         implements
             ClusterNodeLabelService {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(ClusterNodeLabelServiceImpl.class);
-
+    
     @Autowired
     private ClusterHostService hostService;
-
+    
     @Autowired
     private ClusterServiceRoleInstanceService roleInstanceService;
-
+    
     @Autowired
     private ClusterInfoService clusterInfoService;
-
+    
     @Override
     public Result saveNodeLabel(Integer clusterId, String nodeLabel) {
         if (repeatNodeLable(clusterId, nodeLabel)) {
@@ -87,7 +91,7 @@ public class ClusterNodeLabelServiceImpl extends ServiceImpl<ClusterNodeLabelMap
         }
         return Result.success();
     }
-
+    
     private boolean refreshToYarn(Integer clusterId, String type, String nodeLabel) {
         ClusterInfoEntity clusterInfo = clusterInfoService.getById(clusterId);
         List<ClusterServiceRoleInstanceEntity> roleList =
@@ -120,11 +124,11 @@ public class ClusterNodeLabelServiceImpl extends ServiceImpl<ClusterNodeLabelMap
         }
         return true;
     }
-
+    
     @Override
     public Result deleteNodeLabel(Integer nodeLabelId) {
         ClusterNodeLabelEntity nodeLabelEntity = this.getById(nodeLabelId);
-
+        
         if (nodeLabelInUse(nodeLabelEntity.getNodeLabel())) {
             return Result.error(Status.NODE_LABEL_IS_USING.getMsg());
         }
@@ -135,13 +139,13 @@ public class ClusterNodeLabelServiceImpl extends ServiceImpl<ClusterNodeLabelMap
         }
         return Result.success();
     }
-
+    
     @Override
     public Result assignNodeLabel(Integer nodeLabelId, String hostIds) {
         ClusterNodeLabelEntity nodeLabelEntity = this.getById(nodeLabelId);
         List<String> ids = Arrays.asList(hostIds.split(","));
         hostService.updateBatchNodeLabel(ids, nodeLabelEntity.getNodeLabel());
-
+        
         List<ClusterHostDO> list = hostService.getHostListByIds(ids);
         String assignNodeLabel = list.stream().map(e -> e.getHostname() + "=" + nodeLabelEntity.getNodeLabel())
                 .collect(Collectors.joining(" "));
@@ -153,12 +157,12 @@ public class ClusterNodeLabelServiceImpl extends ServiceImpl<ClusterNodeLabelMap
         }
         return Result.success();
     }
-
+    
     @Override
     public List<ClusterNodeLabelEntity> queryClusterNodeLabel(Integer clusterId) {
         return this.list(new QueryWrapper<ClusterNodeLabelEntity>().eq(Constants.CLUSTER_ID, clusterId));
     }
-
+    
     @Override
     public void createDefaultNodeLabel(Integer clusterId) {
         ClusterNodeLabelEntity nodeLabelEntity = new ClusterNodeLabelEntity();
@@ -166,7 +170,7 @@ public class ClusterNodeLabelServiceImpl extends ServiceImpl<ClusterNodeLabelMap
         nodeLabelEntity.setClusterId(clusterId);
         this.save(nodeLabelEntity);
     }
-
+    
     private boolean nodeLabelInUse(String nodeLabel) {
         List<ClusterHostDO> list = hostService.list(new QueryWrapper<ClusterHostDO>()
                 .eq(Constants.NODE_LABEL, nodeLabel));
@@ -175,7 +179,7 @@ public class ClusterNodeLabelServiceImpl extends ServiceImpl<ClusterNodeLabelMap
         }
         return false;
     }
-
+    
     private boolean repeatNodeLable(Integer clusterId, String nodeLabel) {
         List<ClusterNodeLabelEntity> list = this.list(new QueryWrapper<ClusterNodeLabelEntity>()
                 .eq(Constants.CLUSTER_ID, clusterId)

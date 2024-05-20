@@ -17,12 +17,11 @@
 
 package com.datasophon.worker.utils;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.StrUtil;
 import com.datasophon.common.Constants;
 import com.datasophon.common.model.AlertItem;
 import com.datasophon.common.model.Generators;
 import com.datasophon.common.model.ServiceConfig;
+
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
@@ -30,9 +29,8 @@ import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -43,16 +41,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.StrUtil;
+
 public class FreemakerUtils {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(FreemakerUtils.class);
-
+    
     public static void generateConfigFile(Generators generators,
                                           List<ServiceConfig> configs,
                                           String decompressPackageName) throws IOException, TemplateException {
         generateConfigFile(generators, configs, decompressPackageName, null);
     }
-
+    
     /**
      *
      * 支持 从附加的目录加载 模版
@@ -79,7 +83,7 @@ public class FreemakerUtils {
             loaderList.add(new FileTemplateLoader(new File(extPath)));
         }
         config.setTemplateLoader(new MultiTemplateLoader(loaderList.toArray(new TemplateLoader[0])));
-
+        
         Map<String, Object> data = new HashMap<>();
         // 得到模板对象
         String configFormat = generators.getConfigFormat();
@@ -110,8 +114,7 @@ public class FreemakerUtils {
         // 3.产生输出
         processOut(generators, template, data, decompressPackageName);
     }
-
-
+    
     public static void generatePromAlertFile(Generators generators, List<AlertItem> configs,
                                              String serviceName) throws IOException, TemplateException {
         // 创建核心配置对象
@@ -122,18 +125,18 @@ public class FreemakerUtils {
         // 得到模板对象
         String configFormat = generators.getConfigFormat();
         Template template = null;
-
+        
         if (Constants.PROMETHEUS.equals(configFormat)) {
             template = config.getTemplate("alert.yml");
         }
-
+        
         Map<String, Object> data = new HashMap<>();
         data.put("itemList", configs);
         data.put("serviceName", serviceName);
         // 3.产生输出
         processOut(generators, template, data, "prometheus-2.17.2");
     }
-
+    
     public static void generatePromScrapeConfig(Generators generators, List<ServiceConfig> configs,
                                                 String serviceName) throws IOException, TemplateException {
         // 创建核心配置对象
@@ -143,18 +146,18 @@ public class FreemakerUtils {
         config.setClassForTemplateLoading(FreemakerUtils.class, "/templates");
         // 得到模板对象
         Template template = config.getTemplate("scrape.ftl");
-
+        
         Map<String, Object> data = new HashMap<>();
         data.put("itemList", configs);
         // 3.产生输出
         processOut(generators, template, data, serviceName);
     }
-
+    
     private static void processOut(Generators generators, Template template, Map<String, Object> data,
                                    String decompressPackageName) throws IOException, TemplateException {
         String packagePath = Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName + Constants.SLASH;
         String outputDirectory = generators.getOutputDirectory();
-
+        
         if (outputDirectory.contains(Constants.COMMA)) {
             for (String outPutDir : generators.getOutputDirectory().split(StrUtil.COMMA)) {
                 String outputFile = packagePath + outPutDir + Constants.SLASH + generators.getFilename();
@@ -169,7 +172,7 @@ public class FreemakerUtils {
             writeToTemplate(template, data, outputFile);
         }
     }
-
+    
     private static void writeToTemplate(Template template, Map<String, Object> data,
                                         String outputFile) throws IOException, TemplateException {
         File file = new File(outputFile);
@@ -180,5 +183,5 @@ public class FreemakerUtils {
         template.process(data, out);
         out.close();
     }
-
+    
 }

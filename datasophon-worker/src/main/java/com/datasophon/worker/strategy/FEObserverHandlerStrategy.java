@@ -17,10 +17,6 @@
 
 package com.datasophon.worker.strategy;
 
-import akka.actor.ActorRef;
-import cn.hutool.json.JSONUtil;
-import com.datasophon.common.Constants;
-import com.datasophon.common.cache.CacheUtils;
 import com.datasophon.common.command.OlapOpsType;
 import com.datasophon.common.command.OlapSqlExecCommand;
 import com.datasophon.common.command.ServiceRoleOperateCommand;
@@ -33,12 +29,17 @@ import com.datasophon.worker.utils.ActorUtils;
 
 import java.util.ArrayList;
 
-public class FEObserverHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
+import akka.actor.ActorRef;
 
+import cn.hutool.core.net.NetUtil;
+import cn.hutool.json.JSONUtil;
+
+public class FEObserverHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
+    
     public FEObserverHandlerStrategy(String serviceName, String serviceRoleName) {
         super(serviceName, serviceRoleName);
     }
-
+    
     @Override
     public ExecResult handler(ServiceRoleOperateCommand command) {
         ExecResult startResult = new ExecResult();
@@ -50,7 +51,7 @@ public class FEObserverHandlerStrategy extends AbstractHandlerStrategy implement
             commands.add("--helper");
             commands.add(command.getMasterHost() + ":9010");
             commands.add("--daemon");
-
+            
             ServiceRoleRunner startRunner = new ServiceRoleRunner();
             startRunner.setProgram(command.getStartRunner().getProgram());
             startRunner.setArgs(commands);
@@ -62,7 +63,7 @@ public class FEObserverHandlerStrategy extends AbstractHandlerStrategy implement
                 try {
                     OlapSqlExecCommand sqlExecCommand = new OlapSqlExecCommand();
                     sqlExecCommand.setFeMaster(command.getMasterHost());
-                    sqlExecCommand.setHostName(CacheUtils.getString(Constants.HOSTNAME));
+                    sqlExecCommand.setHostName(NetUtil.getLocalhostStr());
                     sqlExecCommand.setOpsType(OlapOpsType.ADD_FE_OBSERVER);
                     ActorUtils.getRemoteActor(command.getManagerHost(), "masterNodeProcessingActor")
                             .tell(sqlExecCommand, ActorRef.noSender());

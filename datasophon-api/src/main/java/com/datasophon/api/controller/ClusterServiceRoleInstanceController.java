@@ -32,10 +32,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("cluster/service/role/instance")
 public class ClusterServiceRoleInstanceController {
-
+    
     @Autowired
     private ClusterServiceRoleInstanceService clusterServiceRoleInstanceService;
-
+    
     /**
      * 列表
      */
@@ -45,7 +45,7 @@ public class ClusterServiceRoleInstanceController {
         return clusterServiceRoleInstanceService.listAll(serviceInstanceId, hostname, serviceRoleState, serviceRoleName,
                 roleGroupId, page, pageSize);
     }
-
+    
     /**
      * 信息
      */
@@ -53,7 +53,7 @@ public class ClusterServiceRoleInstanceController {
     public Result getLog(Integer serviceRoleInstanceId) throws Exception {
         return clusterServiceRoleInstanceService.getLog(serviceRoleInstanceId);
     }
-
+    
     /**
      * 退役
      */
@@ -61,7 +61,7 @@ public class ClusterServiceRoleInstanceController {
     public Result decommissionNode(String serviceRoleInstanceIds, String serviceName) throws Exception {
         return clusterServiceRoleInstanceService.decommissionNode(serviceRoleInstanceIds, serviceName);
     }
-
+    
     /**
      * 重启过时服务
      */
@@ -69,17 +69,17 @@ public class ClusterServiceRoleInstanceController {
     public Result restartObsoleteService(Integer roleGroupId) throws Exception {
         return clusterServiceRoleInstanceService.restartObsoleteService(roleGroupId);
     }
-
+    
     /**
      * 保存
      */
     @RequestMapping("/save")
     public Result save(@RequestBody ClusterServiceRoleInstanceEntity clusterServiceRoleInstance) {
         clusterServiceRoleInstanceService.save(clusterServiceRoleInstance);
-
+        
         return Result.success();
     }
-
+    
     /**
      * 修改
      */
@@ -88,7 +88,7 @@ public class ClusterServiceRoleInstanceController {
         clusterServiceRoleInstanceService.updateById(clusterServiceRoleInstance);
         return Result.success();
     }
-
+    
     /**
      * 删除
      */
@@ -97,5 +97,5 @@ public class ClusterServiceRoleInstanceController {
         List<String> idList = Arrays.asList(serviceRoleInstancesIds.split(","));
         return clusterServiceRoleInstanceService.deleteServiceRole(idList);
     }
-
+    
 }

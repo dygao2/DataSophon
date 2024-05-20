@@ -14,6 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package com.datasophon.api.exceptions;
 
 import static java.lang.annotation.ElementType.METHOD;
@@ -30,6 +31,6 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 @Target(METHOD)
 public @interface ApiException {
-
+    
     Status value();
 }

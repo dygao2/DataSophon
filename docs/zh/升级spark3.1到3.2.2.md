@@ -1,5 +1,7 @@
 ### 1、构建压缩包
+
 下载官方包 spark-3.2.2-bin-hadoop3.2.tgz
+
 ```shell
 tar -zxvf spark-3.2.2-bin-hadoop3.2.tgz
 mv spark-3.2.2-bin-hadoop3.2 spark-3.2.2
@@ -13,7 +15,9 @@ md5sum spark-3.2.2.tar.gz
 echo 'eadd4bb2ce5d809ce4c8631f1e865252' > spark-3.2.2.tar.gz.md5
 cp ./spark-3.2.2.tar.gz ./spark-3.2.2.tar.gz.md5 /opt/datasophon/DDP/packages/
 ```
+
 ### 2、修改servcie_ddl.json
+
 ```shell
 {
   "name": "SPARK3",
@@ -120,28 +124,42 @@ cp ./spark-3.2.2.tar.gz ./spark-3.2.2.tar.gz.md5 /opt/datasophon/DDP/packages/
   ]
 }
 ```
+
 ### 3、修改环境变量
+
 ```shell
 vim /etc/profile.d/datasophon-env.sh
 export SPARK_HOME=/opt/datasophon/spark-3.2.2
 ```
+
 各节点分发
+
 ### 4、重启
+
 各节点worker重启
+
 ```shell
 sh /opt/datasophon/datasophon-worker/bin/datasophon-worker.sh restart worker
 ```
+
 主节点重启api
+
 ```shell
 sh /opt/apps/datasophon-manager-1.2.0/bin/datasophon-api.sh restart api
 ```
+
 ### 5、测试
+
 单机：
+
 ```shell
 sh /opt/datasophon/spark-3.2.2/bin/spark-submit --class org.apache.spark.examples.SparkPi /opt/datasophon/spark-3.2.2/examples/jars/spark-examples_2.12-3.2.2.jar 12
 ```
+
 yarn:
+
 ```shell
 su - hdfs
 sh /opt/datasophon/spark-3.2.2/bin/spark-submit --master yarn --deploy-mode client --class org.apache.spark.examples.SparkPi /opt/datasophon/spark-3.2.2/examples/jars/spark-examples_2.12-3.2.2.jar 12
 ```
+

@@ -17,8 +17,6 @@
 
 package com.datasophon.api.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.load.GlobalVariables;
 import com.datasophon.api.service.ClusterServiceDashboardService;
 import com.datasophon.common.Constants;
@@ -26,10 +24,14 @@ import com.datasophon.common.utils.PlaceholderUtils;
 import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.ClusterServiceDashboard;
 import com.datasophon.dao.mapper.ClusterServiceDashboardMapper;
+
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 @Service("clusterServiceDashboardService")
 public class ClusterServiceDashboardServiceImpl
@@ -37,10 +39,10 @@ public class ClusterServiceDashboardServiceImpl
             ServiceImpl<ClusterServiceDashboardMapper, ClusterServiceDashboard>
         implements
             ClusterServiceDashboardService {
-
+    
     @Autowired
     ClusterServiceDashboardService dashboardService;
-
+    
     @Override
     public Result getDashboardUrl(Integer clusterId) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);

@@ -17,9 +17,6 @@
 
 package com.datasophon.api.strategy;
 
-import akka.actor.ActorSelection;
-import akka.pattern.Patterns;
-import akka.util.Timeout;
 import com.datasophon.api.load.ServiceInfoMap;
 import com.datasophon.api.load.ServiceRoleMap;
 import com.datasophon.api.master.ActorUtils;
@@ -33,6 +30,7 @@ import com.datasophon.common.utils.ExecResult;
 import com.datasophon.dao.entity.ClusterInfoEntity;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
 import com.datasophon.dao.enums.AlertLevel;
+
 import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
@@ -42,42 +40,46 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import akka.actor.ActorSelection;
+import akka.pattern.Patterns;
+import akka.util.Timeout;
+
 public class PrometheusHandlerStrategy implements ServiceRoleStrategy {
-
+    
     @Override
-    public void handler(Integer clusterId, List<String> hosts) {
-
+    public void handler(Integer clusterId, List<String> hosts, String serviceName) {
+        
     }
-
+    
     @Override
-    public void handlerConfig(Integer clusterId, List<ServiceConfig> list) {
-
+    public void handlerConfig(Integer clusterId, List<ServiceConfig> list, String serviceName) {
+        
     }
-
+    
     @Override
     public void getConfig(Integer clusterId, List<ServiceConfig> list) {
-
+        
     }
-
+    
     @Override
     public void handlerServiceRoleInfo(ServiceRoleInfo serviceRoleInfo, String hostname) {
-
+        
     }
-
+    
     @Override
     public void handlerServiceRoleCheck(ClusterServiceRoleInstanceEntity roleInstanceEntity,
                                         Map<String, ClusterServiceRoleInstanceEntity> map) {
         Integer clusterId = roleInstanceEntity.getClusterId();
-
+        
         ClusterInfoEntity cluster = ProcessUtils.getClusterInfo(clusterId);
         String frameCode = cluster.getClusterFrame();
-
+        
         String key = frameCode + Constants.UNDERLINE + roleInstanceEntity.getServiceName() + Constants.UNDERLINE
                 + roleInstanceEntity.getServiceRoleName();
         ServiceRoleInfo serviceRoleInfo = ServiceRoleMap.get(key);
         ServiceInfo serviceInfo =
                 ServiceInfoMap.get(frameCode + Constants.UNDERLINE + roleInstanceEntity.getServiceName());
-
+        
         ActorSelection execCmdActor = ActorUtils.actorSystem.actorSelection(
                 "akka.tcp://datasophon@" + roleInstanceEntity.getHostname() + ":2552/user/worker/executeCmdActor");
         ExecuteCmdCommand cmdCommand = new ExecuteCmdCommand();

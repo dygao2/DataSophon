@@ -46,44 +46,44 @@ import akka.pattern.Patterns;
 import akka.util.Timeout;
 
 public class Krb5KdcHandlerStrategy implements ServiceRoleStrategy {
-
+    
     @Override
-    public void handler(Integer clusterId, List<String> hosts) {
+    public void handler(Integer clusterId, List<String> hosts, String serviceName) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
         if (hosts.size() >= 1) {
-            ProcessUtils.generateClusterVariable(globalVariables, clusterId, "${kdcHost}", hosts.get(0));
+            ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${kdcHost}", hosts.get(0));
         }
     }
-
+    
     @Override
-    public void handlerConfig(Integer clusterId, List<ServiceConfig> list) {
-
+    public void handlerConfig(Integer clusterId, List<ServiceConfig> list, String serviceName) {
+        
     }
-
+    
     @Override
     public void getConfig(Integer clusterId, List<ServiceConfig> list) {
-
+        
     }
-
+    
     @Override
     public void handlerServiceRoleInfo(ServiceRoleInfo serviceRoleInfo, String hostname) {
-
+        
     }
-
+    
     @Override
     public void handlerServiceRoleCheck(ClusterServiceRoleInstanceEntity roleInstanceEntity,
                                         Map<String, ClusterServiceRoleInstanceEntity> map) {
         Integer clusterId = roleInstanceEntity.getClusterId();
-
+        
         ClusterInfoEntity cluster = ProcessUtils.getClusterInfo(clusterId);
         String frameCode = cluster.getClusterFrame();
-
+        
         String key = frameCode + Constants.UNDERLINE + roleInstanceEntity.getServiceName() + Constants.UNDERLINE
                 + roleInstanceEntity.getServiceRoleName();
         ServiceRoleInfo serviceRoleInfo = ServiceRoleMap.get(key);
         ServiceInfo serviceInfo =
                 ServiceInfoMap.get(frameCode + Constants.UNDERLINE + roleInstanceEntity.getServiceName());
-
+        
         ActorSelection execCmdActor = ActorUtils.actorSystem.actorSelection(
                 "akka.tcp://datasophon@" + roleInstanceEntity.getHostname() + ":2552/user/worker/executeCmdActor");
         ExecuteCmdCommand cmdCommand = new ExecuteCmdCommand();

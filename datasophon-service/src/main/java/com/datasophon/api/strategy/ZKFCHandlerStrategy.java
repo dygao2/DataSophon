@@ -30,28 +30,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ZKFCHandlerStrategy implements ServiceRoleStrategy {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(ZKFCHandlerStrategy.class);
-
+    
     @Override
-    public void handler(Integer clusterId, List<String> hosts) {
+    public void handler(Integer clusterId, List<String> hosts, String serviceName) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
         if (hosts.size() == 2) {
-            ProcessUtils.generateClusterVariable(globalVariables, clusterId, "${ZKFC1}", hosts.get(0));
-            ProcessUtils.generateClusterVariable(globalVariables, clusterId, "${ZKFC2}", hosts.get(1));
+            ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${ZKFC1}", hosts.get(0));
+            ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${ZKFC2}", hosts.get(1));
         }
     }
-
+    
     @Override
-    public void handlerConfig(Integer clusterId, List<ServiceConfig> list) {
-
+    public void handlerConfig(Integer clusterId, List<ServiceConfig> list, String serviceName) {
+        
     }
-
+    
     @Override
     public void getConfig(Integer clusterId, List<ServiceConfig> list) {
-
+        
     }
-
+    
     @Override
     public void handlerServiceRoleInfo(ServiceRoleInfo serviceRoleInfo, String hostname) {
         Map<String, String> globalVariables = GlobalVariables.get(serviceRoleInfo.getClusterId());
@@ -61,10 +61,10 @@ public class ZKFCHandlerStrategy implements ServiceRoleStrategy {
             serviceRoleInfo.setSortNum(6);
         }
     }
-
+    
     @Override
     public void handlerServiceRoleCheck(ClusterServiceRoleInstanceEntity roleInstanceEntity,
                                         Map<String, ClusterServiceRoleInstanceEntity> map) {
-
+        
     }
 }

@@ -21,83 +21,85 @@ package com.datasophon.api.migration;
 
 import static com.datasophon.api.migration.DatabaseMigration.SPLIT;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
+
 import org.springframework.core.io.Resource;
 
 @Data
 @NoArgsConstructor
 public class Migration implements Comparable<Migration> {
-
-  private String version;
-
-  private String executeUser;
-
-  private Date executeDate;
-
-  private boolean success;
-
-  private Resource upgradeDDLFile;
-
-  private Resource upgradeDMLFile;
-
-  private Resource rollbackFile;
-
-  public Migration(String version, Resource upgradeDDLFile, Resource upgradeDMLFile, Resource rollbackFile) {
-    this.version = version;
-    this.upgradeDDLFile = upgradeDDLFile;
-    this.upgradeDMLFile = upgradeDMLFile;
-    this.rollbackFile = rollbackFile;
-  }
-
-  @Override
-  public int compareTo(Migration other) {
-    int[] otherId = Arrays.stream(other.getVersion().split("\\.")).mapToInt(Integer::valueOf).toArray();
-    int[] thisId = Arrays.stream(version.split("\\.")).mapToInt(Integer::valueOf).toArray();
-    if (otherId.length != thisId.length) {
-      return thisId.length - otherId.length;
+    
+    private String version;
+    
+    private String executeUser;
+    
+    private Date executeDate;
+    
+    private boolean success;
+    
+    private Resource upgradeDDLFile;
+    
+    private Resource upgradeDMLFile;
+    
+    private Resource rollbackFile;
+    
+    public Migration(String version, Resource upgradeDDLFile, Resource upgradeDMLFile, Resource rollbackFile) {
+        this.version = version;
+        this.upgradeDDLFile = upgradeDDLFile;
+        this.upgradeDMLFile = upgradeDMLFile;
+        this.rollbackFile = rollbackFile;
     }
-    for (int i = 0; i < thisId.length; i++) {
-      if (thisId[i] != otherId[i]) {
-        return thisId[i] - otherId[i];
-      }
+    
+    @Override
+    public int compareTo(Migration other) {
+        int[] otherId = Arrays.stream(other.getVersion().split("\\.")).mapToInt(Integer::valueOf).toArray();
+        int[] thisId = Arrays.stream(version.split("\\.")).mapToInt(Integer::valueOf).toArray();
+        if (otherId.length != thisId.length) {
+            return thisId.length - otherId.length;
+        }
+        for (int i = 0; i < thisId.length; i++) {
+            if (thisId[i] != otherId[i]) {
+                return thisId[i] - otherId[i];
+            }
+        }
+        return 0;
     }
-    return 0;
-  }
-
-
-  public static boolean isMigrationFile(Resource resource) {
-    if (resource == null) {
-      return false;
+    
+    public static boolean isMigrationFile(Resource resource) {
+        if (resource == null) {
+            return false;
+        }
+        String name = resource.getFilename();
+        if (!StringUtils.endsWithIgnoreCase(name, ".sql")) {
+            return false;
+        }
+        if (name == null || name.split(SPLIT).length != 2) {
+            return false;
+        }
+        return name.startsWith(ScriptType.ROLLBACK.getPrefix()) || name.startsWith(ScriptType.UPGRADE.getPrefix());
     }
-    String name = resource.getFilename();
-    if (!StringUtils.endsWithIgnoreCase(name, ".sql")) {
-      return false;
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Migration)) {
+            return false;
+        }
+        Migration migration = (Migration) o;
+        return version.equals(migration.version);
     }
-    if (name == null || name.split(SPLIT).length != 2) {
-      return false;
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(version);
     }
-    return name.startsWith(ScriptType.ROLLBACK.getPrefix()) || name.startsWith(ScriptType.UPGRADE.getPrefix());
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof Migration)) {
-      return false;
-    }
-    Migration migration = (Migration) o;
-    return version.equals(migration.version);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(version);
-  }
 }

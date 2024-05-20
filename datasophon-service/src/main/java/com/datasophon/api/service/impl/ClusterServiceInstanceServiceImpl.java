@@ -17,30 +17,49 @@
 
 package com.datasophon.api.service.impl;
 
-import com.alibaba.fastjson.JSONArray;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.enums.Status;
 import com.datasophon.api.load.GlobalVariables;
-import com.datasophon.api.service.*;
+import com.datasophon.api.service.ClusterAlertHistoryService;
+import com.datasophon.api.service.ClusterInfoService;
+import com.datasophon.api.service.ClusterServiceDashboardService;
+import com.datasophon.api.service.ClusterServiceInstanceRoleGroupService;
+import com.datasophon.api.service.ClusterServiceInstanceService;
+import com.datasophon.api.service.ClusterServiceRoleGroupConfigService;
+import com.datasophon.api.service.ClusterServiceRoleInstanceService;
+import com.datasophon.api.service.ClusterServiceRoleInstanceWebuisService;
+import com.datasophon.api.service.ClusterVariableService;
+import com.datasophon.api.service.FrameServiceRoleService;
 import com.datasophon.common.Constants;
 import com.datasophon.common.model.SimpleServiceConfig;
+import com.datasophon.common.utils.CollectionUtils;
 import com.datasophon.common.utils.PlaceholderUtils;
 import com.datasophon.common.utils.Result;
-import com.datasophon.dao.entity.*;
+import com.datasophon.dao.entity.ClusterAlertHistory;
+import com.datasophon.dao.entity.ClusterServiceDashboard;
+import com.datasophon.dao.entity.ClusterServiceInstanceEntity;
+import com.datasophon.dao.entity.ClusterServiceInstanceRoleGroup;
+import com.datasophon.dao.entity.ClusterServiceRoleGroupConfig;
+import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
+import com.datasophon.dao.entity.ClusterVariable;
+import com.datasophon.dao.entity.FrameServiceRoleEntity;
 import com.datasophon.dao.enums.NeedRestart;
 import com.datasophon.dao.enums.ServiceRoleState;
 import com.datasophon.dao.enums.ServiceState;
 import com.datasophon.dao.mapper.ClusterServiceInstanceMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.alibaba.fastjson.JSONArray;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 @Service("clusterServiceInstanceService")
 @Transactional
@@ -49,34 +68,37 @@ public class ClusterServiceInstanceServiceImpl
             ServiceImpl<ClusterServiceInstanceMapper, ClusterServiceInstanceEntity>
         implements
             ClusterServiceInstanceService {
-
+    
     @Autowired
     private ClusterServiceInstanceMapper serviceInstanceMapper;
-
+    
     @Autowired
     private ClusterServiceRoleInstanceService roleInstanceService;
-
+    
     @Autowired
     private ClusterServiceDashboardService dashboardService;
-
+    
     @Autowired
     private ClusterInfoService clusterInfoService;
-
+    
     @Autowired
     private ClusterAlertHistoryService alertHistoryService;
-
+    
     @Autowired
     private FrameServiceRoleService frameServiceRoleService;
-
+    
     @Autowired
     private ClusterServiceRoleGroupConfigService roleGroupConfigService;
-
+    
     @Autowired
     private ClusterServiceInstanceRoleGroupService roleGroupService;
-
+    
     @Autowired
     private ClusterServiceRoleInstanceWebuisService webuisService;
-
+    
+    @Autowired
+    private ClusterVariableService variableService;
+    
     @Override
     public ClusterServiceInstanceEntity getServiceInstanceByClusterIdAndServiceName(Integer clusterId,
                                                                                     String serviceName) {
@@ -84,12 +106,12 @@ public class ClusterServiceInstanceServiceImpl
                 .eq(Constants.CLUSTER_ID, clusterId)
                 .eq(Constants.SERVICE_NAME, serviceName));
     }
-
+    
     @Override
     public String getServiceConfigByClusterIdAndServiceName(Integer clusterId, String serviceName) {
         return serviceInstanceMapper.getServiceConfigByClusterIdAndServiceName(clusterId, serviceName);
     }
-
+    
     @Override
     public List<ClusterServiceInstanceEntity> listAll(Integer clusterId) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
@@ -117,7 +139,7 @@ public class ClusterServiceInstanceServiceImpl
                 serviceInstance.setServiceState(ServiceState.WAIT_INSTALL);
                 needUpdate = true;
             }
-
+            
             // 查询停止状态角色
             List<ClusterServiceRoleInstanceEntity> roleList = roleInstanceService.lambdaQuery()
                     .eq(ClusterServiceRoleInstanceEntity::getServiceId, serviceInstance.getId())
@@ -153,7 +175,7 @@ public class ClusterServiceInstanceServiceImpl
                     needUpdate = true;
                 }
             }
-
+            
             // 查询是否进行了配置更新
             List<ClusterServiceRoleInstanceEntity> obsoleteRoleList =
                     roleInstanceService.getObsoleteService(serviceInstance.getId());
@@ -168,13 +190,13 @@ public class ClusterServiceInstanceServiceImpl
         }
         return list;
     }
-
+    
     @Override
     public Result downloadClientConfig(Integer clusterId, String serviceName) {
-
+        
         return null;
     }
-
+    
     @Override
     public Result getServiceRoleType(Integer serviceInstanceId) {
         ClusterServiceInstanceEntity serviceInstanceEntity = this.getById(serviceInstanceId);
@@ -182,7 +204,7 @@ public class ClusterServiceInstanceServiceImpl
         List<FrameServiceRoleEntity> list = frameServiceRoleService.getAllServiceRoleList(frameServiceId);
         return Result.success(list);
     }
-
+    
     @Override
     public Result configVersionCompare(Integer serviceInstanceId, Integer roleGroupId) {
         List<ClusterServiceRoleGroupConfig> list =
@@ -196,13 +218,13 @@ public class ClusterServiceInstanceServiceImpl
             String newConfigJson = newConfig.getConfigJson();
             List<SimpleServiceConfig> newSimpleServiceConfigs =
                     JSONArray.parseArray(newConfigJson, SimpleServiceConfig.class);
-
+            
             String oldConfigJson = oldConfig.getConfigJson();
             List<SimpleServiceConfig> oldSimpleServiceConfigs =
                     JSONArray.parseArray(oldConfigJson, SimpleServiceConfig.class);
             map.put("newConfig", newSimpleServiceConfigs);
             map.put("oldConfig", oldSimpleServiceConfigs);
-
+            
         } else if (list.size() == 1) {
             ClusterServiceRoleGroupConfig newConfig = list.get(0);
             String newConfigJson = newConfig.getConfigJson();
@@ -213,7 +235,7 @@ public class ClusterServiceInstanceServiceImpl
         }
         return Result.success(map);
     }
-
+    
     @Override
     public Result delServiceInstance(Integer serviceInstanceId) {
         if (hasRunningRoleInstance(serviceInstanceId)) {
@@ -221,17 +243,19 @@ public class ClusterServiceInstanceServiceImpl
         }
         List<ClusterServiceInstanceRoleGroup> roleGroups =
                 roleGroupService.listRoleGroupByServiceInstanceId(serviceInstanceId);
-        List<Integer> roleGroupIds = roleGroups.stream().map(ClusterServiceInstanceRoleGroup::getId).collect(Collectors.toList());
+        List<Integer> roleGroupIds =
+                roleGroups.stream().map(ClusterServiceInstanceRoleGroup::getId).collect(Collectors.toList());
         List<ClusterServiceRoleGroupConfig> roleGroupConfigList =
                 roleGroupConfigService.listRoleGroupConfigsByRoleGroupIds(roleGroupIds);
         List<ClusterServiceRoleInstanceEntity> roleInstanceList =
                 roleInstanceService.getServiceRoleInstanceListByServiceId(serviceInstanceId);
-
+        
         // del role group
         roleGroupService.removeByIds(roleGroupIds);
         // del role group config
         roleGroupConfigService
-                .removeByIds(roleGroupConfigList.stream().map(ClusterServiceRoleGroupConfig::getId).collect(Collectors.toList()));
+                .removeByIds(roleGroupConfigList.stream().map(ClusterServiceRoleGroupConfig::getId)
+                        .collect(Collectors.toList()));
         // del service role instance
         if (!roleInstanceList.isEmpty()) {
             List<String> roleInsIds =
@@ -240,22 +264,33 @@ public class ClusterServiceInstanceServiceImpl
         }
         // del web uis
         webuisService.removeByServiceInsId(serviceInstanceId);
-
+        
         // del service instance
         this.removeById(serviceInstanceId);
+        // del variable
+        roleGroups.forEach(roleGroup -> {
+            List<ClusterVariable> variables =
+                    variableService.getVariables(roleGroup.getClusterId(), roleGroup.getServiceName());
+            if (CollectionUtils.isNotEmpty(variables)) {
+                Map<String, String> variablesMap = GlobalVariables.get(roleGroup.getClusterId());
+                variables.forEach(var -> variablesMap.remove(var.getVariableName()));
+                variableService
+                        .removeByIds(variables.stream().map(ClusterVariable::getId).collect(Collectors.toList()));
+            }
+        });
         return Result.success();
     }
-
+    
     @Override
     public List<ClusterServiceInstanceEntity> listRunningServiceInstance(Integer clusterId) {
         return this.list(new QueryWrapper<ClusterServiceInstanceEntity>()
                 .eq(Constants.CLUSTER_ID, clusterId)
                 .eq(Constants.SERVICE_STATE, ServiceState.RUNNING));
     }
-
+    
     public boolean hasRunningRoleInstance(Integer serviceInstanceId) {
         List<ClusterServiceRoleInstanceEntity> list =
                 roleInstanceService.getRunningServiceRoleInstanceListByServiceId(serviceInstanceId);
-      return !list.isEmpty();
+        return !list.isEmpty();
     }
 }

@@ -17,8 +17,9 @@
 
 package com.datasophon.api.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.datasophon.dao.entity.ClusterAlertExpression;
+
+import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * 表达式常量表
@@ -28,5 +29,5 @@ import com.datasophon.dao.entity.ClusterAlertExpression;
  * @date 2022-06-07 12:04:38
  */
 public interface ClusterAlertExpressionService extends IService<ClusterAlertExpression> {
-
+    
 }

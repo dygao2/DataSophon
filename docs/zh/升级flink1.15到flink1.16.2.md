@@ -1,5 +1,7 @@
 ### 1、构建压缩包
+
 下载flink官方包 flink-1.16.2-bin-scala_2.12.tgz
+
 ```shell
 tar -zxvf flink-1.16.2-bin-scala_2.12.tgz
 tar czf flink-1.16.2.tar.gz flink-1.16.2
@@ -11,10 +13,13 @@ md5sum flink-1.16.2.tar.gz
 echo '8d6c243ebc9bf58d3ee3e45e5c6509f4' > flink-1.16.2.tar.gz.md5
 cp ./flink-1.16.2.tar.gz ./flink-1.16.2.tar.gz.md5 /opt/datasophon/DDP/packages/
 ```
+
 ### 2、修改service_ddl.json
+
 ```shell
 vim /opt/apps/datasophon-manager-1.2.0/conf/meta/DDP-1.2.0/FLINK/service_ddl.json
 ```
+
 ```shell
 {
   "name": "FLINK",
@@ -174,27 +179,39 @@ vim /opt/apps/datasophon-manager-1.2.0/conf/meta/DDP-1.2.0/FLINK/service_ddl.jso
   ]
 }
 ```
+
 ### 3、修改环境变量
+
 ```shell
 vim /etc/profile.d/datasophon-env.sh
 export FLINK_HOME=/opt/datasophon/flink-1.16.2
 export HADOOP_CLASSPATH=`hadoop classpath`
 source /etc/profile.d/datasophon-env.sh
 ```
+
 各节点同样操作
+
 ### 4、重启
+
 各节点worker重启
+
 ```shell
 sh /opt/datasophon/datasophon-worker/bin/datasophon-worker.sh restart worker
 ```
+
 主节点重启api
+
 ```shell
 sh /opt/apps/datasophon-manager-1.2.0/bin/datasophon-api.sh restart api
 ```
+
 ### 5、测试
+
 ```shell
 flink run -d -t yarn-per-job $FLINK_HOME/examples/streaming/WordCount.jar
 ```
+
 ```shell
 flink run-application -t yarn-application $FLINK_HOME/examples/streaming/TopSpeedWindowing.jar
 ```
+

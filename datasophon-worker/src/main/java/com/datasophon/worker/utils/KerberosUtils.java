@@ -28,38 +28,38 @@ import cn.hutool.core.lang.Console;
 import cn.hutool.http.HttpUtil;
 
 public class KerberosUtils {
-
+    
     public static void downloadKeytabFromMaster(String principal, String keytabName) {
         String masterHost = PropertyUtils.getString(Constants.MASTER_HOST);
         String masterPort = PropertyUtils.getString(Constants.MASTER_WEB_PORT);
         Integer clusterId = PropertyUtils.getInt("clusterId");
         String hostname = CacheUtils.getString("hostname");
-
+        
         // get kerberos keytab
         String downloadUrl =
                 "http://" + masterHost + ":" + masterPort + "/ddh/cluster/kerberos/downloadKeytab?clusterId="
                         + clusterId + "&principal=" + principal + "&keytabName=" + keytabName + "&hostname=" + hostname;
-
+        
         String dest = "/etc/security/keytab/";
         HttpUtil.downloadFile(downloadUrl, FileUtil.file(dest), new StreamProgress() {
-
+            
             @Override
             public void start() {
                 Console.log("start to install。。。。");
             }
-
+            
             @Override
             public void progress(long progressSize, long l1) {
                 Console.log("installed：{}", FileUtil.readableFileSize(progressSize));
             }
-
+            
             @Override
             public void finish() {
                 Console.log("install success！");
             }
         });
     }
-
+    
     public static void createKeytabDir() {
         if (!FileUtil.exist("/etc/security/keytab/")) {
             FileUtil.mkdir("/etc/security/keytab/");

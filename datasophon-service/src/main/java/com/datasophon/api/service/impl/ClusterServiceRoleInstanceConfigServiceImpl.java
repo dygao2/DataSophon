@@ -17,11 +17,13 @@
 
 package com.datasophon.api.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.service.ClusterServiceRoleInstanceConfigService;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceConfigEntity;
 import com.datasophon.dao.mapper.ClusterServiceRoleInstanceConfigMapper;
+
 import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 @Service("clusterServiceRoleInstanceConfigService")
 public class ClusterServiceRoleInstanceConfigServiceImpl
@@ -29,5 +31,5 @@ public class ClusterServiceRoleInstanceConfigServiceImpl
             ServiceImpl<ClusterServiceRoleInstanceConfigMapper, ClusterServiceRoleInstanceConfigEntity>
         implements
             ClusterServiceRoleInstanceConfigService {
-
+    
 }

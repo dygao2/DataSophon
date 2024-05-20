@@ -24,7 +24,7 @@ import com.datasophon.common.enums.CommandType;
 import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.ClusterServiceCommandEntity;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,10 +40,10 @@ import cn.hutool.core.util.EnumUtil;
 @RestController
 @RequestMapping("api/cluster/service/command")
 public class ClusterServiceCommandController {
-
+    
     @Autowired
     private ClusterServiceCommandService clusterServiceCommandService;
-
+    
     /**
      * 查询集群服务指令列表
      */
@@ -51,7 +51,7 @@ public class ClusterServiceCommandController {
     public Result list(Integer clusterId, Integer page, Integer pageSize) {
         return clusterServiceCommandService.getServiceCommandlist(clusterId, page, pageSize);
     }
-
+    
     /**
      * 生成服务安装操作指令
      */
@@ -62,7 +62,7 @@ public class ClusterServiceCommandController {
         List<String> list = Arrays.asList(serviceNames.split(","));
         return clusterServiceCommandService.generateCommand(clusterId, command, list);
     }
-
+    
     /**
      * 生成服务实例操作指令
      */
@@ -76,9 +76,9 @@ public class ClusterServiceCommandController {
         } else {
             return Result.error(Status.NO_SERVICE_EXECUTE.getMsg());
         }
-
+        
     }
-
+    
     /**
      * 生成服务角色实例操作指令
      */
@@ -89,9 +89,9 @@ public class ClusterServiceCommandController {
         CommandType command = EnumUtil.fromString(CommandType.class, commandType);
         List<String> ids = Arrays.asList(serviceRoleInstancesIds.split(","));
         return clusterServiceCommandService.generateServiceRoleCommand(clusterId, command, serviceInstanceId, ids);
-
+        
     }
-
+    
     /**
      * 启动执行指令
      */
@@ -101,51 +101,51 @@ public class ClusterServiceCommandController {
         clusterServiceCommandService.startExecuteCommand(clusterId, commandType, commandIds);
         return Result.success();
     }
-
+    
     @RequestMapping("/cancelCommand")
     public Result cancelCommand(String commandId) {
         clusterServiceCommandService.cancelCommand(commandId);
         return Result.success();
     }
-
+    
     /**
      * 信息
      */
     @RequestMapping("/info/{id}")
     public Result info(@PathVariable("id") Integer id) {
         ClusterServiceCommandEntity clusterServiceCommand = clusterServiceCommandService.getById(id);
-
+        
         return Result.success().put("clusterServiceCommand", clusterServiceCommand);
     }
-
+    
     /**
      * 保存
      */
     @RequestMapping("/save")
     public Result save(@RequestBody ClusterServiceCommandEntity clusterServiceCommand) {
         clusterServiceCommandService.save(clusterServiceCommand);
-
+        
         return Result.success();
     }
-
+    
     /**
      * 修改
      */
     @RequestMapping("/update")
     public Result update(@RequestBody ClusterServiceCommandEntity clusterServiceCommand) {
         clusterServiceCommandService.updateById(clusterServiceCommand);
-
+        
         return Result.success();
     }
-
+    
     /**
      * 删除
      */
     @RequestMapping("/delete")
     public Result delete(@RequestBody Integer[] ids) {
         clusterServiceCommandService.removeByIds(Arrays.asList(ids));
-
+        
         return Result.success();
     }
-
+    
 }

@@ -70,6 +70,11 @@ export HBASE_OPTS="$HBASE_OPTS -XX:+UseConcMarkSweepGC <#if hbaseSecurity??>${hb
 # If FILE-PATH is not replaced, the log file(.gc) would still be generated in the HBASE_LOG_DIR .
 # export CLIENT_GC_OPTS="-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:  -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=1 -XX:GCLogFileSize=512M"
 
+export HBASE_JMX_BASE="-Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false"
+
+export HBASE_MASTER_OPTS="$HBASE_MASTER_OPTS $HBASE_JMX_BASE  -javaagent:$HBASE_HOME/jmx/jmx_prometheus_javaagent-0.16.1.jar=16100:$HBASE_HOME/jmx/hbase_jmx_config.yaml"
+
+export HBASE_REGIONSERVER_OPTS="$HBASE_REGIONSERVER_OPTS $HBASE_JMX_BASE -javaagent:$HBASE_HOME/jmx/jmx_prometheus_javaagent-0.16.1.jar=16101:$HBASE_HOME/jmx/hbase_jmx_config.yaml"
 # See the package documentation for org.apache.hadoop.hbase.io.hfile for other configurations
 # needed setting up off-heap block caching. 
 

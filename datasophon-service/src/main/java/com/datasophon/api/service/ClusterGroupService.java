@@ -17,24 +17,25 @@
 
 package com.datasophon.api.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.ClusterGroup;
 
 import java.util.List;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+
 public interface ClusterGroupService extends IService<ClusterGroup> {
-
+    
     Result saveClusterGroup(Integer clusterId, String groupName);
-
+    
     void refreshUserGroupToHost(Integer clusterId);
-
+    
     Result deleteUserGroup(Integer id);
-
+    
     Result listPage(String groupName, Integer clusterId, Integer page, Integer pageSize);
-
+    
     List<ClusterGroup> listAllUserGroup(Integer clusterId);
-
+    
     void createUnixGroupOnHost(String hostname, String groupName);
-
+    
 }

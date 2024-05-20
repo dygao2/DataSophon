@@ -38,14 +38,14 @@ import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
 
 public class ServiceExecuteResultActor extends UntypedActor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(ServiceExecuteResultActor.class);
-
+    
     @Override
     public void onReceive(Object message) throws Throwable {
         if (message instanceof ServiceExecuteResultMessage) {
             ServiceExecuteResultMessage result = (ServiceExecuteResultMessage) message;
-
+            
             DAGGraph<String, ServiceNode, String> dag = result.getDag();
             Map<String, ServiceExecuteState> activeTaskList = result.getActiveTaskList();
             Map<String, String> errorTaskList = result.getErrorTaskList();
@@ -54,7 +54,7 @@ public class ServiceExecuteResultActor extends UntypedActor {
             ActorRef submitTaskNodeActor = ActorUtils.getLocalActor(SubmitTaskNodeActor.class,
                     ActorUtils.getActorRefName(SubmitTaskNodeActor.class));
             String node = result.getServiceName();
-            ServiceNode servicNode = dag.getNode(node);
+            ServiceNode serviceNode = dag.getNode(node);
             if (result.getServiceRoleType().equals(ServiceRoleType.MASTER)) {
                 if (result.getServiceExecuteState().equals(ServiceExecuteState.ERROR)) {
                     // move to error list
@@ -64,18 +64,18 @@ public class ServiceExecuteResultActor extends UntypedActor {
                     completeTaskList.put(node, "");
                     // cancel all next node
                     logger.info("{} master roles failed , cancel all next node by commandId {}", node,
-                            servicNode.getCommandId());
+                            serviceNode.getCommandId());
                     List<String> commandIds = new ArrayList<String>();
-                    commandIds.add(servicNode.getCommandId());
+                    commandIds.add(serviceNode.getCommandId());
                     listCancelCommand(dag, node, commandIds);
                     ProcessUtils.updateCommandStateToFailed(commandIds);
                 } else if (result.getServiceExecuteState().equals(ServiceExecuteState.SUCCESS)) {
                     // submit worker node
-                    ServiceNode serviceNode = dag.getNode(node);
-                    List<ServiceRoleInfo> elseRoles = serviceNode.getElseRoles();
-                    if (elseRoles.size() > 0) {
+                    ServiceNode serviceNode2 = dag.getNode(node);
+                    List<ServiceRoleInfo> elseRoles = serviceNode2.getElseRoles();
+                    if (!elseRoles.isEmpty()) {
                         logger.info("start to submit worker/client roles");
-                        for (ServiceRoleInfo elseRole : serviceNode.getElseRoles()) {
+                        for (ServiceRoleInfo elseRole : serviceNode2.getElseRoles()) {
                             ActorRef serviceActor = ActorUtils.getLocalActor(WorkerServiceActor.class,
                                     result.getClusterCode() + "-serviceActor-" + node + "-" + elseRole.getHostname());
                             ProcessUtils.buildExecuteServiceRoleCommand(
@@ -88,12 +88,12 @@ public class ServiceExecuteResultActor extends UntypedActor {
                                     readyToSubmitTaskList,
                                     completeTaskList,
                                     node,
-                                    serviceNode.getElseRoles(),
+                                    serviceNode2.getElseRoles(),
                                     elseRole,
                                     serviceActor,
                                     ServiceRoleType.WORKER);
                         }
-
+                        
                     } else {
                         activeTaskList.remove(node);
                         readyToSubmitTaskList.remove(node);
@@ -107,7 +107,7 @@ public class ServiceExecuteResultActor extends UntypedActor {
             unhandled(message);
         }
     }
-
+    
     public void listCancelCommand(DAGGraph<String, ServiceNode, String> dag, String node, List<String> commandIds) {
         if (dag.getSubsequentNodes(node).size() == 0) {
             return;
@@ -118,7 +118,7 @@ public class ServiceExecuteResultActor extends UntypedActor {
             listCancelCommand(dag, subsequentNode, commandIds);
         }
     }
-
+    
     private void tellToSubmitActiveTaskNode(ServiceExecuteResultMessage result,
                                             DAGGraph<String, ServiceNode, String> dag,
                                             Map<String, ServiceExecuteState> activeTaskList,
@@ -140,10 +140,10 @@ public class ServiceExecuteResultActor extends UntypedActor {
         submitActiveTaskNodeCommand.setErrorTaskList(errorTaskList);
         submitActiveTaskNodeCommand.setReadyToSubmitTaskList(readyToSubmitTaskList);
         submitActiveTaskNodeCommand.setCompleteTaskList(completeTaskList);
-
+        
         submitActiveTaskNodeCommand.setClusterCode(result.getClusterCode());
-
+        
         submitTaskNodeActor.tell(submitActiveTaskNodeCommand, getSelf());
     }
-
+    
 }

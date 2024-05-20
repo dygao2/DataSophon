@@ -23,9 +23,9 @@ import lombok.Data;
 
 @Data
 public class AkkaRemoteException implements Serializable {
-
+    
     private String hostCommandId;
-
+    
     private String errMsg;
-
+    
 }

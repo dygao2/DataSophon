@@ -54,7 +54,7 @@
       <a-spin :spinning="loading" class="steps-body" style="position: relative; flex:1; margin:0 20px">
       <CommonTemplate :ref="'CommonTemplateRef'" :class="['']" :steps4Data="steps4Data" :templateData="templateData" />
       <div class="footer">
-        <a-button class="mgr10" type="primary" @click="handleSubmit">保存</a-button>
+        <a-button class="mgr10" type="primary" @click="handleSubmit" :loading="loading">保存</a-button>
       </div>
      </a-spin>
   
@@ -288,6 +288,7 @@ export default {
     // 单个标签页的保存
     handleSubmit() {
       const self = this
+      this.loading=true
       this.$refs[`CommonTemplateRef`].form.validateFields(
         async (err, values) => {
           if (!err) {
@@ -333,6 +334,7 @@ export default {
             );
             if (res.code === 200) {
               this.$message.success("保存成功");
+              this.loading=false
               this.getConfigVersion()
               // this.getServiceRoleType()
             } else {

@@ -27,9 +27,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @Data
 @TableName("t_ddh_cluster_service_role_instance_webuis")
 public class ClusterServiceRoleInstanceWebuis implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     /**
      * 主键
      */
@@ -43,9 +43,9 @@ public class ClusterServiceRoleInstanceWebuis implements Serializable {
      * URL地址
      */
     private String webUrl;
-
+    
     private Integer serviceInstanceId;
-
+    
     private String name;
-
+    
 }

@@ -15,10 +15,24 @@
   ~  See the License for the specific language governing permissions and
   ~  limitations under the License.
   -->
-<!DOCTYPE suppressions PUBLIC
-     "-//Puppy Crawl//DTD Suppressions 1.0//EN"
-     "http://www.puppycrawl.com/dtds/suppressions_1_0.dtd">
- 
-<suppressions>
 
+<!DOCTYPE suppressions PUBLIC
+        "-//Puppy Crawl//DTD Suppressions 1.1//EN"
+        "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
+
+<suppressions>
+    <suppress files="DataTypes.java" checks="MethodNameCheck"/>
+
+    <!-- target directory is not relevant for checkstyle -->
+    <suppress
+            files="[\\/]target[\\/]"
+            checks=".*"/>
+    <!-- Benchmark CPU metrics collector based on YARN  -->
+    <suppress
+            files="org[\\/]apache[\\/]paimon[\\/]benchmark[\\/]metric[\\/]cpu[\\/].*"
+            checks=".*"/>
+    <!-- Classes copied from AWS -->
+    <suppress
+            files="com[\\/]amazonaws[\\/]services[\\/]s3[\\/]model[\\/]transform[\\/]XmlResponsesSaxParser.java"
+            checks=".*"/>
 </suppressions>

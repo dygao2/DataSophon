@@ -28,9 +28,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @Data
 @TableName("t_ddh_cluster_alert_rule")
 public class ClusterAlertRule implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     /**
      * 自增 ID
      */
@@ -96,5 +96,5 @@ public class ClusterAlertRule implements Serializable {
      * 集群id
      */
     private Integer clusterId;
-
+    
 }

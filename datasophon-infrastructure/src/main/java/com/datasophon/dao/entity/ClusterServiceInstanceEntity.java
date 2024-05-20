@@ -32,9 +32,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @TableName("t_ddh_cluster_service_instance")
 @Data
 public class ClusterServiceInstanceEntity implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     /**
      * 主键
      */
@@ -48,13 +48,13 @@ public class ClusterServiceInstanceEntity implements Serializable {
      * 服务名称
      */
     private String serviceName;
-
+    
     private String label;
     /**
      * 服务状态 1、待安装 2：正在运行  3：存在告警 4:存在异常
      */
     private ServiceState serviceState;
-
+    
     @TableField(exist = false)
     private Integer serviceStateCode;
     /**
@@ -65,16 +65,16 @@ public class ClusterServiceInstanceEntity implements Serializable {
      * 创建时间
      */
     private Date createTime;
-
+    
     private NeedRestart needRestart;
-
+    
     private Integer frameServiceId;
-
+    
     @TableField(exist = false)
     private String dashboardUrl;
-
+    
     @TableField(exist = false)
     private Integer alertNum;
-
+    
     private Integer sortNum;
 }

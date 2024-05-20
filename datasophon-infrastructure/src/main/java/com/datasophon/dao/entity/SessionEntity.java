@@ -28,9 +28,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @Data
 @TableName("t_ddh_session")
 public class SessionEntity implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     /**
      *
      */
@@ -48,5 +48,5 @@ public class SessionEntity implements Serializable {
      *
      */
     private Date lastLoginTime;
-
+    
 }

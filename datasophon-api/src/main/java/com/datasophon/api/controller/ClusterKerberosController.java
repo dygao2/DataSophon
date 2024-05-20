@@ -25,16 +25,20 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("cluster/kerberos")
 public class ClusterKerberosController {
-
+    
     @Autowired
     private ClusterKerberosService kerberosService;
-
+    
     /**
      * download keytab
      */
@@ -43,7 +47,7 @@ public class ClusterKerberosController {
                                HttpServletResponse response) throws IOException {
         kerberosService.downloadKeytab(clusterId, principal, keytabName, hostname, response);
     }
-
+    
     /**
      * upload keytab
      */
@@ -52,5 +56,5 @@ public class ClusterKerberosController {
                            String keytabFileName) throws IOException {
         kerberosService.uploadKeytab(file, hostname, keytabFileName);
     }
-
+    
 }

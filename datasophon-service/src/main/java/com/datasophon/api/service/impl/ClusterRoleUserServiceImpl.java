@@ -17,9 +17,6 @@
 
 package com.datasophon.api.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.service.ClusterRoleUserService;
 import com.datasophon.common.Constants;
 import com.datasophon.common.utils.Result;
@@ -27,21 +24,26 @@ import com.datasophon.dao.entity.ClusterRoleUserEntity;
 import com.datasophon.dao.entity.UserInfoEntity;
 import com.datasophon.dao.enums.UserType;
 import com.datasophon.dao.mapper.ClusterRoleUserMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
 @Service("clusterRoleUserService")
 public class ClusterRoleUserServiceImpl extends ServiceImpl<ClusterRoleUserMapper, ClusterRoleUserEntity>
         implements
-        ClusterRoleUserService {
-
+            ClusterRoleUserService {
+    
     @Autowired
     private ClusterRoleUserMapper clusterRoleUserMapper;
-
+    
     @Override
     public boolean isClusterManager(Integer userId, String clusterId) {
         List<ClusterRoleUserEntity> list = this.list(new QueryWrapper<ClusterRoleUserEntity>()
@@ -52,7 +54,7 @@ public class ClusterRoleUserServiceImpl extends ServiceImpl<ClusterRoleUserMappe
         }
         return false;
     }
-
+    
     @Override
     public Result saveClusterManager(Integer clusterId, String userIds) {
         // 首先删除原有管理员
@@ -73,7 +75,7 @@ public class ClusterRoleUserServiceImpl extends ServiceImpl<ClusterRoleUserMappe
         this.saveBatch(list);
         return Result.success();
     }
-
+    
     @Override
     public List<UserInfoEntity> getAllClusterManagerByClusterId(Integer clusterId) {
         return clusterRoleUserMapper.getAllClusterManagerByClusterId(clusterId);

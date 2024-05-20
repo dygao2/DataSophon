@@ -25,33 +25,35 @@ import com.datasophon.common.utils.FileUtils;
 import com.datasophon.common.utils.PropertyUtils;
 import com.datasophon.common.utils.ShellUtils;
 import com.datasophon.worker.utils.TaskConstants;
-import lombok.Data;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import lombok.Data;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Data
 public class ServiceHandler {
-
-
+    
     private String serviceName;
-
+    
     private String serviceRoleName;
-
+    
     private Logger logger;
-
+    
     public ServiceHandler(String serviceName, String serviceRoleName) {
         this.serviceName = serviceName;
         this.serviceRoleName = serviceRoleName;
         String loggerName = String.format("%s-%s-%s", TaskConstants.TASK_LOG_LOGGER_NAME, serviceName, serviceRoleName);
         logger = LoggerFactory.getLogger(loggerName);
     }
-
+    
     public ExecResult start(ServiceRoleRunner startRunner, ServiceRoleRunner statusRunner, String decompressPackageName,
                             RunAs runAs) {
         ExecResult statusResult = execRunner(statusRunner, decompressPackageName, null);
@@ -77,7 +79,7 @@ public class ServiceHandler {
                     try {
                         Thread.sleep(5 * 1000);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage(), e);
                     }
                 }
                 count++;
@@ -89,7 +91,7 @@ public class ServiceHandler {
         }
         return startResult;
     }
-
+    
     public ExecResult stop(ServiceRoleRunner runner, ServiceRoleRunner statusRunner, String decompressPackageName,
                            RunAs runAs) {
         ExecResult statusResult = execRunner(statusRunner, decompressPackageName, runAs);
@@ -125,17 +127,17 @@ public class ServiceHandler {
         }
         return execResult;
     }
-
+    
     public ExecResult reStart(ServiceRoleRunner runner, String decompressPackageName) {
         ExecResult result = execRunner(runner, decompressPackageName, null);
         return result;
     }
-
+    
     public ExecResult status(ServiceRoleRunner runner, String decompressPackageName) {
         ExecResult result = execRunner(runner, decompressPackageName, null);
         return result;
     }
-
+    
     public ExecResult execRunner(ServiceRoleRunner runner, String decompressPackageName, RunAs runAs) {
         String shell = runner.getProgram();
         List<String> args = runner.getArgs();
@@ -150,7 +152,8 @@ public class ServiceHandler {
                 || runner.getProgram().contains(Constants.JOB_MANAGER)) {
             logger.info("do not use sh");
         } else {
-            File shellFile = new File(Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName + Constants.SLASH + shell);
+            File shellFile = new File(
+                    Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName + Constants.SLASH + shell);
             if (shellFile.exists()) {
                 try {
                     // 读取第一行，检查采用的 shell 是哪个，bash、sh ？
@@ -172,11 +175,9 @@ public class ServiceHandler {
         }
         command.add(shell);
         command.addAll(args);
-        logger.info("execute shell command : {}", command.toString());
-        ExecResult execResult =
-                ShellUtils.execWithStatus(Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName, command, timeout, logger);
-        return execResult;
+        logger.info("execute shell command : {}", command);
+        return ShellUtils.execWithStatus(Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName, command,
+                timeout, logger);
     }
-
-
+    
 }

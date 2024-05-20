@@ -1,5 +1,7 @@
 ### 1、构建压缩包
+
 官方下载安装包 alluxio-2.9.3-bin.tar.gz
+
 ```shell
 tar -zxvf alluxio-2.9.3-bin.tar.gz
 cd alluxio-2.9.3
@@ -10,7 +12,9 @@ mkd5sum alluxio-2.9.3.tar.gz
 echo 'bf0bf449ee28d0db8da56a5dba8ecee3' > alluxio-2.9.3.tar.gz.md5
 cp ./alluxio-2.9.3.tar.gz ./alluxio-2.9.3.tar.gz.md5 /opt/datasophon/DDP/packages
 ```
+
 control_alluxio.sh:
+
 ```shell
 #!/bin/bash
 
@@ -125,16 +129,20 @@ else
 fi
 
 ```
+
 ### 2、配置元数据文件
+
 ```shell
 cd /opt/apps/datasophon-manager-1.2.0/conf/meta/DDP-1.2.0
 mkdir ALLUXIO
 touch service_ddl.json
 touch properties_value.flt
 ```
+
 将下面两个文件放进去
 
 servcie_ddl.json：
+
 ```shell
 {
   "name": "ALLUXIO",
@@ -400,15 +408,20 @@ servcie_ddl.json：
   ]
 }
 ```
+
 properties_value.flt：
+
 ```shell
 <#list itemList as item>
 ${item.value}
 </#list>
 ```
+
 ### 3、新增worker源码Handler
+
 修改 com.datasophon.worker.handler.ConfigureServiceHandler
 新增：
+
 ```shell
 if ("AlluxioMaster".equals(serviceRoleName) && "alluxio-site.properties".equals(generators.getFilename())) {
     ServiceConfig serviceConfig = new ServiceConfig();
@@ -427,13 +440,14 @@ if ("AlluxioWorker".equals(serviceRoleName) && "alluxio-site.properties".equals(
 
 ![image](https://github.com/datavane/datasophon/assets/62798940/475ae77d-8865-457c-9699-dd4bff5e46f2)
 
-
 修改 com.datasophon.worker.strategy.ServiceRoleStrategyContext：
+
 ```shell
 map.put("AlluxioMaster", new AlluxioHandlerStrategy("ALLUXIO", "AlluxioMaster"));
 ```
 
 创建：com.datasophon.worker.strategy.AlluxioHandlerStrategy
+
 ```shell
 package com.datasophon.worker.strategy;
 
@@ -483,15 +497,21 @@ public class AlluxioHandlerStrategy  extends AbstractHandlerStrategy implements 
 }
 
 ```
+
 ### 4、重启
+
 各节点worker重启
+
 ```shell
 sh /opt/datasophon/datasophon-worker/bin/datasophon-worker.sh restart worker debug
 ```
+
 主节点重启api
+
 ```shell
 sh /opt/apps/datasophon-manager-1.2.0/bin/datasophon-api.sh restart api debug
 ```
+
 ### 5、配置样例
 
 ![image](https://github.com/datavane/datasophon/assets/62798940/bd626fec-c581-4c22-8f36-b582afbb7ea4)

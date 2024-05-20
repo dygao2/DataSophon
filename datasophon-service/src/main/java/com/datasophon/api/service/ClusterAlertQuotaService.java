@@ -17,11 +17,12 @@
 
 package com.datasophon.api.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.ClusterAlertQuota;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * 集群告警指标表 
@@ -31,14 +32,14 @@ import java.util.List;
  * @date 2022-06-24 15:10:41
  */
 public interface ClusterAlertQuotaService extends IService<ClusterAlertQuota> {
-
+    
     Result getAlertQuotaList(Integer clusterId, Integer alertGroupId, String quotaName, Integer page, Integer pageSize);
-
+    
     void start(Integer clusterId, String alertQuotaIds);
-
+    
     void stop(Integer clusterId, String alertQuotaIds);
-
+    
     void saveAlertQuota(ClusterAlertQuota clusterAlertQuota);
-
+    
     List<ClusterAlertQuota> listAlertQuotaByServiceName(String serviceName);
 }

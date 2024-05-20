@@ -29,9 +29,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @TableName("t_ddh_alert_group")
 @Data
 public class AlertGroupEntity implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     /**
      * 主键
      */
@@ -45,13 +45,13 @@ public class AlertGroupEntity implements Serializable {
      * 告警组类别
      */
     private String alertGroupCategory;
-
+    
     private Date createTime;
-
+    
     @TableField(exist = false)
     private Integer alertQuotaNum;
-
+    
     @TableField(exist = false)
     private Integer clusterId;
-
+    
 }

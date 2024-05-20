@@ -18,8 +18,8 @@
 package com.datasophon.api.master.handler.service;
 
 import com.datasophon.api.master.ActorUtils;
-import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.service.ClusterServiceRoleInstanceService;
+import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.utils.SpringTool;
 import com.datasophon.common.Constants;
 import com.datasophon.common.command.InstallServiceRoleCommand;
@@ -45,7 +45,7 @@ import akka.util.Timeout;
 import cn.hutool.core.io.FileUtil;
 
 public class ServiceInstallHandler extends ServiceHandler {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(ServiceInstallHandler.class);
     @Override
     public ExecResult handlerRequest(ServiceRoleInfo serviceRoleInfo) throws Exception {
@@ -62,28 +62,30 @@ public class ServiceInstallHandler extends ServiceHandler {
             return execResult;
         }
         InstallServiceRoleCommand installServiceRoleCommand = new InstallServiceRoleCommand();
+        installServiceRoleCommand.setFrameCode(serviceRoleInfo.getFrameCode());
         installServiceRoleCommand.setServiceName(serviceRoleInfo.getParentName());
         installServiceRoleCommand.setServiceRoleName(serviceRoleInfo.getName());
         installServiceRoleCommand.setServiceRoleType(serviceRoleInfo.getRoleType());
         installServiceRoleCommand.setDecompressPackageName(serviceRoleInfo.getDecompressPackageName());
         installServiceRoleCommand.setRunAs(serviceRoleInfo.getRunAs());
         installServiceRoleCommand.setServiceRoleType(serviceRoleInfo.getRoleType());
-
-        String md5 ;
+        installServiceRoleCommand.setResourceStrategies(serviceRoleInfo.getResourceStrategies());
+        
+        String md5;
         if ("aarch64".equals(hostEntity.getCpuArchitecture()) && FileUtil.exist(Constants.MASTER_MANAGE_PACKAGE_PATH
                 + Constants.SLASH + serviceRoleInfo.getDecompressPackageName() + "-arm.tar.gz")) {
             installServiceRoleCommand.setPackageName(serviceRoleInfo.getDecompressPackageName() + "-arm.tar.gz");
             logger.info("find arm package {}", installServiceRoleCommand.getPackageName());
             md5 = FileUtil.readString(Constants.MASTER_MANAGE_PACKAGE_PATH + Constants.SLASH
                     + serviceRoleInfo.getDecompressPackageName() + "-arm.tar.gz.md5", Charset.defaultCharset());
-        }else {
+        } else {
             installServiceRoleCommand.setPackageName(serviceRoleInfo.getPackageName());
             md5 = FileUtil.readString(
                     Constants.MASTER_MANAGE_PACKAGE_PATH + Constants.SLASH + serviceRoleInfo.getPackageName() + ".md5",
                     Charset.defaultCharset());
         }
         installServiceRoleCommand.setPackageMd5(md5);
-
+        
         ActorSelection actorSelection = ActorUtils.actorSystem.actorSelection(
                 "akka.tcp://datasophon@" + serviceRoleInfo.getHostname() + ":2552/user/worker/installServiceActor");
         Timeout timeout = new Timeout(Duration.create(180, TimeUnit.SECONDS));

@@ -34,10 +34,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("api/cluster")
 public class ClusterInfoController {
-
+    
     @Autowired
     private ClusterInfoService clusterInfoService;
-
+    
     /**
      * 列表
      */
@@ -45,6 +45,7 @@ public class ClusterInfoController {
     public Result list() {
         return clusterInfoService.getClusterList();
     }
+    
     /**
      * 配置好的集群列表
      */
@@ -52,17 +53,17 @@ public class ClusterInfoController {
     public Result runningClusterList() {
         return clusterInfoService.runningClusterList();
     }
-
+    
     /**
      * 信息
      */
     @RequestMapping("/info/{id}")
     public Result info(@PathVariable("id") Integer id) {
         ClusterInfoEntity clusterInfo = clusterInfoService.getById(id);
-
+        
         return Result.success().put(Constants.DATA, clusterInfo);
     }
-
+    
     /**
      * 保存
      */
@@ -71,13 +72,13 @@ public class ClusterInfoController {
     public Result save(@RequestBody ClusterInfoEntity clusterInfo) {
         return clusterInfoService.saveCluster(clusterInfo);
     }
-
+    
     @RequestMapping("/updateClusterState")
     public Result updateClusterState(Integer clusterId, Integer clusterState) {
-
+        
         return clusterInfoService.updateClusterState(clusterId, clusterState);
     }
-
+    
     /**
      * 修改
      */
@@ -85,9 +86,9 @@ public class ClusterInfoController {
     @UserPermission
     public Result update(@RequestBody ClusterInfoEntity clusterInfo) {
         return clusterInfoService.updateCluster(clusterInfo);
-
+        
     }
-
+    
     /**
      * 删除
      */
@@ -95,8 +96,8 @@ public class ClusterInfoController {
     @UserPermission
     public Result delete(@RequestBody Integer[] ids) {
         clusterInfoService.deleteCluster(Arrays.asList(ids));
-
+        
         return Result.success();
     }
-
+    
 }

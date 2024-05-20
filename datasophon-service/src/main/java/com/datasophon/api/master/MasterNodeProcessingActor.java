@@ -1,22 +1,24 @@
 package com.datasophon.api.master;
 
-import akka.actor.UntypedActor;
-import cn.hutool.json.JSONUtil;
 import com.datasophon.common.command.OlapSqlExecCommand;
 import com.datasophon.common.utils.ExecResult;
 import com.datasophon.common.utils.OlapUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import akka.actor.UntypedActor;
+import cn.hutool.json.JSONUtil;
+
 public class MasterNodeProcessingActor extends UntypedActor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(MasterNodeProcessingActor.class);
-
+    
     @Override
     public void onReceive(Object message) throws Throwable {
-        logger.info("MasterNodeProcessingActor receive message: " + JSONUtil.toJsonStr(message) );
+        logger.info("MasterNodeProcessingActor receive message: " + JSONUtil.toJsonStr(message));
         if (message instanceof OlapSqlExecCommand) {
             OlapSqlExecCommand command = (OlapSqlExecCommand) message;
             ExecResult execResult = new ExecResult();

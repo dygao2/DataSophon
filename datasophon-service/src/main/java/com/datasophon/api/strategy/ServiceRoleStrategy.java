@@ -25,15 +25,15 @@ import java.util.List;
 import java.util.Map;
 
 public interface ServiceRoleStrategy {
-
-    void handler(Integer clusterId, List<String> hosts);
-
-    void handlerConfig(Integer clusterId, List<ServiceConfig> list);
-
+    
+    void handler(Integer clusterId, List<String> hosts, String serviceName);
+    
+    void handlerConfig(Integer clusterId, List<ServiceConfig> list, String serviceName);
+    
     void getConfig(Integer clusterId, List<ServiceConfig> list);
-
+    
     void handlerServiceRoleInfo(ServiceRoleInfo serviceRoleInfo, String hostname);
-
+    
     void handlerServiceRoleCheck(ClusterServiceRoleInstanceEntity roleInstanceEntity,
                                  Map<String, ClusterServiceRoleInstanceEntity> map);
 }

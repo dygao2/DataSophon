@@ -21,21 +21,21 @@ import com.datasophon.api.service.ClusterAlertQuotaService;
 import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.ClusterAlertQuota;
 import com.datasophon.dao.enums.QuotaState;
+
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
-import java.util.List;
-
 @RestController
 @RequestMapping("cluster/alert/quota")
 public class ClusterAlertQuotaController {
-
+    
     @Autowired
     private ClusterAlertQuotaService clusterAlertQuotaService;
-
+    
     /**
      * list alert quota
      */
@@ -43,7 +43,7 @@ public class ClusterAlertQuotaController {
     public Result info(Integer clusterId, Integer alertGroupId, String quotaName, Integer page, Integer pageSize) {
         return clusterAlertQuotaService.getAlertQuotaList(clusterId, alertGroupId, quotaName, page, pageSize);
     }
-
+    
     /**
      * enable alert quota
      */
@@ -52,7 +52,7 @@ public class ClusterAlertQuotaController {
         clusterAlertQuotaService.start(clusterId, alertQuotaIds);
         return Result.success();
     }
-
+    
     /**
      * disable alert quota
      */
@@ -61,17 +61,17 @@ public class ClusterAlertQuotaController {
         clusterAlertQuotaService.stop(clusterId, alertQuotaIds);
         return Result.success();
     }
-
+    
     /**
      * save alert quota
      */
     @RequestMapping("/save")
     public Result save(@RequestBody ClusterAlertQuota clusterAlertQuota) {
-
+        
         clusterAlertQuotaService.saveAlertQuota(clusterAlertQuota);
         return Result.success();
     }
-
+    
     /**
      * update alert quota
      */
@@ -79,18 +79,18 @@ public class ClusterAlertQuotaController {
     public Result update(@RequestBody ClusterAlertQuota clusterAlertQuota) {
         clusterAlertQuota.setQuotaState(QuotaState.WAIT_TO_UPDATE);
         clusterAlertQuotaService.updateById(clusterAlertQuota);
-
+        
         return Result.success();
     }
-
+    
     /**
      * delete alert quota
      */
     @RequestMapping("/delete")
     public Result delete(@RequestBody Integer[] ids) {
         clusterAlertQuotaService.removeByIds(Arrays.asList(ids));
-
+        
         return Result.success();
     }
-
+    
 }

@@ -32,10 +32,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("cluster/alert/history")
 public class ClusterAlertHistoryController {
-
+    
     @Autowired
     private ClusterAlertHistoryService clusterAlertHistoryService;
-
+    
     /**
      * 列表
      */
@@ -43,7 +43,7 @@ public class ClusterAlertHistoryController {
     public Result getAlertList(Integer serviceInstanceId) {
         return clusterAlertHistoryService.getAlertList(serviceInstanceId);
     }
-
+    
     /**
      * 列表
      */
@@ -51,17 +51,17 @@ public class ClusterAlertHistoryController {
     public Result getAllAlertList(Integer clusterId, Integer page, Integer pageSize) {
         return clusterAlertHistoryService.getAllAlertList(clusterId, page, pageSize);
     }
-
+    
     /**
      * 信息
      */
     @RequestMapping("/info/{id}")
     public Result info(@PathVariable("id") Integer id) {
         ClusterAlertHistory clusterAlertHistory = clusterAlertHistoryService.getById(id);
-
+        
         return Result.success().put("clusterAlertHistory", clusterAlertHistory);
     }
-
+    
     /**
      * 保存
      */
@@ -70,26 +70,26 @@ public class ClusterAlertHistoryController {
         clusterAlertHistoryService.saveAlertHistory(alertMessage);
         return Result.success();
     }
-
+    
     /**
      * 修改
      */
     @RequestMapping("/update")
     public Result update(@RequestBody ClusterAlertHistory clusterAlertHistory) {
-
+        
         clusterAlertHistoryService.updateById(clusterAlertHistory);
-
+        
         return Result.success();
     }
-
+    
     /**
      * 删除
      */
     @RequestMapping("/delete")
     public Result delete(@RequestBody Integer[] ids) {
         clusterAlertHistoryService.removeByIds(Arrays.asList(ids));
-
+        
         return Result.success();
     }
-
+    
 }

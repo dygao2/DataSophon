@@ -8,9 +8,7 @@ Server {
 };
 Client {
  com.sun.security.auth.module.Krb5LoginModule required
- useKeyTab=true
- keyTab="/etc/security/keytab/zkclient.service.keytab"
- storeKey=true
- useTicketCache=false
- principal="zkcli/${hostname}@${zkRealm}";
+ useKeyTab=false
+ useTicketCache=true
+ debug=true;
 };

@@ -9,7 +9,7 @@ public class InstallServiceHandlerTest {
 
     @BeforeAll
     public void setUp() {
-        installServiceHandlerUnderTest = new InstallServiceHandler("HDFS","NameNode");
+        installServiceHandlerUnderTest = new InstallServiceHandler("DDP-1.2.2", "HDFS", "NameNode");
     }
 
     @Test

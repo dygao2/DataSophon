@@ -31,10 +31,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("cluster/service/instance/config")
 public class ClusterServiceInstanceConfigController {
-
+    
     @Autowired
     private ClusterServiceInstanceConfigService clusterServiceInstanceConfigService;
-
+    
     /**
      * 列表
      */
@@ -42,7 +42,7 @@ public class ClusterServiceInstanceConfigController {
     public Result getConfigVersion(Integer serviceInstanceId, Integer roleGroupId) {
         return clusterServiceInstanceConfigService.getConfigVersion(serviceInstanceId, roleGroupId);
     }
-
+    
     /**
      * 信息
      */
@@ -52,35 +52,35 @@ public class ClusterServiceInstanceConfigController {
         return clusterServiceInstanceConfigService.getServiceInstanceConfig(serviceInstanceId, version, roleGroupId,
                 page, pageSize);
     }
-
+    
     /**
      * 保存
      */
     @RequestMapping("/save")
     public Result save(@RequestBody ClusterServiceInstanceConfigEntity clusterServiceInstanceConfig) {
         clusterServiceInstanceConfigService.save(clusterServiceInstanceConfig);
-
+        
         return Result.success();
     }
-
+    
     /**
      * 修改
      */
     @RequestMapping("/update")
     public Result update(@RequestBody ClusterServiceInstanceConfigEntity clusterServiceInstanceConfig) {
         clusterServiceInstanceConfigService.updateById(clusterServiceInstanceConfig);
-
+        
         return Result.success();
     }
-
+    
     /**
      * 删除
      */
     @RequestMapping("/delete")
     public Result delete(@RequestBody Integer[] ids) {
         clusterServiceInstanceConfigService.removeByIds(Arrays.asList(ids));
-
+        
         return Result.success();
     }
-
+    
 }

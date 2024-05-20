@@ -33,6 +33,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 @Mapper
 public interface FrameInfoMapper extends BaseMapper<FrameInfoEntity> {
-
+    
     FrameInfoEntity getFrameInfoByFrameCode(@Param("frameCode") String frameCode);
 }

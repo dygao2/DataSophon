@@ -17,54 +17,99 @@
 
 package com.datasophon.api.strategy;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ServiceRoleStrategyContext {
-
-    private static final Map<String, ServiceRoleStrategy> map = new ConcurrentHashMap<>();
-
+    
+    private static final Map<String, ServiceRoleStrategy> strategyMap = new ConcurrentHashMap<>();
+    
+    private static final Map<String, String> serviceNameMap = new ConcurrentHashMap<>();
+    
     static {
-        map.put("NameNode", new NameNodeHandlerStrategy());
-        map.put("ResourceManager", new RMHandlerStrategy());
-        map.put("HiveMetaStore", new HiveMetaStroreHandlerStrategy());
-        map.put("HiveServer2", new HiveServer2HandlerStrategy());
-        map.put("Grafana", new GrafanaHandlerStrategy());
-        map.put("ZkServer", new ZkServerHandlerStrategy());
-        map.put("HistoryServer", new HistoryServerHandlerStrategy());
-        map.put("TimelineServer", new TSHandlerStrategy());
-        map.put("TrinoCoordinator", new TrinoHandlerStrategy());
-        map.put("JournalNode", new JournalNodeHandlerStrategy());
-        map.put("ZKFC", new ZKFCHandlerStrategy());
-        map.put("SRFE", new FEHandlerStartegy());
-        map.put("DorisFE", new FEHandlerStartegy());
-        map.put("DorisFEObserver", new FEObserverHandlerStartegy());
-        map.put("SRBE", new BEHandlerStartegy());
-        map.put("DorisBE", new BEHandlerStartegy());
-        map.put("Krb5Kdc", new Krb5KdcHandlerStrategy());
-        map.put("KAdmin", new KAdminHandlerStrategy());
-        map.put("RangerAdmin", new RangerAdminHandlerStrategy());
-        map.put("ElasticSearch", new ElasticSearchHandlerStrategy());
-        map.put("Prometheus", new PrometheusHandlerStrategy());
-        map.put("AlertManager", new AlertManagerHandlerStrategy());
-
-        map.put("RANGER", new RangerAdminHandlerStrategy());
-        map.put("ZOOKEEPER", new ZkServerHandlerStrategy());
-        map.put("YARN", new RMHandlerStrategy());
-        map.put("HDFS", new NameNodeHandlerStrategy());
-        map.put("HIVE", new HiveServer2HandlerStrategy());
-        map.put("KAFKA", new KafkaHandlerStrategy());
-        map.put("HBASE", new HBaseHandlerStrategy());
-        map.put("FLINK", new FlinkHandlerStrategy());
-        map.put("KYUUBI",new KyuubiServerHandlerStrategy());
+        strategyMap.put("NameNode", new NameNodeHandlerStrategy());
+        strategyMap.put("ResourceManager", new RMHandlerStrategy());
+        strategyMap.put("HiveMetaStore", new HiveMetaStroreHandlerStrategy());
+        strategyMap.put("HiveServer2", new HiveServer2HandlerStrategy());
+        strategyMap.put("Grafana", new GrafanaHandlerStrategy());
+        strategyMap.put("ZkServer", new ZkServerHandlerStrategy());
+        strategyMap.put("HistoryServer", new HistoryServerHandlerStrategy());
+        strategyMap.put("TimelineServer", new TSHandlerStrategy());
+        strategyMap.put("TrinoCoordinator", new TrinoHandlerStrategy());
+        strategyMap.put("JournalNode", new JournalNodeHandlerStrategy());
+        strategyMap.put("ZKFC", new ZKFCHandlerStrategy());
+        strategyMap.put("HttpFs", new HttpFsHandlerStrategy());
+        strategyMap.put("SRFE", new FEHandlerStartegy());
+        strategyMap.put("DorisFE", new FEHandlerStartegy());
+        strategyMap.put("DorisFEObserver", new FEObserverHandlerStartegy());
+        strategyMap.put("SRBE", new BEHandlerStartegy());
+        strategyMap.put("DorisBE", new BEHandlerStartegy());
+        strategyMap.put("Krb5Kdc", new Krb5KdcHandlerStrategy());
+        strategyMap.put("KAdmin", new KAdminHandlerStrategy());
+        strategyMap.put("RangerAdmin", new RangerAdminHandlerStrategy());
+        strategyMap.put("ElasticSearch", new ElasticSearchHandlerStrategy());
+        strategyMap.put("Prometheus", new PrometheusHandlerStrategy());
+        strategyMap.put("AlertManager", new AlertManagerHandlerStrategy());
+        
+        strategyMap.put("RANGER", new RangerAdminHandlerStrategy());
+        strategyMap.put("ZOOKEEPER", new ZkServerHandlerStrategy());
+        strategyMap.put("YARN", new RMHandlerStrategy());
+        strategyMap.put("HDFS", new NameNodeHandlerStrategy());
+        strategyMap.put("HIVE", new HiveServer2HandlerStrategy());
+        strategyMap.put("KAFKA", new KafkaHandlerStrategy());
+        strategyMap.put("HBASE", new HBaseHandlerStrategy());
+        strategyMap.put("FLINK", new FlinkHandlerStrategy());
+        strategyMap.put("KYUUBI", new KyuubiServerHandlerStrategy());
+        
+        // serviceNameMap
+        serviceNameMap.put("NameNode", "HDFS");
+        serviceNameMap.put("ResourceManager", "YARN");
+        serviceNameMap.put("HiveMetaStore", "HIVE");
+        serviceNameMap.put("HiveServer2", "HIVE");
+        serviceNameMap.put("Grafana", "GRAFANA");
+        serviceNameMap.put("ZkServer", "ZOOKEEPER");
+        serviceNameMap.put("HistoryServer", "YARN");
+        serviceNameMap.put("TimelineServer", "YARN");
+        serviceNameMap.put("TrinoCoordinator", "TRINO");
+        serviceNameMap.put("JournalNode", "HDFS");
+        serviceNameMap.put("ZKFC", "HDFS");
+        serviceNameMap.put("HttpFs", "HDFS");
+        serviceNameMap.put("SRFE", "STARROCKS");
+        serviceNameMap.put("DorisFE", "DORIS");
+        serviceNameMap.put("DorisFEObserver", "DORIS");
+        serviceNameMap.put("SRBE", "STARROCKS");
+        serviceNameMap.put("DorisBE", "DORIS");
+        serviceNameMap.put("Krb5Kdc", "KERBEROS");
+        serviceNameMap.put("KAdmin", "KERBEROS");
+        serviceNameMap.put("RangerAdmin", "RANGER");
+        serviceNameMap.put("ElasticSearch", "ELASTICSEARCH");
+        serviceNameMap.put("Prometheus", "PROMETHEUS");
+        serviceNameMap.put("AlertManager", "ALERTMANAGER");
+        
+        serviceNameMap.put("FLINK", "FLINK");
+        serviceNameMap.put("RANGER", "RANGER");
+        serviceNameMap.put("YARN", "YARN");
+        serviceNameMap.put("HDFS", "HDFS");
+        serviceNameMap.put("HIVE", "HIVE");
+        serviceNameMap.put("KAFKA", "KAFKA");
+        serviceNameMap.put("HBASE", "HBASE");
+        serviceNameMap.put("KYUUBI", "KYUUBI");
+        
     }
-
+    
     public static ServiceRoleStrategy getServiceRoleHandler(String type) {
         if (StringUtils.isBlank(type)) {
             return null;
         }
-        return map.get(type);
+        return strategyMap.get(type);
+    }
+    
+    public static String getServiceName(String type) {
+        if (StringUtils.isBlank(type)) {
+            return null;
+        }
+        return serviceNameMap.get(type);
     }
 }

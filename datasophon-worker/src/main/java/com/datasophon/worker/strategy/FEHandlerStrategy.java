@@ -17,10 +17,6 @@
 
 package com.datasophon.worker.strategy;
 
-import akka.actor.ActorRef;
-import cn.hutool.json.JSONUtil;
-import com.datasophon.common.Constants;
-import com.datasophon.common.cache.CacheUtils;
 import com.datasophon.common.command.OlapOpsType;
 import com.datasophon.common.command.OlapSqlExecCommand;
 import com.datasophon.common.command.ServiceRoleOperateCommand;
@@ -33,16 +29,21 @@ import com.datasophon.worker.utils.ActorUtils;
 
 import java.util.ArrayList;
 
+import akka.actor.ActorRef;
+
+import cn.hutool.core.net.NetUtil;
+import cn.hutool.json.JSONUtil;
+
 public class FEHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
-
-    public FEHandlerStrategy(String serviceName,String serviceRoleName) {
-        super(serviceName,serviceRoleName);
+    
+    public FEHandlerStrategy(String serviceName, String serviceRoleName) {
+        super(serviceName, serviceRoleName);
     }
-
+    
     @Override
     public ExecResult handler(ServiceRoleOperateCommand command) {
         ExecResult startResult = new ExecResult();
-        logger.info("FEHandlerStrategy start fe"+ JSONUtil.toJsonStr(command));
+        logger.info("FEHandlerStrategy start fe" + JSONUtil.toJsonStr(command));
         ServiceHandler serviceHandler = new ServiceHandler(command.getServiceName(), command.getServiceRoleName());
         if (command.getCommandType() == CommandType.INSTALL_SERVICE) {
             if (command.isSlave()) {
@@ -51,7 +52,7 @@ public class FEHandlerStrategy extends AbstractHandlerStrategy implements Servic
                 commands.add("--helper");
                 commands.add(command.getMasterHost() + ":9010");
                 commands.add("--daemon");
-
+                
                 ServiceRoleRunner startRunner = new ServiceRoleRunner();
                 startRunner.setProgram(command.getStartRunner().getProgram());
                 startRunner.setArgs(commands);
@@ -63,7 +64,7 @@ public class FEHandlerStrategy extends AbstractHandlerStrategy implements Servic
                     try {
                         OlapSqlExecCommand sqlExecCommand = new OlapSqlExecCommand();
                         sqlExecCommand.setFeMaster(command.getMasterHost());
-                        sqlExecCommand.setHostName(CacheUtils.getString(Constants.HOSTNAME));
+                        sqlExecCommand.setHostName(NetUtil.getLocalhostStr());
                         sqlExecCommand.setOpsType(OlapOpsType.ADD_FE_FOLLOWER);
                         ActorUtils.getRemoteActor(command.getManagerHost(), "masterNodeProcessingActor")
                                 .tell(sqlExecCommand, ActorRef.noSender());

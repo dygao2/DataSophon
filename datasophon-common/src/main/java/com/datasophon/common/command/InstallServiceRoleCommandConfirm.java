@@ -23,6 +23,6 @@ import lombok.Data;
 
 @Data
 public class InstallServiceRoleCommandConfirm implements Serializable {
-
+    
     private Long deliveryId;
 }

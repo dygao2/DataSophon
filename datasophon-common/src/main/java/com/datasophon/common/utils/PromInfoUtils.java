@@ -22,7 +22,7 @@ import com.datasophon.common.model.PromMetricInfo;
 import com.datasophon.common.model.PromResponceInfo;
 import com.datasophon.common.model.PromResultInfo;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -41,11 +41,11 @@ import cn.hutool.http.HttpUtil;
  * @Description:
  */
 public class PromInfoUtils {
-
+    
     private static final Logger log = LoggerFactory.getLogger(PromInfoUtils.class);
-
+    
     public static List<PromResultInfo> getPrometheusMetrics(String promURL, String promQL) {
-
+        
         // log.info("请求地址：{}，请求QL：{}", promURL, promQL);
         Map param = new HashMap<String, String>();
         param.put(Constants.QUERY, promQL);
@@ -68,9 +68,9 @@ public class PromInfoUtils {
         List<PromResultInfo> result = responceInfo.getData().getResult();
         return result;
     }
-
+    
     public static String getSinglePrometheusMetric(String promURL, String promQL) {
-
+        
         // log.info("请求地址：{}，请求QL：{}", promURL, promQL);
         Map param = new HashMap<String, String>();
         param.put(Constants.QUERY, promQL);
@@ -97,17 +97,17 @@ public class PromInfoUtils {
         }
         return null;
     }
-
+    
     public static void main(String[] args) {
         // List<PromResultInfo> windowsOsInfo = getWindowsInfo("http://10.0.50.225:9090/api/v1/query",
         // PromConstants.WINDOWS_OS_INFO);
-
+        
         List<PromResultInfo> hadoop_nameNode_threads = getPrometheusMetrics("http://172.31.96.16:9090/api/v1/query",
                 "up{job=\"hdfs\",instance=\"172.31.96.16:27001\"}");
         for (PromResultInfo hadoop_nameNode_thread : hadoop_nameNode_threads) {
             PromMetricInfo metric = hadoop_nameNode_thread.getMetric();
-            log.info(metric.get__name__() + ":" + hadoop_nameNode_thread.getValue()[1]);
+            log.info(metric.getName() + ":" + hadoop_nameNode_thread.getValue()[1]);
         }
     }
-
+    
 }

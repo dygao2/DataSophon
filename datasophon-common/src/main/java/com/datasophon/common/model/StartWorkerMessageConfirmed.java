@@ -23,9 +23,9 @@ import lombok.Data;
 
 @Data
 public class StartWorkerMessageConfirmed implements Serializable {
-
+    
     private Long deliveryId;
-
+    
     public StartWorkerMessageConfirmed(Long deliveryId) {
         this.deliveryId = deliveryId;
     }

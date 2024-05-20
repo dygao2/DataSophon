@@ -26,11 +26,11 @@ import lombok.Data;
 
 @Data
 public class CheckServiceExecuteStateCommand implements Serializable {
-
+    
     private ServiceNode serviceNode;
-
+    
     private ServiceRoleType serviceRoleType;
-
+    
     public CheckServiceExecuteStateCommand(ServiceNode serviceNode, ServiceRoleType serviceRoleType) {
         this.serviceNode = serviceNode;
         this.serviceRoleType = serviceRoleType;

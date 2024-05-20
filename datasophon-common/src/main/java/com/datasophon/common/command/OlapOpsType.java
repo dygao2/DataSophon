@@ -14,39 +14,40 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package com.datasophon.common.command;
 
 public enum OlapOpsType {
-
+    
     ADD_BE(1, "backend"),
     ADD_FE_FOLLOWER(2, "follower"),
     ADD_FE_OBSERVER(3, "observer");
-
+    
     private int value;
-
+    
     private String desc;
-
+    
     OlapOpsType(int value, String desc) {
         this.value = value;
         this.desc = desc;
     }
-
+    
     public int getValue() {
         return value;
     }
-
+    
     public void setValue(int value) {
         this.value = value;
     }
-
+    
     public String getDesc() {
         return desc;
     }
-
+    
     public void setDesc(String desc) {
         this.desc = desc;
     }
-
+    
     @Override
     public String toString() {
         return this.desc;

@@ -35,8 +35,8 @@ export REGISTRY_TYPE=${r"${REGISTRY_TYPE"}:-zookeeper}
 export REGISTRY_ZOOKEEPER_CONNECT_STRING=${r"${REGISTRY_ZOOKEEPER_CONNECT_STRING"}:-${zkUrls}}
 
 # Tasks related configurations, need to change the configuration if you use the related tasks.
-export HADOOP_HOME=${r"${HADOOP_HOME"}:-/opt/datasophon/hadoop-3.3.3}
-export HADOOP_CONF_DIR=${r"${HADOOP_CONF_DIR"}:-/opt/datasophon/hadoop-3.3.3/etc/hadoop}
+export HADOOP_HOME=${r"${HADOOP_HOME"}:-/opt/datasophon/hadoop}
+export HADOOP_CONF_DIR=${r"${HADOOP_CONF_DIR"}:-/opt/datasophon/hadoop/etc/hadoop}
 export SPARK_HOME1=${r"${SPARK_HOME1"}:-/opt/soft/spark1}
 export SPARK_HOME2=${r"${SPARK_HOME2"}:-/opt/soft/spark2}
 export PYTHON_HOME=${r"${PYTHON_HOME"}:-/opt/soft/python}

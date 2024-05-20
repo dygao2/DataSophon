@@ -17,8 +17,9 @@
 
 package com.datasophon.api.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.datasophon.dao.entity.RoleInfoEntity;
+
+import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * 角色信息表
@@ -28,5 +29,5 @@ import com.datasophon.dao.entity.RoleInfoEntity;
  * @date 2022-03-15 17:36:08
  */
 public interface RoleInfoService extends IService<RoleInfoEntity> {
-
+    
 }

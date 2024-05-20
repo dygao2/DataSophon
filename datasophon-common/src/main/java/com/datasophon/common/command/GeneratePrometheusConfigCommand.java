@@ -25,11 +25,11 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class GeneratePrometheusConfigCommand implements Serializable {
-
+    
     private Integer serviceInstanceId;
-
+    
     private String clusterFrame;
-
+    
     private Integer clusterId;
-
+    
 }

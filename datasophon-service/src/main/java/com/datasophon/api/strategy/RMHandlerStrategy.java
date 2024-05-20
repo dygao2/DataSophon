@@ -35,6 +35,8 @@ import com.datasophon.dao.entity.ClusterInfoEntity;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
 import com.datasophon.dao.entity.ClusterYarnScheduler;
 
+import org.apache.commons.lang3.StringUtils;
+
 import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
@@ -52,24 +54,24 @@ import akka.pattern.Patterns;
 import akka.util.Timeout;
 
 public class RMHandlerStrategy extends ServiceHandlerAbstract implements ServiceRoleStrategy {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(RMHandlerStrategy.class);
-
+    
     private static final String ACTIVE = "active";
-
+    
     @Override
-    public void handler(Integer clusterId, List<String> hosts) {
-
+    public void handler(Integer clusterId, List<String> hosts, String serviceName) {
+        
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
-
-        ProcessUtils.generateClusterVariable(globalVariables, clusterId, "${rm1}", hosts.get(0));
-        ProcessUtils.generateClusterVariable(globalVariables, clusterId, "${rm2}", hosts.get(1));
+        
+        ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${rm1}", hosts.get(0));
+        ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${rm2}", hosts.get(1));
         ProcessUtils.generateClusterVariable(
-                globalVariables, clusterId, "${rmHost}", String.join(",", hosts));
+                globalVariables, clusterId, serviceName, "${rmHost}", String.join(",", hosts));
     }
-
+    
     @Override
-    public void handlerConfig(Integer clusterId, List<ServiceConfig> list) {
+    public void handlerConfig(Integer clusterId, List<ServiceConfig> list, String serviceName) {
         ClusterYarnSchedulerService schedulerService =
                 SpringTool.getApplicationContext().getBean(ClusterYarnSchedulerService.class);
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
@@ -109,32 +111,42 @@ public class RMHandlerStrategy extends ServiceHandlerAbstract implements Service
         }
         list.addAll(kbConfigs);
     }
-
+    
     @Override
     public void getConfig(Integer clusterId, List<ServiceConfig> list) {
     }
-
+    
     @Override
     public void handlerServiceRoleInfo(ServiceRoleInfo serviceRoleInfo, String hostname) {
     }
-
+    
     @Override
     public void handlerServiceRoleCheck(
                                         ClusterServiceRoleInstanceEntity roleInstanceEntity,
                                         Map<String, ClusterServiceRoleInstanceEntity> map) {
-
+        
         Map<String, String> globalVariable = GlobalVariables.get(roleInstanceEntity.getClusterId());
-        String rm2 = globalVariable.get("${rm2}");
-        String commandLine =
-                globalVariable.get("${HADOOP_HOME}") + "/bin/yarn rmadmin -getServiceState rm1";
-
-        if (rm2.equals(roleInstanceEntity.getHostname())) {
-            commandLine =
-                    globalVariable.get("${HADOOP_HOME}") + "/bin/yarn rmadmin -getServiceState rm2";
-        }
+        String commandLine = getRMStateCommand(globalVariable, roleInstanceEntity.getHostname());
         getRMState(roleInstanceEntity, commandLine);
     }
-
+    
+    private String getRMStateCommand(Map<String, String> globalVariable, String hostName) {
+        
+        String commandLine = null;
+        String yarnAclAdminUser = globalVariable.get("${yarn.admin.acl}");
+        String rm2 = globalVariable.get("${rm2}");
+        String curRm = rm2.equals(hostName) ? "rm2" : "rm1";
+        
+        if (StringUtils.isNotEmpty(yarnAclAdminUser)) {
+            commandLine = String.format("sudo -u %s %s/bin/yarn rmadmin -getServiceState %s",
+                    yarnAclAdminUser, globalVariable.get("${HADOOP_HOME}"), curRm);
+        } else {
+            commandLine = String.format("%s/bin/yarn rmadmin -getServiceState %s",
+                    globalVariable.get("${HADOOP_HOME}"), curRm);
+        }
+        return commandLine;
+    }
+    
     private void getRMState(
                             ClusterServiceRoleInstanceEntity roleInstanceEntity, String commandLine) {
         ClusterServiceRoleInstanceWebuisService webuisService =
@@ -149,7 +161,7 @@ public class RMHandlerStrategy extends ServiceHandlerAbstract implements Service
         try {
             ExecResult execResult = (ExecResult) Await.result(execFuture, timeout.duration());
             if (execResult.getExecResult()) {
-                if (ACTIVE.equals(execResult.getExecOut())) {
+                if (execResult.getExecOut().contains(ACTIVE)) {
                     webuisService.updateWebUiToActive(roleInstanceEntity.getId());
                 } else {
                     webuisService.updateWebUiToStandby(roleInstanceEntity.getId());

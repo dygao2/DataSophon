@@ -17,8 +17,6 @@
 
 package com.datasophon.api.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.service.ClusterGroupService;
 import com.datasophon.api.service.ClusterUserGroupService;
 import com.datasophon.api.service.ClusterUserService;
@@ -27,36 +25,40 @@ import com.datasophon.dao.entity.ClusterGroup;
 import com.datasophon.dao.entity.ClusterUser;
 import com.datasophon.dao.entity.ClusterUserGroup;
 import com.datasophon.dao.mapper.ClusterUserGroupMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
 @Service("clusterUserGroupService")
 public class ClusterUserGroupServiceImpl extends ServiceImpl<ClusterUserGroupMapper, ClusterUserGroup>
         implements
             ClusterUserGroupService {
-
+    
     @Autowired
     private ClusterGroupService clusterGroupService;
-
+    
     @Autowired
     private ClusterUserService userService;
-
+    
     @Override
     public Integer countGroupUserNum(Integer groupId) {
         int count = this.count(new QueryWrapper<ClusterUserGroup>().eq(Constants.GROUP_ID, groupId));
         return count;
     }
-
+    
     @Override
     public void deleteByUser(Integer id) {
         this.remove(new QueryWrapper<ClusterUserGroup>().eq(Constants.USER_ID, id));
     }
-
+    
     @Override
     public ClusterGroup queryMainGroup(Integer userId) {
         List<ClusterUserGroup> clusterUserGroups =
@@ -64,7 +66,7 @@ public class ClusterUserGroupServiceImpl extends ServiceImpl<ClusterUserGroupMap
         List<Integer> groupIds = clusterUserGroups.stream().map(e -> e.getGroupId()).collect(Collectors.toList());
         return clusterGroupService.getById(groupIds.get(0));
     }
-
+    
     @Override
     public List<ClusterGroup> listOtherGroups(Integer userId) {
         List<ClusterUserGroup> clusterUserGroups =
@@ -76,7 +78,7 @@ public class ClusterUserGroupServiceImpl extends ServiceImpl<ClusterUserGroupMap
         }
         return null;
     }
-
+    
     @Override
     public List<ClusterUser> listClusterUsers(Integer groupId) {
         List<ClusterUserGroup> clusterUserGroups =

@@ -18,9 +18,10 @@
 package com.datasophon.common.model;
 
 import com.datasophon.common.enums.CommandType;
-import lombok.Data;
 
 import java.io.Serializable;
+
+import lombok.Data;
 
 /**
  * 支持 worker 上启动的服务管理
@@ -29,28 +30,28 @@ import java.io.Serializable;
  */
 @Data
 public class WorkerServiceMessage implements Serializable {
-
+    
     /**
      * 节点名称
      */
     private String hostname;
-
+    
     /**
      * Cluster ID
      */
     private Integer clusterId;
-
+    
     /**
      * 节点 IP
      */
     private String ip;
-
+    
     private CommandType commandType;
-
+    
     public WorkerServiceMessage() {
     }
-
-    public WorkerServiceMessage(String hostname, Integer clusterId,CommandType commandType) {
+    
+    public WorkerServiceMessage(String hostname, Integer clusterId, CommandType commandType) {
         this.hostname = hostname;
         this.clusterId = clusterId;
         this.commandType = commandType;

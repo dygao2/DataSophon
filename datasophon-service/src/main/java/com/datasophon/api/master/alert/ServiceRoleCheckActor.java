@@ -37,14 +37,14 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import akka.actor.UntypedActor;
 
 public class ServiceRoleCheckActor extends UntypedActor {
-
+    
     @Override
     public void onReceive(Object msg) throws Throwable {
         if (msg instanceof ServiceRoleCheckCommand) {
             ClusterServiceRoleInstanceService roleInstanceService =
                     SpringTool.getApplicationContext()
                             .getBean(ClusterServiceRoleInstanceService.class);
-
+            
             List<ClusterServiceRoleInstanceEntity> list =
                     roleInstanceService.list(
                             new QueryWrapper<ClusterServiceRoleInstanceEntity>()
@@ -60,8 +60,9 @@ public class ServiceRoleCheckActor extends UntypedActor {
                                             "DorisFEObserver",
                                             "DorisBE",
                                             "NameNode",
-                                            "ResourceManager"));
-
+                                            "ResourceManager",
+                                            "ElasticSearch"));
+            
             if (!list.isEmpty()) {
                 Map<String, ClusterServiceRoleInstanceEntity> map = translateListToMap(list);
                 for (ClusterServiceRoleInstanceEntity roleInstanceEntity : list) {
@@ -77,7 +78,7 @@ public class ServiceRoleCheckActor extends UntypedActor {
             }
         }
     }
-
+    
     private Map<String, ClusterServiceRoleInstanceEntity> translateListToMap(
                                                                              List<ClusterServiceRoleInstanceEntity> list) {
         return list.stream()

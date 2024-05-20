@@ -25,14 +25,14 @@ import lombok.Data;
 
 @Data
 public class UpdateCommandHostMessage implements Serializable {
-
+    
     private String commandHostId;
-
+    
     private String hostname;
-
+    
     private Boolean execResult;
-
+    
     private ServiceRoleType serviceRoleType;
-
+    
     private String commandId;
 }

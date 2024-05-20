@@ -17,21 +17,14 @@
 
 package com.datasophon.api.master;
 
-import akka.actor.ActorRef;
-import akka.actor.ActorSelection;
-import akka.actor.ActorSystem;
-import akka.actor.Props;
-import akka.util.Timeout;
 import com.datasophon.api.master.alert.ServiceRoleCheckActor;
 import com.datasophon.common.command.ClusterCommand;
 import com.datasophon.common.command.HostCheckCommand;
 import com.datasophon.common.command.ServiceRoleCheckCommand;
 import com.datasophon.common.enums.ClusterCommandType;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.commons.lang3.StringUtils;
+
 import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
@@ -45,21 +38,33 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+
+import akka.actor.ActorRef;
+import akka.actor.ActorSelection;
+import akka.actor.ActorSystem;
+import akka.actor.Props;
+import akka.util.Timeout;
+
 public class ActorUtils {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(ActorUtils.class);
-
+    
     public static ActorSystem actorSystem;
-
+    
     public static final String DATASOPHON = "datasophon";
-
+    
     public static final String AKKA_REMOTE_NETTY_TCP_HOSTNAME = "akka.remote.netty.tcp.hostname";
-
+    
     private static Random rand;
-
+    
     private ActorUtils() throws NoSuchAlgorithmException {
     }
-
+    
     public static void init() throws UnknownHostException, NoSuchAlgorithmException {
         String hostname = InetAddress.getLocalHost().getHostName();
         Config config = ConfigFactory.parseString(AKKA_REMOTE_NETTY_TCP_HOSTNAME + "=" + hostname);
@@ -71,10 +76,10 @@ public class ActorUtils {
                 actorSystem.actorOf(Props.create(HostCheckActor.class), getActorRefName(HostCheckActor.class));
         actorSystem.actorOf(Props.create(MasterNodeProcessingActor.class),
                 getActorRefName(MasterNodeProcessingActor.class));
-
+        
         ActorRef clusterCheckActor =
                 actorSystem.actorOf(Props.create(ClusterActor.class), getActorRefName(ClusterActor.class));
-
+        
         // 节点检测 5m 检测一次
         actorSystem.scheduler().schedule(
                 FiniteDuration.apply(30L, TimeUnit.SECONDS),
@@ -83,7 +88,7 @@ public class ActorUtils {
                 new HostCheckCommand(),
                 actorSystem.dispatcher(),
                 ActorRef.noSender());
-
+        
         actorSystem.scheduler().schedule(
                 FiniteDuration.apply(15L, TimeUnit.SECONDS),
                 FiniteDuration.apply(15L, TimeUnit.SECONDS),
@@ -91,7 +96,7 @@ public class ActorUtils {
                 new ServiceRoleCheckCommand(),
                 actorSystem.dispatcher(),
                 ActorRef.noSender());
-
+        
         // 集群检测 1m 检测一次
         actorSystem.scheduler().schedule(
                 FiniteDuration.apply(30L, TimeUnit.SECONDS),
@@ -100,11 +105,10 @@ public class ActorUtils {
                 new ClusterCommand(ClusterCommandType.CHECK),
                 actorSystem.dispatcher(),
                 ActorRef.noSender());
-
-
+        
         rand = SecureRandom.getInstanceStrong();
     }
-
+    
     public static ActorRef getLocalActor(Class actorClass, String actorName) {
         ActorSelection actorSelection = actorSystem.actorSelection("/user/" + actorName);
         Timeout timeout = new Timeout(Duration.create(30, TimeUnit.SECONDS));
@@ -123,7 +127,7 @@ public class ActorUtils {
         }
         return actorRef;
     }
-
+    
     private static ActorRef createActor(Class actorClass, String actorName) {
         ActorRef actorRef;
         try {
@@ -134,10 +138,10 @@ public class ActorUtils {
             actorRef = actorSystem.actorOf(Props.create(actorClass).withDispatcher("my-forkjoin-dispatcher"),
                     actorName + num);
         }
-
+        
         return actorRef;
     }
-
+    
     public static ActorRef getRemoteActor(String hostname, String actorName) {
         String actorPath = "akka.tcp://datasophon@" + hostname + ":2552/user/worker/" + actorName;
         ActorSelection actorSelection = actorSystem.actorSelection(actorPath);
@@ -149,10 +153,10 @@ public class ActorUtils {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-
+        
         return actorRef;
     }
-
+    
     /**
      * shutdown
      */
@@ -165,12 +169,12 @@ public class ActorUtils {
             actorSystem = null;
         }
     }
-
+    
     /**
      * Get ActorRef name from Class name.
      */
     public static String getActorRefName(Class clazz) {
         return StringUtils.uncapitalize(clazz.getSimpleName());
     }
-
+    
 }

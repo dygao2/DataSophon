@@ -38,18 +38,18 @@ import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
 
 public class SubmitTaskNodeActor extends UntypedActor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(SubmitTaskNodeActor.class);
-
+    
     @Override
     public void preRestart(Throwable reason, Option<Object> message) throws Exception {
         logger.info("service command actor restart because {}", reason.getMessage());
         super.preRestart(reason, message);
     }
-
+    
     @Override
     public void onReceive(Object message) throws Throwable {
-
+        
         if (message instanceof SubmitActiveTaskNodeCommand) {
             SubmitActiveTaskNodeCommand submitActiveTaskNodeCommand = (SubmitActiveTaskNodeCommand) message;
             DAGGraph<String, ServiceNode, String> dag = submitActiveTaskNodeCommand.getDag();
@@ -58,7 +58,7 @@ public class SubmitTaskNodeActor extends UntypedActor {
             Map<String, String> readyToSubmitTaskList = submitActiveTaskNodeCommand.getReadyToSubmitTaskList();
             Map<String, String> completeTaskList = submitActiveTaskNodeCommand.getCompleteTaskList();
             // dag
-            if (readyToSubmitTaskList.size() > 0) {
+            if (!readyToSubmitTaskList.isEmpty()) {
                 for (String node : readyToSubmitTaskList.keySet()) {
                     Set<String> previousNodes = dag.getPreviousNodes(node);
                     for (String previousNode : previousNodes) {
@@ -67,7 +67,6 @@ public class SubmitTaskNodeActor extends UntypedActor {
                         }
                         if (!completeTaskList.containsKey(previousNode)) {
                             readyToSubmitTaskList.remove(node);
-                            continue;
                         }
                     }
                     if (activeTaskList.containsKey(node)) {
@@ -78,10 +77,10 @@ public class SubmitTaskNodeActor extends UntypedActor {
                     }
                     ServiceNode serviceNode = dag.getNode(node);
                     List<ServiceRoleInfo> masterRoles = serviceNode.getMasterRoles();
-
+                    
                     activeTaskList.put(node, ServiceExecuteState.RUNNING);
-
-                    if (masterRoles.size() > 0) {
+                    
+                    if (!masterRoles.isEmpty()) {
                         logger.info("start to submit {} master roles", node);
                         ActorRef serviceActor = ActorUtils.getLocalActor(MasterServiceActor.class,
                                 submitActiveTaskNodeCommand.getClusterCode() + "-serviceActor-" + node);
@@ -99,8 +98,8 @@ public class SubmitTaskNodeActor extends UntypedActor {
                                 null,
                                 serviceActor,
                                 ServiceRoleType.MASTER);
-
-                    } else if (serviceNode.getElseRoles().size() > 0) {
+                        
+                    } else if (!serviceNode.getElseRoles().isEmpty()) {
                         logger.info("{} does not has master roles , start to submit worker or client roles", node);
                         for (ServiceRoleInfo elseRole : serviceNode.getElseRoles()) {
                             ActorRef serviceActor = ActorUtils.getLocalActor(WorkerServiceActor.class,
@@ -121,13 +120,11 @@ public class SubmitTaskNodeActor extends UntypedActor {
                                     serviceActor,
                                     ServiceRoleType.WORKER);
                         }
-
-                    } else {
-                        continue;
+                        
                     }
                 }
             }
         }
     }
-
+    
 }

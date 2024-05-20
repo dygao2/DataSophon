@@ -29,27 +29,27 @@ import java.util.Map;
 import cn.hutool.http.HttpUtil;
 
 public class AlertManagerHandlerStrategy implements ServiceRoleStrategy {
-
+    
     @Override
-    public void handler(Integer clusterId, List<String> hosts) {
-
+    public void handler(Integer clusterId, List<String> hosts, String serviceName) {
+        
     }
-
+    
     @Override
-    public void handlerConfig(Integer clusterId, List<ServiceConfig> list) {
-
+    public void handlerConfig(Integer clusterId, List<ServiceConfig> list, String serviceName) {
+        
     }
-
+    
     @Override
     public void getConfig(Integer clusterId, List<ServiceConfig> list) {
-
+        
     }
-
+    
     @Override
     public void handlerServiceRoleInfo(ServiceRoleInfo serviceRoleInfo, String hostname) {
-
+        
     }
-
+    
     @Override
     public void handlerServiceRoleCheck(ClusterServiceRoleInstanceEntity roleInstanceEntity,
                                         Map<String, ClusterServiceRoleInstanceEntity> map) {
@@ -61,7 +61,7 @@ public class AlertManagerHandlerStrategy implements ServiceRoleStrategy {
             // save alert
             String alertTargetName = roleInstanceEntity.getServiceRoleName() + " Survive";
             ProcessUtils.saveAlert(roleInstanceEntity, alertTargetName, AlertLevel.EXCEPTION, "restart");
-
+            
         }
     }
 }

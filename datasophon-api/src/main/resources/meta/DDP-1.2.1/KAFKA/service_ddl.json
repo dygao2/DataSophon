@@ -100,6 +100,42 @@
         ]
       },
       {
+        "filename": "kafka-topics.sh",
+        "configFormat": "custom",
+        "outputDirectory": "bin",
+        "templateName": "kafka-topics.ftl",
+        "includeParams": [
+          "kafkaHome"
+        ]
+      },
+      {
+        "filename": "kafka-console-consumer.sh",
+        "configFormat": "custom",
+        "outputDirectory": "bin",
+        "templateName": "kafka-console-consumer.ftl",
+        "includeParams": [
+          "kafkaHome"
+        ]
+      },
+      {
+        "filename": "kafka-console-producer.sh",
+        "configFormat": "custom",
+        "outputDirectory": "bin",
+        "templateName": "kafka-console-producer.ftl",
+        "includeParams": [
+          "kafkaHome"
+        ]
+      },
+      {
+        "filename": "kafka-consumer-groups.sh",
+        "configFormat": "custom",
+        "outputDirectory": "bin",
+        "templateName": "kafka-consumer-groups.ftl",
+        "includeParams": [
+          "kafkaHome"
+        ]
+      },
+      {
         "filename": "kafka-jaas.conf",
         "configFormat": "custom",
         "outputDirectory": "config",
@@ -107,6 +143,27 @@
         "includeParams": [
           "kafkaHost",
           "kafkaRealm"
+        ]
+      },
+      {
+        "filename": "kafka-client-jaas.conf",
+        "configFormat": "custom",
+        "outputDirectory": "config",
+        "templateName": "kafka-client-jaas.ftl",
+        "includeParams": [
+          "kafkaHost",
+          "kafkaRealm"
+        ]
+      },
+      {
+        "filename": "kafka-client.properties",
+        "configFormat": "custom",
+        "outputDirectory": "config",
+        "templateName": "kafka-client.ftl",
+        "includeParams": [
+          "securityProtocol",
+          "saslMechanism",
+          "kbServiceName"
         ]
       }
     ]
@@ -450,6 +507,19 @@
       "defaultValue": "${KAFKA_HOME}/config/kafka-jaas.conf"
     },
     {
+      "name": "kafkaHome",
+      "label": "kafkaHome",
+      "description": "",
+      "configType": "map",
+      "configWithKerberos": true,
+      "required": false,
+      "type": "input",
+      "value": "${KAFKA_HOME}",
+      "configurableInWizard": true,
+      "hidden": true,
+      "defaultValue": "${KAFKA_HOME}"
+    },
+    {
       "name": "kafkaHost",
       "label": "kafkaHost",
       "description": "",
@@ -474,6 +544,45 @@
       "configurableInWizard": true,
       "hidden": true,
       "defaultValue": "${realm}"
+    },
+    {
+      "name": "securityProtocol",
+      "label": "securityProtocol",
+      "description": "",
+      "configType": "map",
+      "configWithKerberos": true,
+      "required": false,
+      "type": "input",
+      "value": "SASL_PLAINTEXT",
+      "configurableInWizard": true,
+      "hidden": true,
+      "defaultValue": "SASL_PLAINTEXT"
+    },
+    {
+      "name": "saslMechanism",
+      "label": "saslMechanism",
+      "description": "",
+      "configType": "map",
+      "configWithKerberos": true,
+      "required": false,
+      "type": "input",
+      "value": "GSSAPI",
+      "configurableInWizard": true,
+      "hidden": true,
+      "defaultValue": "GSSAPI"
+    },
+    {
+      "name": "kbServiceName",
+      "label": "kbServiceName",
+      "description": "",
+      "configType": "map",
+      "configWithKerberos": true,
+      "required": false,
+      "type": "input",
+      "value": "kafka",
+      "configurableInWizard": true,
+      "hidden": true,
+      "defaultValue": "kafka"
     },
     {
       "name": "custom.server.properties",

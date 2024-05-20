@@ -31,9 +31,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @Data
 @TableName("t_ddh_cluster_service_instance_role_group")
 public class ClusterServiceInstanceRoleGroup implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     /** */
     @TableId
     private Integer id;
@@ -45,8 +45,8 @@ public class ClusterServiceInstanceRoleGroup implements Serializable {
     private String serviceName;
     /** */
     private Integer clusterId;
-
+    
     private String roleGroupType;
-
+    
     private NeedRestart needRestart;
 }

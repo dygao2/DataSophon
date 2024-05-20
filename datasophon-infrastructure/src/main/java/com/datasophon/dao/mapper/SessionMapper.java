@@ -35,10 +35,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 @Mapper
 public interface SessionMapper extends BaseMapper<SessionEntity> {
-
+    
     SessionEntity queryByUserIdAndIp(@Param("userId") Integer id, @Param("ip") String ip);
-
+    
     List<SessionEntity> queryByUserId(@Param("userId") Integer id);
-
+    
     void insertSession(SessionEntity session);
 }

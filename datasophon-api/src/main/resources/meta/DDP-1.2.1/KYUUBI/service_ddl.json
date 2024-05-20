@@ -17,6 +17,7 @@
         "group": "hadoop"
       },
       "cardinality": "1+",
+      "jmxPort": "10019",
       "logFile": "logs/kyuubi-server-${host}.out",
       "startRunner": {
         "timeout": "60",

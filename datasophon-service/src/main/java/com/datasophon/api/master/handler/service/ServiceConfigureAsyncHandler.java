@@ -35,46 +35,46 @@ import akka.pattern.Patterns;
 import akka.util.Timeout;
 
 public class ServiceConfigureAsyncHandler extends ServiceHandler {
-
-  private final OnComplete<Object> function;
-
-  public ServiceConfigureAsyncHandler(OnComplete<Object> function) {
-    this.function = function;
-  }
-
-  @Override
-  public ExecResult handlerRequest(ServiceRoleInfo serviceRoleInfo)  {
-    ExecResult execResult = new ExecResult();
-    execResult.setExecResult(true);
-    // config
-    GenerateServiceConfigCommand generateServiceConfigCommand = new GenerateServiceConfigCommand();
-    generateServiceConfigCommand.setClusterId(serviceRoleInfo.getClusterId());
-    generateServiceConfigCommand.setServiceName(serviceRoleInfo.getParentName());
-    generateServiceConfigCommand.setCofigFileMap(serviceRoleInfo.getConfigFileMap());
-    generateServiceConfigCommand.setDecompressPackageName(serviceRoleInfo.getDecompressPackageName());
-    generateServiceConfigCommand.setRunAs(serviceRoleInfo.getRunAs());
-    if ("zkserver".equalsIgnoreCase(serviceRoleInfo.getName())) {
-      generateServiceConfigCommand.setMyid((Integer) CacheUtils.get("zkserver_" + serviceRoleInfo.getHostname()));
+    
+    private final OnComplete<Object> function;
+    
+    public ServiceConfigureAsyncHandler(OnComplete<Object> function) {
+        this.function = function;
     }
-    generateServiceConfigCommand.setServiceRoleName(serviceRoleInfo.getName());
-    ActorSelection configActor = ActorUtils.actorSystem.actorSelection(
-        "akka.tcp://datasophon@" + serviceRoleInfo.getHostname() + ":2552/user/worker/configureServiceActor");
-
-    Timeout timeout = new Timeout(Duration.create(180, TimeUnit.SECONDS));
-    final Future<Object> configureFuture = Patterns.ask(configActor, generateServiceConfigCommand, timeout);
-    configureFuture.onComplete(new OnComplete<Object>() {
-      @Override
-      public void onComplete(Throwable failure, Object success) throws Throwable {
-        if (failure != null) {
-          function.onComplete(failure, success);
-        } else {
-          ExecResult configResult = (ExecResult) success;
-          if (Objects.nonNull(configResult) && configResult.getExecResult() && Objects.nonNull(getNext())) {
-            getNext().handlerRequest(serviceRoleInfo);
-          }
+    
+    @Override
+    public ExecResult handlerRequest(ServiceRoleInfo serviceRoleInfo) {
+        ExecResult execResult = new ExecResult();
+        execResult.setExecResult(true);
+        // config
+        GenerateServiceConfigCommand generateServiceConfigCommand = new GenerateServiceConfigCommand();
+        generateServiceConfigCommand.setClusterId(serviceRoleInfo.getClusterId());
+        generateServiceConfigCommand.setServiceName(serviceRoleInfo.getParentName());
+        generateServiceConfigCommand.setCofigFileMap(serviceRoleInfo.getConfigFileMap());
+        generateServiceConfigCommand.setDecompressPackageName(serviceRoleInfo.getDecompressPackageName());
+        generateServiceConfigCommand.setRunAs(serviceRoleInfo.getRunAs());
+        if ("zkserver".equalsIgnoreCase(serviceRoleInfo.getName())) {
+            generateServiceConfigCommand.setMyid((Integer) CacheUtils.get("zkserver_" + serviceRoleInfo.getHostname()));
         }
-      }
-    }, ActorUtils.actorSystem.dispatcher());
-    return execResult;
-  }
+        generateServiceConfigCommand.setServiceRoleName(serviceRoleInfo.getName());
+        ActorSelection configActor = ActorUtils.actorSystem.actorSelection(
+                "akka.tcp://datasophon@" + serviceRoleInfo.getHostname() + ":2552/user/worker/configureServiceActor");
+        
+        Timeout timeout = new Timeout(Duration.create(180, TimeUnit.SECONDS));
+        final Future<Object> configureFuture = Patterns.ask(configActor, generateServiceConfigCommand, timeout);
+        configureFuture.onComplete(new OnComplete<Object>() {
+            @Override
+            public void onComplete(Throwable failure, Object success) throws Throwable {
+                if (failure != null) {
+                    function.onComplete(failure, success);
+                } else {
+                    ExecResult configResult = (ExecResult) success;
+                    if (Objects.nonNull(configResult) && configResult.getExecResult() && Objects.nonNull(getNext())) {
+                        getNext().handlerRequest(serviceRoleInfo);
+                    }
+                }
+            }
+        }, ActorUtils.actorSystem.dispatcher());
+        return execResult;
+    }
 }

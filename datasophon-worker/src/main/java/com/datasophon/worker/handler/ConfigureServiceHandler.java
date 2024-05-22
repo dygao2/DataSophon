@@ -17,10 +17,6 @@
 
 package com.datasophon.worker.handler;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.IdUtil;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.datasophon.common.Constants;
 import com.datasophon.common.model.Generators;
 import com.datasophon.common.model.RunAs;
@@ -30,10 +26,8 @@ import com.datasophon.common.utils.PlaceholderUtils;
 import com.datasophon.common.utils.ShellUtils;
 import com.datasophon.worker.utils.FreemakerUtils;
 import com.datasophon.worker.utils.TaskConstants;
-import lombok.Data;
+
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.InetAddress;
@@ -45,26 +39,37 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import lombok.Data;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.IdUtil;
+
 @Data
 public class ConfigureServiceHandler {
-
+    
     private static final String RANGER_ADMIN = "RangerAdmin";
-
+    
     private static final String SH = "sh";
-
+    
     private String serviceName;
-
+    
     private String serviceRoleName;
-
+    
     private Logger logger;
-
+    
     public ConfigureServiceHandler(String serviceName, String serviceRoleName) {
         this.serviceName = serviceName;
         this.serviceRoleName = serviceRoleName;
         String loggerName = String.format("%s-%s-%s", TaskConstants.TASK_LOG_LOGGER_NAME, serviceName, serviceRoleName);
         logger = LoggerFactory.getLogger(loggerName);
     }
-
+    
     public ExecResult configure(Map<Generators, List<ServiceConfig>> cofigFileMap,
                                 String decompressPackageName,
                                 Integer clusterId,
@@ -73,7 +78,7 @@ public class ConfigureServiceHandler {
                                 RunAs runAs) {
         ExecResult execResult = new ExecResult();
         try {
-
+            
             String hostName = InetAddress.getLocalHost().getHostName();
             String ip = InetAddress.getLocalHost().getHostAddress();
             HashMap<String, String> paramMap = new HashMap<>();
@@ -120,7 +125,7 @@ public class ConfigureServiceHandler {
                         logger.info("Convert boolean and integer to string");
                         config.setValue(config.getValue().toString());
                     }
-
+                    
                     if ("dataDir".equals(config.getName())) {
                         logger.info("Find dataDir : {}", config.getValue());
                         dataDir = (String) config.getValue();
@@ -137,7 +142,7 @@ public class ConfigureServiceHandler {
                             || "be_priority_networks".equals(config.getName())) {
                         config.setName("priority_networks");
                     }
-
+                    
                     if ("KyuubiServer".equals(serviceRoleName) && "sparkHome".equals(config.getName())) {
                         // add hive-site.xml link in kerberos module
                         final String targetPath =
@@ -151,7 +156,7 @@ public class ConfigureServiceHandler {
                             }
                         }
                     }
-                    if("Grafana".equals(serviceRoleName)) {
+                    if ("Grafana".equals(serviceRoleName)) {
                         ServiceConfig clusterIdConfig = new ServiceConfig();
                         clusterIdConfig.setName("clusterId");
                         clusterIdConfig.setValue(String.valueOf(clusterId));
@@ -159,11 +164,11 @@ public class ConfigureServiceHandler {
                         customConfList.add(clusterIdConfig);
                     }
                 }
-
+                
                 if (Objects.nonNull(myid) && StringUtils.isNotBlank(dataDir)) {
                     FileUtil.writeUtf8String(myid + "", dataDir + Constants.SLASH + "myid");
                 }
-
+                
                 if ("node.properties".equals(generators.getFilename())) {
                     ServiceConfig serviceConfig = new ServiceConfig();
                     serviceConfig.setName("node.id");
@@ -203,14 +208,14 @@ public class ConfigureServiceHandler {
         }
         return execResult;
     }
-
+    
     private boolean setupRangerAdmin(String decompressPackageName) {
         logger.info("start to execute ranger admin setup.sh");
         ArrayList<String> commands = new ArrayList<>();
         commands.add(Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName + Constants.SLASH + "setup.sh");
         ExecResult execResult = ShellUtils
                 .execWithStatus(Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName, commands, 300L);
-
+        
         ArrayList<String> globalCommand = new ArrayList<>();
         globalCommand.add(
                 Constants.INSTALL_PATH + Constants.SLASH + decompressPackageName + Constants.SLASH + "set_globals.sh");
@@ -223,7 +228,7 @@ public class ConfigureServiceHandler {
         logger.info("ranger admin setup failed");
         return false;
     }
-
+    
     private void createPath(ServiceConfig config, RunAs runAs) {
         String path = (String) config.getValue();
         if (StringUtils.isNotBlank(config.getSeparator()) && path.contains(config.getSeparator())) {
@@ -234,7 +239,7 @@ public class ConfigureServiceHandler {
             mkdir(path, runAs);
         }
     }
-
+    
     private void movePath(ServiceConfig config, RunAs runAs) {
         String oldPath = (String) config.getDefaultValue();
         String newPath = (String) config.getValue();
@@ -250,7 +255,7 @@ public class ConfigureServiceHandler {
             logger.info("move path {} to {}", oldPath, newPath);
         }
     }
-
+    
     private void addToCustomList(Iterator<ServiceConfig> iterator, ArrayList<ServiceConfig> customConfList,
                                  ServiceConfig config) {
         List<JSONObject> list = (List<JSONObject>) config.getValue();
@@ -269,7 +274,7 @@ public class ConfigureServiceHandler {
             }
         }
     }
-
+    
     private String conventToStr(ServiceConfig config) {
         JSONArray value = (JSONArray) config.getValue();
         List<String> strs = value.toJavaList(String.class);
@@ -279,7 +284,7 @@ public class ConfigureServiceHandler {
         logger.info("config set value to {}", config.getValue());
         return joinValue;
     }
-
+    
     private void mkdir(String path, RunAs runAs) {
         if (!FileUtil.exist(path)) {
             logger.info("create file path {}", path);

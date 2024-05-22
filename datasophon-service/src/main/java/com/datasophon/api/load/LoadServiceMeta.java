@@ -27,13 +27,30 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.datasophon.api.service.*;
+import com.datasophon.api.service.ClusterInfoService;
+import com.datasophon.api.service.ClusterServiceInstanceRoleGroupService;
+import com.datasophon.api.service.ClusterServiceInstanceService;
+import com.datasophon.api.service.ClusterServiceRoleGroupConfigService;
+import com.datasophon.api.service.ClusterVariableService;
+import com.datasophon.api.service.FrameInfoService;
+import com.datasophon.api.service.FrameServiceRoleService;
+import com.datasophon.api.service.FrameServiceService;
 import com.datasophon.api.utils.CommonUtils;
 import com.datasophon.api.utils.PackageUtils;
 import com.datasophon.api.utils.ProcessUtils;
 import com.datasophon.common.Constants;
-import com.datasophon.common.model.*;
-import com.datasophon.dao.entity.*;
+import com.datasophon.common.model.ConfigWriter;
+import com.datasophon.common.model.Generators;
+import com.datasophon.common.model.ServiceConfig;
+import com.datasophon.common.model.ServiceInfo;
+import com.datasophon.common.model.ServiceRoleInfo;
+import com.datasophon.dao.entity.ClusterInfoEntity;
+import com.datasophon.dao.entity.ClusterServiceInstanceEntity;
+import com.datasophon.dao.entity.ClusterServiceRoleGroupConfig;
+import com.datasophon.dao.entity.ClusterVariable;
+import com.datasophon.dao.entity.FrameInfoEntity;
+import com.datasophon.dao.entity.FrameServiceEntity;
+import com.datasophon.dao.entity.FrameServiceRoleEntity;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,13 +58,20 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.env.PropertyResolver;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.datasophon.common.Constants.META_PATH;
@@ -56,6 +80,9 @@ import static com.datasophon.common.Constants.META_PATH;
 public class LoadServiceMeta implements ApplicationRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(LoadServiceMeta.class);
+
+    @Autowired
+    private PropertyResolver propertyResolver;
 
     @Autowired
     private FrameServiceService frameServiceService;
@@ -168,10 +195,10 @@ public class LoadServiceMeta implements ApplicationRunner {
 
 
     private void putServiceHomeToVariable(String frameCode,
-            List<ClusterInfoEntity> clusters, String serviceName,
-            String decompressPackageName) {
+                                          List<ClusterInfoEntity> clusters, String serviceName,
+                                          String decompressPackageName) {
         for (ClusterInfoEntity cluster : clusters) {
-            if(cluster.getClusterFrame().equals(frameCode)) {
+            if (cluster.getClusterFrame().equals(frameCode)) {
                 Map<String, String> globalVariables = GlobalVariables.get(cluster.getId());
                 if (HDFS.equals(serviceName)) {
                     serviceName = HADOOP;
@@ -305,7 +332,12 @@ public class LoadServiceMeta implements ApplicationRunner {
             Map<String, ServiceConfig> map,
             Map<Generators, List<ServiceConfig>> configFileMap) {
         ConfigWriter configWriter = serviceInfo.getConfigWriter();
-        List<Generators> generators = configWriter.getGenerators();
+        List<Generators> generators = configWriter.getGenerators().stream().filter(g -> {
+            if (StringUtils.isNotEmpty(g.getConditionalOnProperty())) {
+                return propertyResolver.getProperty(g.getConditionalOnProperty(), boolean.class, false);
+            }
+            return true;
+        }).collect(Collectors.toList());
         for (Generators generator : generators) {
             List<ServiceConfig> list = new ArrayList<>();
             List<String> includeParams = generator.getIncludeParams();

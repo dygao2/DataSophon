@@ -22,6 +22,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.load.GlobalVariables;
 import com.datasophon.api.service.ClusterServiceDashboardService;
 import com.datasophon.common.Constants;
+import com.datasophon.common.utils.PlaceholderUtils;
 import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.ClusterServiceDashboard;
 import com.datasophon.dao.mapper.ClusterServiceDashboardMapper;
@@ -42,6 +43,9 @@ public class ClusterServiceDashboardServiceImpl
         implements
         ClusterServiceDashboardService {
 
+    @Value("${datasophon.proxy-grafana.enable:false}")
+    private boolean proxy;
+
     @Value("${server.servlet.context-path}")
     private String contextPath;
 
@@ -50,15 +54,11 @@ public class ClusterServiceDashboardServiceImpl
 
     @Override
     public Result getDashboardUrl(Integer clusterId) {
-//        Map<String, String> globalVariables = GlobalVariables.get(clusterId);
         ClusterServiceDashboard dashboard = dashboardService
                 .getOne(new QueryWrapper<ClusterServiceDashboard>().eq(Constants.SERVICE_NAME, "TOTAL"));
-//        String dashboardUrl = PlaceholderUtils.replacePlaceholders(dashboard.getDashboardUrl(), globalVariables,
-//                Constants.REGEX_VARIABLE);
         if (Objects.nonNull(dashboard) && StringUtils.hasText(dashboard.getDashboardUrl())) {
             return Result.success(getDashboardUrl(clusterId, dashboard));
-        }
-        else {
+        } else {
             return Result.error("缺少集群总览");
         }
     }
@@ -72,10 +72,17 @@ public class ClusterServiceDashboardServiceImpl
     @Override
     public String getDashboardUrl(Integer clusterId, ClusterServiceDashboard dashboard) {
         String url = dashboard.getDashboardUrl();
-        // 兼容旧记录
-        if (url.startsWith("http://${grafanaHost}:3000")) {
-            url = url.substring(26);
+        if (proxy) {
+            // 兼容旧记录
+            if (url.startsWith("http://${grafanaHost}:3000")) {
+                url = url.substring(26);
+            }
+            return contextPath + GRAFANA_PATH + "/" + clusterId + url;
+        } else {
+            Map<String, String> globalVariables = GlobalVariables.get(clusterId);
+            String dashboardUrl = PlaceholderUtils.replacePlaceholders(dashboard.getDashboardUrl(), globalVariables,
+                    Constants.REGEX_VARIABLE);
+            return dashboardUrl;
         }
-        return contextPath + GRAFANA_PATH + "/" + clusterId + url;
     }
 }

@@ -15,6 +15,8 @@ import org.eclipse.jetty.websocket.servlet.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,7 +40,11 @@ import static com.datasophon.common.Constants.GRAFANA_PATH;
 
 
 @Configuration
+@ConditionalOnProperty(name = "datasophon.proxy-grafana.enable", havingValue = "true")
 public class GrafanaProxyConfiguration {
+
+    @Value("${datasophon.proxy-grafana.max-threads:32}")
+    String maxThreads;
 
     @Autowired
     private ClusterServiceDashboardService clusterServiceDashboardService;
@@ -48,7 +54,7 @@ public class GrafanaProxyConfiguration {
         ServletRegistrationBean<Servlet> servlet = new ServletRegistrationBean<>(new GrafanaProxyServlet(),
                 GRAFANA_PATH + "/*"
         );
-        servlet.setInitParameters(MapUtil.builder("maxThreads", "20").build());
+        servlet.setInitParameters(MapUtil.builder("maxThreads", maxThreads).build());
         return servlet;
     }
 

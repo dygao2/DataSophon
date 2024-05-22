@@ -63,4 +63,7 @@ logging:
 datasophon:
   migration:
     enable: true
+  proxy-grafana:
+    enable: false
+#    max-threads: 32
 

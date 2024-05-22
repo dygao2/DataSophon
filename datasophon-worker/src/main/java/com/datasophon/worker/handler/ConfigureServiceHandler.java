@@ -90,11 +90,6 @@ public class ConfigureServiceHandler {
                 String dataDir = "";
                 Iterator<ServiceConfig> iterator = configs.iterator();
                 ArrayList<ServiceConfig> customConfList = new ArrayList<>();
-                ServiceConfig clusterIdConfig = new ServiceConfig();
-                clusterIdConfig.setName("clusterId");
-                clusterIdConfig.setValue(String.valueOf(clusterId));
-                clusterIdConfig.setConfigType("map");
-                customConfList.add(clusterIdConfig);
                 while (iterator.hasNext()) {
                     ServiceConfig config = iterator.next();
                     if (StringUtils.isNotBlank(config.getType())) {
@@ -155,6 +150,13 @@ public class ConfigureServiceHandler {
                                 logger.warn("Add hive-site.xml link failed,msg: "+result.getExecErrOut());
                             }
                         }
+                    }
+                    if("Grafana".equals(serviceRoleName)) {
+                        ServiceConfig clusterIdConfig = new ServiceConfig();
+                        clusterIdConfig.setName("clusterId");
+                        clusterIdConfig.setValue(String.valueOf(clusterId));
+                        clusterIdConfig.setConfigType("map");
+                        customConfList.add(clusterIdConfig);
                     }
                 }
 

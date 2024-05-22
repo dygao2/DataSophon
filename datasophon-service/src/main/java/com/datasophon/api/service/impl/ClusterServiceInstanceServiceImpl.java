@@ -110,8 +110,6 @@ public class ClusterServiceInstanceServiceImpl
             ClusterServiceDashboard dashboard = dashboardService.getOne(new QueryWrapper<ClusterServiceDashboard>()
                     .eq(Constants.SERVICE_NAME, serviceInstance.getServiceName()));
             if (Objects.nonNull(dashboard) && StringUtils.hasText(dashboard.getDashboardUrl())) {
-//                String dashboardUrl = PlaceholderUtils.replacePlaceholders(dashboard.getDashboardUrl(), globalVariables,
-//                        Constants.REGEX_VARIABLE);
                 serviceInstance.setDashboardUrl(dashboardService.getDashboardUrl(clusterId, dashboard));
             }
             // 查询告警数量

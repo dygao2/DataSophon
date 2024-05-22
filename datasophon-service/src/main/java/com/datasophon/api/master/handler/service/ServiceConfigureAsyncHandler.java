@@ -17,19 +17,22 @@
 
 package com.datasophon.api.master.handler.service;
 
-import akka.actor.ActorSelection;
-import akka.dispatch.OnComplete;
-import akka.pattern.Patterns;
-import akka.util.Timeout;
 import com.datasophon.api.master.ActorUtils;
 import com.datasophon.common.cache.CacheUtils;
 import com.datasophon.common.command.GenerateServiceConfigCommand;
 import com.datasophon.common.model.ServiceRoleInfo;
 import com.datasophon.common.utils.ExecResult;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
+
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
+
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+
+import akka.actor.ActorSelection;
+import akka.dispatch.OnComplete;
+import akka.pattern.Patterns;
+import akka.util.Timeout;
 
 public class ServiceConfigureAsyncHandler extends ServiceHandler {
 

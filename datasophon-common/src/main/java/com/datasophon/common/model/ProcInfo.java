@@ -21,10 +21,10 @@ import lombok.Data;
 
 @Data
 public class ProcInfo {
-
-    private String HostName;
-
-    private Boolean Alive;
-
-    private String ErrMsg;
+    
+    private String hostName;
+    
+    private Boolean alive;
+    
+    private String errMsg;
 }

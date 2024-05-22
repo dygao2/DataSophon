@@ -17,9 +17,9 @@
 
 package com.datasophon.common.command;
 
-import lombok.Data;
-
 import java.io.Serializable;
+
+import lombok.Data;
 
 /**
  *
@@ -28,7 +28,7 @@ import java.io.Serializable;
  */
 @Data
 public class PingCommand implements Serializable {
-
+    
     private String message;
-
+    
 }

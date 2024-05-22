@@ -32,9 +32,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @Data
 @TableName("t_ddh_cluster_alert_quota")
 public class ClusterAlertQuota implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     /**
      * 主键
      */
@@ -88,17 +88,17 @@ public class ClusterAlertQuota implements Serializable {
      * 触发时长 单位秒
      */
     private Integer triggerDuration;
-
+    
     private String serviceRoleName;
-
+    
     private QuotaState quotaState;
-
+    
     private Date createTime;
-
+    
     @TableField(exist = false)
     private Integer quotaStateCode;
-
+    
     @TableField(exist = false)
     private String alertGroupName;
-
+    
 }

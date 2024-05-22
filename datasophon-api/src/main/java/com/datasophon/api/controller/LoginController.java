@@ -28,7 +28,7 @@ import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.UserInfoEntity;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
@@ -39,20 +39,24 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("")
 public class LoginController {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
-
+    
     @Autowired
     private SessionService sessionService;
-
+    
     @Autowired
     private Authenticator authenticator;
-
+    
     /**
      * login
      *
@@ -62,32 +66,32 @@ public class LoginController {
      * @param response     response
      * @return login result
      */
-
+    
     @RequestMapping("/login")
     public Result login(@RequestParam(value = "username") String userName,
                         @RequestParam(value = "password") String userPassword,
                         HttpServletRequest request,
                         HttpServletResponse response) {
         logger.info("login user name: {} ", userName);
-
+        
         // user name check
         if (StringUtils.isEmpty(userName)) {
             return Result.error(Status.USER_NAME_NULL.getCode(),
                     Status.USER_NAME_NULL.getMsg());
         }
-
+        
         // user ip check
         String ip = HttpUtils.getClientIpAddress(request);
         if (StringUtils.isEmpty(ip)) {
             return Result.error(IP_IS_EMPTY.getCode(), IP_IS_EMPTY.getMsg());
         }
-
+        
         // verify username and password
         Result result = authenticator.authenticate(userName, userPassword, ip);
         if (result.getCode() != Status.SUCCESS.getCode()) {
             return result;
         }
-
+        
         response.setStatus(HttpStatus.SC_OK);
         Map<String, String> cookieMap = (Map<String, String>) result.getData();
         for (Map.Entry<String, String> cookieEntry : cookieMap.entrySet()) {
@@ -95,10 +99,10 @@ public class LoginController {
             cookie.setHttpOnly(true);
             response.addCookie(cookie);
         }
-
+        
         return result;
     }
-
+    
     /**
      * sign out
      *

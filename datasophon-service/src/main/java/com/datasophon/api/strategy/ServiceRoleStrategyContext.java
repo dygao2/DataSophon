@@ -17,17 +17,17 @@
 
 package com.datasophon.api.strategy;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ServiceRoleStrategyContext {
-
+    
     private static final Map<String, ServiceRoleStrategy> strategyMap = new ConcurrentHashMap<>();
-
+    
     private static final Map<String, String> serviceNameMap = new ConcurrentHashMap<>();
-
+    
     static {
         strategyMap.put("NameNode", new NameNodeHandlerStrategy());
         strategyMap.put("ResourceManager", new RMHandlerStrategy());
@@ -52,7 +52,7 @@ public class ServiceRoleStrategyContext {
         strategyMap.put("ElasticSearch", new ElasticSearchHandlerStrategy());
         strategyMap.put("Prometheus", new PrometheusHandlerStrategy());
         strategyMap.put("AlertManager", new AlertManagerHandlerStrategy());
-
+        
         strategyMap.put("RANGER", new RangerAdminHandlerStrategy());
         strategyMap.put("ZOOKEEPER", new ZkServerHandlerStrategy());
         strategyMap.put("YARN", new RMHandlerStrategy());
@@ -62,8 +62,7 @@ public class ServiceRoleStrategyContext {
         strategyMap.put("HBASE", new HBaseHandlerStrategy());
         strategyMap.put("FLINK", new FlinkHandlerStrategy());
         strategyMap.put("KYUUBI", new KyuubiServerHandlerStrategy());
-
-
+        
         // serviceNameMap
         serviceNameMap.put("NameNode", "HDFS");
         serviceNameMap.put("ResourceManager", "YARN");
@@ -88,26 +87,25 @@ public class ServiceRoleStrategyContext {
         serviceNameMap.put("ElasticSearch", "ELASTICSEARCH");
         serviceNameMap.put("Prometheus", "PROMETHEUS");
         serviceNameMap.put("AlertManager", "ALERTMANAGER");
-
-
-        serviceNameMap.put("FLINK","FLINK");
-        serviceNameMap.put("RANGER","RANGER");
-        serviceNameMap.put("YARN","YARN");
-        serviceNameMap.put("HDFS","HDFS");
-        serviceNameMap.put("HIVE","HIVE");
-        serviceNameMap.put("KAFKA","KAFKA");
-        serviceNameMap.put("HBASE","HBASE");
-        serviceNameMap.put("KYUUBI","KYUUBI");
-
+        
+        serviceNameMap.put("FLINK", "FLINK");
+        serviceNameMap.put("RANGER", "RANGER");
+        serviceNameMap.put("YARN", "YARN");
+        serviceNameMap.put("HDFS", "HDFS");
+        serviceNameMap.put("HIVE", "HIVE");
+        serviceNameMap.put("KAFKA", "KAFKA");
+        serviceNameMap.put("HBASE", "HBASE");
+        serviceNameMap.put("KYUUBI", "KYUUBI");
+        
     }
-
+    
     public static ServiceRoleStrategy getServiceRoleHandler(String type) {
         if (StringUtils.isBlank(type)) {
             return null;
         }
         return strategyMap.get(type);
     }
-
+    
     public static String getServiceName(String type) {
         if (StringUtils.isBlank(type)) {
             return null;

@@ -1,6 +1,8 @@
 ### 1、构建安装包
-下载安装包 
+
+下载安装包
 [https://www.apache.org/dyn/closer.lua/seatunnel/2.3.3/apache-seatunnel-2.3.3-bin.tar.gz](https://www.apache.org/dyn/closer.lua/seatunnel/2.3.3/apache-seatunnel-2.3.3-bin.tar.gz)
+
 ```shell
 tar -zxvf apache-seatunnel-2.3.3-bin.tar.gz
 mv apache-seatunnel-2.3.3-bin seatunnel-2.3.3
@@ -18,6 +20,7 @@ tar czf seatunnel-2.3.3.tar.gz seatunnel-2.3.3
 md5sum seatunnel-2.3.3.tar.gz
 echo '27c821b7d7ead2f99a4db2d7503fc2b5' > seatunnel-2.3.3.tar.gz.md5
 ```
+
 ```shell
 #!/bin/bash
 
@@ -30,14 +33,18 @@ else
     exit 1
 fi
 ```
+
 ### 2、元数据文件
+
 api节点新增：
+
 ```shell
 cd /opt/apps/datasophon-manager-1.2.0/conf/meta/DDP-1.2.0
 mkdir SEATUNNEL
 cd SEATUNNEL
 touch service_ddl.json
 ```
+
 ```shell
 {
   "name": "SEATUNNEL",
@@ -147,13 +154,16 @@ touch service_ddl.json
 }
 
 ```
+
 各worker节点新增：
+
 ```shell
 cd /opt/datasophon/datasophon-worker/conf/templates
 touch seatunnel-yml.flt
 touch hazelcast.flt
 touch hazelcast-client.flt
 ```
+
 ```shell
 hazelcast:
   cluster-name: seatunnel
@@ -183,6 +193,7 @@ hazelcast:
     hazelcast.logging.type: log4j2
     hazelcast.operation.generic.thread.count: 50
 ```
+
 ```shell
 hazelcast-client:
   cluster-name: seatunnel
@@ -196,6 +207,7 @@ hazelcast-client:
     </#list>
 </#list>
 ```
+
 ```shell
 seatunnel:
   engine:
@@ -218,15 +230,21 @@ seatunnel:
           ${item.name}: ${item.value}
           </#list>
 ```
+
 ### 3、重启
+
 各节点worker重启
+
 ```shell
 sh /opt/datasophon/datasophon-worker/bin/datasophon-worker.sh restart worker debug
 ```
+
 主节点重启api
+
 ```shell
 sh /opt/apps/datasophon-manager-1.2.0/bin/datasophon-api.sh restart api debug
 ```
+
 ### 4、页面配置样例
 
 ![image](https://github.com/datavane/datasophon/assets/62798940/e72af3f5-cbd2-41c4-9d30-988c3cfb36ee)

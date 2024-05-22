@@ -24,15 +24,15 @@ import lombok.Data;
 
 @Data
 public class Generators implements Serializable {
-
+    
     private String filename;
-
+    
     private String configFormat;
-
+    
     private String outputDirectory;
-
+    
     private List<String> includeParams;
-
+    
     private String templateName;
 
     private String conditionalOnProperty;
@@ -51,10 +51,10 @@ public class Generators implements Serializable {
         }
         return false;
     }
-
+    
     @Override
     public int hashCode() {
         return filename.hashCode();
     }
-
+    
 }

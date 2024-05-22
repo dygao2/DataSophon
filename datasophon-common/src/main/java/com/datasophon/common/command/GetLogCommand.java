@@ -23,9 +23,9 @@ import lombok.Data;
 
 @Data
 public class GetLogCommand implements Serializable {
-
+    
     private String logFile;
-
+    
     private String decompressPackageName;
-
+    
 }

@@ -23,6 +23,6 @@ import lombok.Data;
 
 @Data
 public class DelUnixGroupCommand implements Serializable {
-
+    
     private String groupName;
 }

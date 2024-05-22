@@ -19,21 +19,15 @@
 
 package com.datasophon.api.service.impl;
 
-import akka.actor.ActorRef;
-import cn.hutool.core.date.DateUnit;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.crypto.SecureUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.datasophon.api.enums.Status;
 import com.datasophon.api.load.GlobalVariables;
 import com.datasophon.api.master.ActorUtils;
 import com.datasophon.api.master.DispatcherWorkerActor;
 import com.datasophon.api.master.HostConnectActor;
 import com.datasophon.api.master.WorkerStartActor;
-import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.service.ClusterInfoService;
 import com.datasophon.api.service.InstallService;
+import com.datasophon.api.service.host.ClusterHostService;
 import com.datasophon.api.utils.MessageResolverUtils;
 import com.datasophon.api.utils.MinaUtils;
 import com.datasophon.api.utils.ProcessUtils;
@@ -54,12 +48,9 @@ import com.datasophon.dao.entity.ClusterHostDO;
 import com.datasophon.dao.entity.ClusterInfoEntity;
 import com.datasophon.dao.entity.InstallStepEntity;
 import com.datasophon.dao.mapper.InstallStepMapper;
-import org.apache.commons.lang.StringUtils;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sshd.client.session.ClientSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,22 +62,36 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
+import akka.actor.ActorRef;
+
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.crypto.SecureUtil;
+
 @Service("installService")
 public class InstallServiceImpl implements InstallService {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(InstallServiceImpl.class);
-
+    
     @Autowired
     InstallStepMapper stepMapper;
-
+    
     @Autowired
     ClusterInfoService clusterInfoService;
-
+    
     @Autowired
     ClusterHostService hostService;
-
+    
     private static final String SSHUSER = "SSHUSER";
-
+    
     @Override
     public Result getInstallStep(Integer type) {
         List<InstallStepEntity> list =
@@ -94,7 +99,7 @@ public class InstallServiceImpl implements InstallService {
                         new QueryWrapper<InstallStepEntity>().eq(Constants.INSTALL_TYPE, type));
         return Result.success(list);
     }
-
+    
     /**
      * 1、查询缓存是否存在当前主机列表 2、存在则根据分页返回数据 3、不存在则解析hosts，产生主机列表并放入缓存中
      *
@@ -106,15 +111,15 @@ public class InstallServiceImpl implements InstallService {
      */
     @Override
     public Result analysisHostList(
-            Integer clusterId,
-            String hosts,
-            String sshUser,
-            Integer sshPort,
-            Integer page,
-            Integer pageSize) {
+                                   Integer clusterId,
+                                   String hosts,
+                                   String sshUser,
+                                   Integer sshPort,
+                                   Integer page,
+                                   Integer pageSize) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
         ProcessUtils.generateClusterVariable(globalVariables, clusterId, null, SSHUSER, sshUser);
-
+        
         List<HostInfo> list = new ArrayList<>();
         hosts = hosts.replace(" ", "");
         String md5 = SecureUtil.md5(hosts);
@@ -126,7 +131,7 @@ public class InstallServiceImpl implements InstallService {
                 && md5.equals(CacheUtils.getString(clusterCode + Constants.HOST_MD5))) {
             logger.info("get host list from cache");
             map = (HashMap<String, HostInfo>) CacheUtils.get(clusterCode + Constants.HOST_MAP);
-
+            
         } else {
             logger.info("analysis host list");
             String[] hostsArr = hosts.split(",");
@@ -191,20 +196,20 @@ public class InstallServiceImpl implements InstallService {
         List<HostInfo> result = getListPage(list, offset, pageSize);
         return Result.success(result).put(Constants.TOTAL, list.size());
     }
-
+    
     private void tellHostCheck(String clusterCode, HostInfo hostInfo) {
         ActorRef actor =
                 ActorUtils.getLocalActor(HostConnectActor.class, "hostActor-" + hostInfo.getHostname());
         actor.tell(new HostCheckCommand(hostInfo, clusterCode), ActorRef.noSender());
     }
-
+    
     public HostInfo createHostInfo(
-            String host, Integer sshPort, String sshUser, String clusterCode) {
+                                   String host, Integer sshPort, String sshUser, String clusterCode) {
         HostInfo hostInfo = new HostInfo();
-
+        
         hostInfo.setHostname(HostUtils.getHostName(host));
         hostInfo.setIp(HostUtils.getIp(host));
-
+        
         // 判断是否受管
         ClusterHostDO hostEntity = hostService.getClusterHostByHostname(hostInfo.getHostname());
         if (ObjectUtil.isNotNull(hostEntity)) {
@@ -231,7 +236,7 @@ public class InstallServiceImpl implements InstallService {
         hostInfo.setCreateTime(new Date());
         return hostInfo;
     }
-
+    
     @Override
     public Result getHostCheckStatus(Integer clusterId, String sshUser, Integer sshPort) {
         ClusterInfoEntity clusterInfo = clusterInfoService.getById(clusterId);
@@ -245,10 +250,10 @@ public class InstallServiceImpl implements InstallService {
                         .collect(Collectors.toList());
         return Result.success(list);
     }
-
+    
     @Override
     public Result rehostCheck(
-            Integer clusterId, String hostnames, String sshUser, Integer sshPort) {
+                              Integer clusterId, String hostnames, String sshUser, Integer sshPort) {
         // 开启主机校验
         ClusterInfoEntity clusterInfo = clusterInfoService.getById(clusterId);
         String clusterCode = clusterInfo.getClusterCode();
@@ -268,11 +273,11 @@ public class InstallServiceImpl implements InstallService {
         }
         return Result.success();
     }
-
+    
     @Override
     public Result dispatcherHostAgentList(
-            Integer clusterId, Integer installStateCode, Integer page, Integer pageSize) {
-
+                                          Integer clusterId, Integer installStateCode, Integer page, Integer pageSize) {
+        
         ClusterInfoEntity clusterInfo = clusterInfoService.getById(clusterId);
         String clusterCode = clusterInfo.getClusterCode();
         String distributeAgentKey =
@@ -285,7 +290,7 @@ public class InstallServiceImpl implements InstallService {
                         .map(e -> e.getValue())
                         .filter(e -> e.getCheckResult().getCode() == 10001)
                         .collect(Collectors.toList());
-
+        
         for (HostInfo hostInfo : list) {
             if (hostInfo.isManaged()) {
                 hostInfo.setInstallStateCode(InstallState.SUCCESS.getValue());
@@ -308,7 +313,7 @@ public class InstallServiceImpl implements InstallService {
                 // 保存主机agent分发历史
                 CacheUtils.put(
                         distributeAgentKey + Constants.UNDERLINE + hostInfo.getHostname(), true);
-
+                
             } else {
                 long timeout =
                         DateUtil.between(hostInfo.getCreateTime(), new Date(), DateUnit.MINUTE);
@@ -334,15 +339,15 @@ public class InstallServiceImpl implements InstallService {
         List<HostInfo> result = getListPage(list, offset, pageSize);
         return Result.success(result).put(Constants.TOTAL, list.size());
     }
-
+    
     @Override
     public Result reStartDispatcherHostAgent(Integer clusterId, String hostnames) {
-
+        
         ClusterInfoEntity clusterInfo = clusterInfoService.getById(clusterId);
         String clusterCode = clusterInfo.getClusterCode();
         Map<String, HostInfo> map =
                 (Map<String, HostInfo>) CacheUtils.get(clusterCode + Constants.HOST_MAP);
-
+        
         for (String hostname : hostnames.split(",")) {
             ClusterHostDO clusterHost = hostService.getClusterHostByHostname(hostname);
             HostInfo hostInfo = new HostInfo();
@@ -356,12 +361,12 @@ public class InstallServiceImpl implements InstallService {
             ActorRef hostActor =
                     ActorUtils.getLocalActor(
                             DispatcherWorkerActor.class, "dispatcherWorkerActor-" + hostname);
-
+            
             hostInfo.setInstallState(InstallState.RUNNING);
             hostInfo.setInstallStateCode(InstallState.RUNNING.getValue());
             hostInfo.setErrMsg("");
             hostInfo.setProgress(0);
-
+            
             hostActor.tell(
                     new DispatcherHostAgentCommand(
                             hostInfo, clusterId, clusterInfo.getClusterFrame()),
@@ -369,7 +374,7 @@ public class InstallServiceImpl implements InstallService {
         }
         return Result.success();
     }
-
+    
     @Override
     public Result hostCheckCompleted(Integer clusterId) {
         ClusterInfoEntity clusterInfo = clusterInfoService.getById(clusterId);
@@ -380,20 +385,20 @@ public class InstallServiceImpl implements InstallService {
             HostInfo value = hostInfoEntry.getValue();
             if (Objects.isNull(value.getCheckResult())
                     || (Objects.nonNull(value.getCheckResult())
-                    && value.getCheckResult().getCode() != 10001)) {
+                            && value.getCheckResult().getCode() != 10001)) {
                 return Result.success().put("hostCheckCompleted", false);
             }
         }
         return Result.success().put("hostCheckCompleted", true);
     }
-
+    
     @Override
     public Result cancelDispatcherHostAgent(
-            Integer clusterId, String hostname, Integer installStateCode) {
-
+                                            Integer clusterId, String hostname, Integer installStateCode) {
+        
         return null;
     }
-
+    
     @Override
     public Result dispatcherHostAgentCompleted(Integer clusterId) {
         ClusterInfoEntity clusterInfo = clusterInfoService.getById(clusterId);
@@ -415,7 +420,7 @@ public class InstallServiceImpl implements InstallService {
         }
         return Result.success().put("dispatcherHostAgentCompleted", true);
     }
-
+    
     @Override
     public Result generateHostAgentCommand(String clusterHostIds, String commandType) throws Exception {
         if (StringUtils.isBlank(clusterHostIds)) {
@@ -435,7 +440,7 @@ public class InstallServiceImpl implements InstallService {
         }
         return Result.success();
     }
-
+    
     /**
      * 一键 启动 主机上安装的服务
      *
@@ -452,8 +457,9 @@ public class InstallServiceImpl implements InstallService {
         String[] clusterHostIdArray = clusterHostIds.split(Constants.COMMA);
         List<ClusterHostDO> clusterHostList = hostService.getHostListByIds(Arrays.asList(clusterHostIdArray));
         Result result = null;
-
-        CommandType serviceCommandType = "start".equalsIgnoreCase(commandType) ? CommandType.START_SERVICE : CommandType.STOP_SERVICE;
+        
+        CommandType serviceCommandType =
+                "start".equalsIgnoreCase(commandType) ? CommandType.START_SERVICE : CommandType.STOP_SERVICE;
         for (ClusterHostDO clusterHostDO : clusterHostList) {
             WorkerServiceMessage serviceMessage = new WorkerServiceMessage(
                     clusterHostDO.getHostname(), clusterHostDO.getClusterId(), serviceCommandType);
@@ -468,7 +474,7 @@ public class InstallServiceImpl implements InstallService {
         }
         return result == null ? Result.success() : result;
     }
-
+    
     private List<HostInfo> getListPage(List<HostInfo> list, Integer offset, Integer pageSize) {
         List<HostInfo> result = new ArrayList<>();
         Integer limit = offset + pageSize;

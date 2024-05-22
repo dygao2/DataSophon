@@ -17,13 +17,6 @@
 
 package com.datasophon.api.service.impl;
 
-import akka.actor.ActorSelection;
-import akka.pattern.Patterns;
-import akka.util.Timeout;
-import cn.hutool.core.bean.BeanUtil;
-import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.enums.Status;
 import com.datasophon.api.master.ActorUtils;
 import com.datasophon.api.master.handler.service.ServiceConfigureHandler;
@@ -39,11 +32,9 @@ import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
 import com.datasophon.dao.entity.ClusterYarnQueue;
 import com.datasophon.dao.mapper.ClusterYarnQueueMapper;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+
+import org.apache.commons.lang3.StringUtils;
+
 import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
@@ -53,16 +44,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import akka.actor.ActorSelection;
+import akka.pattern.Patterns;
+import akka.util.Timeout;
+import cn.hutool.core.bean.BeanUtil;
+
 @Service("clusterYarnQueueService")
 public class ClusterYarnQueueServiceImpl extends ServiceImpl<ClusterYarnQueueMapper, ClusterYarnQueue>
         implements
             ClusterYarnQueueService {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(ClusterYarnQueueServiceImpl.class);
-
+    
     @Autowired
     private ClusterServiceRoleInstanceService roleInstanceService;
-
+    
     @Override
     public Result listByPage(Integer clusterId, Integer page, Integer pageSize) {
         Integer offset = (page - 1) * pageSize;
@@ -80,7 +85,7 @@ public class ClusterYarnQueueServiceImpl extends ServiceImpl<ClusterYarnQueueMap
         }
         return Result.success(list).put(Constants.TOTAL, count);
     }
-
+    
     @Override
     public Result refreshQueues(Integer clusterId) throws Exception {
         List<ClusterYarnQueue> list = this.list(new QueryWrapper<ClusterYarnQueue>()
@@ -88,7 +93,7 @@ public class ClusterYarnQueueServiceImpl extends ServiceImpl<ClusterYarnQueueMap
         // 查询resourcemanager节点
         List<ClusterServiceRoleInstanceEntity> roleList =
                 roleInstanceService.getServiceRoleInstanceListByClusterIdAndRoleName(clusterId, "ResourceManager");
-
+        
         // 构建configfilemap
         HashMap<Generators, List<ServiceConfig>> configFileMap = new HashMap<>();
         Generators generators = new Generators();
@@ -96,7 +101,7 @@ public class ClusterYarnQueueServiceImpl extends ServiceImpl<ClusterYarnQueueMap
         generators.setOutputDirectory("etc/hadoop");
         generators.setConfigFormat("custom");
         generators.setTemplateName("fair-scheduler.ftl");
-
+        
         ArrayList<ServiceConfig> serviceConfigs = new ArrayList<>();
         ServiceConfig config = new ServiceConfig();
         ArrayList<JSONObject> queueList = new ArrayList<>();
@@ -114,7 +119,7 @@ public class ClusterYarnQueueServiceImpl extends ServiceImpl<ClusterYarnQueueMap
         config.setConfigType("map");
         config.setRequired(true);
         serviceConfigs.add(config);
-
+        
         configFileMap.put(generators, serviceConfigs);
         String hostname = "";
         for (ClusterServiceRoleInstanceEntity roleInstanceEntity : roleList) {

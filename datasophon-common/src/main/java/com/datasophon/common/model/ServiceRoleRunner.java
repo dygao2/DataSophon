@@ -24,10 +24,10 @@ import lombok.Data;
 
 @Data
 public class ServiceRoleRunner implements Serializable {
-
+    
     private String timeout;
-
+    
     private String program;
-
+    
     private List<String> args;
 }

@@ -23,8 +23,8 @@ import lombok.Data;
 
 @Data
 public class RunAs implements Serializable {
-
+    
     private String user;
-
+    
     private String group;
 }

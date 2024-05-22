@@ -33,9 +33,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @TableName("t_ddh_cluster_service_role_instance")
 @Data
 public class ClusterServiceRoleInstanceEntity implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     /**
      * 主键
      */
@@ -53,7 +53,7 @@ public class ClusterServiceRoleInstanceEntity implements Serializable {
      * 服务角色状态 1:正在运行 2:停止 3:存在告警 4:退役中 5:已退役
      */
     private ServiceRoleState serviceRoleState;
-
+    
     @TableField(exist = false)
     private Integer serviceRoleStateCode;
     /**
@@ -80,12 +80,12 @@ public class ClusterServiceRoleInstanceEntity implements Serializable {
      * 服务名称
      */
     private String serviceName;
-
+    
     private Integer roleGroupId;
-
+    
     private NeedRestart needRestart;
-
+    
     @TableField(exist = false)
     private String roleGroupName;
-
+    
 }

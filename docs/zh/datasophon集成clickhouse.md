@@ -1,9 +1,11 @@
 ### 1、构建压缩包
+
 官网下载安装包
 
 ![image](https://github.com/datavane/datasophon/assets/62798940/8e84d696-5854-41c2-9c9d-9574a6062d4a)
 
 各安装包解压到同一个文件夹中，同时新增bin目录，bin目录中放置status.sh
+
 ```shell
 #!/bin/bash
 
@@ -15,11 +17,15 @@ else
     exit 1
 fi
 ```
+
 压缩部署到DDP
+
 ### 2、worker新增ck strategy
+
 ```java
 map.put("ClickHouse", new ClickHouseHandlerStrategy("CLICKHOUSE", "ClickHouse"));
 ```
+
 ```java
 package com.datasophon.worker.strategy;
 
@@ -91,8 +97,11 @@ public class ClickHouseHandlerStrategy extends AbstractHandlerStrategy implement
 }
 
 ```
+
 worker打包替换旧包
+
 ### 3、ck元数据文件
+
 ```shell
 <!--
   NOTE: User and query level settings are set up in "users.xml" file.
@@ -1583,6 +1592,7 @@ worker打包替换旧包
 </clickhouse>
 
 ```
+
 ```shell
 <clickhouse>
     <!-- See also the files in users.d directory where the settings can be overridden. -->
@@ -1696,6 +1706,7 @@ worker打包替换旧包
 </clickhouse>
 
 ```
+
 ```shell
 {
   "name": "CLICKHOUSE",
@@ -1833,17 +1844,25 @@ worker打包替换旧包
   ]
 }
 ```
+
 部署元数据文件
+
 ### 4、重启
+
 各节点worker重启
+
 ```shell
 sh /opt/datasophon/datasophon-worker/bin/datasophon-worker.sh restart worker debug
 ```
+
 主节点重启api
+
 ```shell
 sh /opt/apps/datasophon-manager-1.2.0/bin/datasophon-api.sh restart api debug
 ```
+
 ### 5、clickhouse服务器完全卸载命令
+
 ```shell
 pkill clickhouse
 rm -rf /etc/clickhouse-server
@@ -1855,5 +1874,7 @@ rm -rf /var/run/clickhouse-server
 rm -rf /opt/datasophon/clickhouse-23.9.1.1854
 rm -rf /opt/datasophon/clickhouse
 ```
+
 ### 6、配置样例
+
 ![image](https://github.com/datavane/datasophon/assets/62798940/b2915f2e-3b2e-4e06-bcfe-b40d57bd1607)

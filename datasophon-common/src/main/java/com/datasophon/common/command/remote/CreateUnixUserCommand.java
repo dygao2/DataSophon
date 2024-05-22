@@ -23,10 +23,10 @@ import lombok.Data;
 
 @Data
 public class CreateUnixUserCommand implements Serializable {
-
+    
     private String username;
-
+    
     private String mainGroup;
-
+    
     private String otherGroups;
 }

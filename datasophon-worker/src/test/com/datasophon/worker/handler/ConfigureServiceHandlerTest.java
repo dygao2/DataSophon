@@ -15,7 +15,7 @@ public class ConfigureServiceHandlerTest {
 
     @BeforeAll
     public void setUp() {
-        configureServiceHandlerUnderTest = new ConfigureServiceHandler("HDFS","NameNode");
+        configureServiceHandlerUnderTest = new ConfigureServiceHandler("HDFS", "NameNode");
     }
 
     @Test

@@ -23,6 +23,6 @@ import lombok.Data;
 
 @Data
 public class ConfigWriter {
-
+    
     private List<Generators> generators;
 }

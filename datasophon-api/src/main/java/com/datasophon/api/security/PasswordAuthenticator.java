@@ -35,14 +35,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class PasswordAuthenticator implements Authenticator {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(PasswordAuthenticator.class);
-
+    
     @Autowired
     private UserInfoService userService;
     @Autowired
     private SessionService sessionService;
-
+    
     @Override
     public Result authenticate(String username, String password, String extra) {
         Result result = new Result();
@@ -53,7 +53,7 @@ public class PasswordAuthenticator implements Authenticator {
             result.put(Constants.MSG, Status.USER_NAME_PASSWD_ERROR.getMsg());
             return result;
         }
-
+        
         // create session
         String sessionId = sessionService.createSession(user, extra);
         if (sessionId == null) {
@@ -69,7 +69,7 @@ public class PasswordAuthenticator implements Authenticator {
         SecurityUtils.getSession().setAttribute(Constants.SESSION_USER, user);
         return result;
     }
-
+    
     @Override
     public UserInfoEntity getAuthUser(HttpServletRequest request) {
         SessionEntity session = sessionService.getSession(request);

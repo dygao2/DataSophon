@@ -23,7 +23,7 @@ import lombok.Data;
 
 @Data
 public class ServiceRoleOperateCommandResult extends BaseCommandResult implements Serializable {
-
+    
     private static final long serialVersionUID = -566450658744102059L;
     private ServiceRoleOperateCommand serviceRoleOperateCommand;
 }

@@ -39,6 +39,6 @@ public class MutilTemplateFileTest {
         serviceConfigs.add(serviceConfig);
         serviceConfigs.add(serviceConfig2);
 
-        FreemakerUtils.generateConfigFile(generators, serviceConfigs,"", "mytemplates");
+        FreemakerUtils.generateConfigFile(generators, serviceConfigs, "", "mytemplates");
     }
 }

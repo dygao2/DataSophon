@@ -17,9 +17,6 @@
 
 package com.datasophon.api.utils;
 
-import akka.actor.ActorSelection;
-import akka.pattern.Patterns;
-import akka.util.Timeout;
 import com.datasophon.api.master.ActorUtils;
 import com.datasophon.api.master.handler.service.ServiceConfigureHandler;
 import com.datasophon.common.Constants;
@@ -30,6 +27,7 @@ import com.datasophon.common.model.ServiceRoleInfo;
 import com.datasophon.common.utils.ExecResult;
 import com.datasophon.dao.entity.ClusterInfoEntity;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
+
 import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
@@ -39,8 +37,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class HadoopUtils {
+import akka.actor.ActorSelection;
+import akka.pattern.Patterns;
+import akka.util.Timeout;
 
+public class HadoopUtils {
+    
     public static ExecResult configQueueProp(ClusterInfoEntity clusterInfo,
                                              HashMap<Generators, List<ServiceConfig>> configFileMap,
                                              ClusterServiceRoleInstanceEntity roleInstanceEntity) throws Exception {
@@ -55,7 +57,7 @@ public class HadoopUtils {
         ExecResult execResult = configureHandler.handlerRequest(serviceRoleInfo);
         return execResult;
     }
-
+    
     public static ExecResult refreshQueuePropToYarn(ClusterInfoEntity clusterInfo, String hostname) throws Exception {
         ActorSelection execCmdActor = ActorUtils.actorSystem
                 .actorSelection("akka.tcp://datasophon@" + hostname + ":2552/user/worker/executeCmdActor");

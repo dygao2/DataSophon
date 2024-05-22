@@ -17,9 +17,9 @@
 
 package com.datasophon.dao.model;
 
-import lombok.Data;
-
 import java.util.List;
+
+import lombok.Data;
 
 /**
  *
@@ -30,45 +30,45 @@ import java.util.List;
  */
 @Data
 public class ParcelInfoVO {
-
+    
     /**
      * Parcel Remote URL
      */
     String url;
-
+    
     /**
      * Parcel 名称
      */
     String parcelName;
-
+    
     /**
      * hash 256 验证
      */
     String hash;
-
+    
     /**
      * md5 验证
      */
     String md5;
-
+    
     /**
      * 依赖的 DDP 版本
      */
     String depends;
-
+    
     /**
      * 支持的 DDP Frame 框架版本
      */
     String meta;
-
+    
     /**
      * 内部包含的组件
      */
     List<ComponentVO> components;
-
+    
     /**
      * 最后修改时间
      */
     long lastUpdated;
-
+    
 }

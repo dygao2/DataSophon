@@ -24,9 +24,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public final class SpringTool implements ApplicationContextAware {
-
+    
     private static ApplicationContext applicationContext = null;
-
+    
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         if (SpringTool.applicationContext == null) {
@@ -36,13 +36,13 @@ public final class SpringTool implements ApplicationContextAware {
                             + applicationContext + "========");
         }
     }
-
+    
     public static ApplicationContext getApplicationContext() {
         return applicationContext;
     }
-
+    
     public static Object getBean(String name) {
         return getApplicationContext().getBean(name);
     }
-
+    
 }

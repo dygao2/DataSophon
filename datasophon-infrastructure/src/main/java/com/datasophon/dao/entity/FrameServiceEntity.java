@@ -30,9 +30,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @Data
 @Accessors(chain = true)
 public class FrameServiceEntity implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     /**
      * 主键
      */
@@ -46,7 +46,7 @@ public class FrameServiceEntity implements Serializable {
      * 服务名称
      */
     private String serviceName;
-
+    
     private String label;
     /**
      * 服务版本
@@ -56,28 +56,28 @@ public class FrameServiceEntity implements Serializable {
      * 服务描述
      */
     private String serviceDesc;
-
+    
     private String packageName;
-
+    
     private String dependencies;
-
+    
     private String serviceJson;
-
+    
     private String serviceJsonMd5;
-
+    
     private String serviceConfig;
-
+    
     private String frameCode;
-
+    
     private String configFileJson;
-
+    
     private String configFileJsonMd5;
-
+    
     private String decompressPackageName;
-
+    
     @TableField(exist = false)
     private Boolean installed;
-
+    
     private Integer sortNum;
-
+    
 }

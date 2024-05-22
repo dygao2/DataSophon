@@ -17,7 +17,6 @@
 
 package com.datasophon.worker.strategy;
 
-import cn.hutool.core.io.FileUtil;
 import com.datasophon.common.Constants;
 import com.datasophon.common.cache.CacheUtils;
 import com.datasophon.common.command.ServiceRoleOperateCommand;
@@ -29,12 +28,14 @@ import com.datasophon.worker.utils.KerberosUtils;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class DataNodeHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
+import cn.hutool.core.io.FileUtil;
 
+public class DataNodeHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
+    
     public DataNodeHandlerStrategy(String serviceName, String serviceRoleName) {
         super(serviceName, serviceRoleName);
     }
-
+    
     @Override
     public ExecResult handler(ServiceRoleOperateCommand command) throws SQLException, ClassNotFoundException {
         ExecResult startResult = new ExecResult();
@@ -49,10 +50,12 @@ public class DataNodeHandlerStrategy extends AbstractHandlerStrategy implements 
             String hadoopConfDir =
                     Constants.INSTALL_PATH + Constants.SLASH + command.getDecompressPackageName() + "/etc/hadoop/";
             if (!FileUtil.exist(hadoopConfDir + "ssl-server.xml")) {
-                ShellUtils.exceShell("cp " + hadoopConfDir + "ssl-server.xml.template " + hadoopConfDir + "ssl-server.xml");
+                ShellUtils.exceShell(
+                        "cp " + hadoopConfDir + "ssl-server.xml.template " + hadoopConfDir + "ssl-server.xml");
             }
             if (!FileUtil.exist(hadoopConfDir + "ssl-client.xml")) {
-                ShellUtils.exceShell("cp " + hadoopConfDir + "ssl-client.xml.template " + hadoopConfDir + "ssl-client.xml");
+                ShellUtils.exceShell(
+                        "cp " + hadoopConfDir + "ssl-client.xml.template " + hadoopConfDir + "ssl-client.xml");
             }
             if (!FileUtil.exist("/etc/security/keytab/keystore")) {
                 ArrayList<String> commands = new ArrayList<>();
@@ -73,5 +76,5 @@ public class DataNodeHandlerStrategy extends AbstractHandlerStrategy implements 
         }
         return startResult;
     }
-
+    
 }

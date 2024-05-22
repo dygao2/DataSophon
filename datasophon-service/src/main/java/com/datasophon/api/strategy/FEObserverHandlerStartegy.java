@@ -26,31 +26,32 @@ import com.datasophon.common.utils.OlapUtils;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
 import com.datasophon.dao.enums.AlertLevel;
 import com.datasophon.dao.enums.ServiceRoleState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class FEObserverHandlerStartegy implements ServiceRoleStrategy {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(FEObserverHandlerStartegy.class);
-
+    
     @Override
     public void handler(Integer clusterId, List<String> hosts, String serviceName) {
-
+        
     }
-
+    
     @Override
     public void handlerConfig(Integer clusterId, List<ServiceConfig> list, String serviceName) {
-
+        
     }
-
+    
     @Override
     public void getConfig(Integer clusterId, List<ServiceConfig> list) {
-
+        
     }
-
+    
     @Override
     public void handlerServiceRoleInfo(ServiceRoleInfo serviceRoleInfo, String hostname) {
         Map<String, String> globalVariables = GlobalVariables.get(serviceRoleInfo.getClusterId());
@@ -64,9 +65,9 @@ public class FEObserverHandlerStartegy implements ServiceRoleStrategy {
             serviceRoleInfo.setSlave(true);
             serviceRoleInfo.setSortNum(2);
         }
-
+        
     }
-
+    
     @Override
     public void handlerServiceRoleCheck(ClusterServiceRoleInstanceEntity roleInstanceEntity,
                                         Map<String, ClusterServiceRoleInstanceEntity> map) {
@@ -78,12 +79,12 @@ public class FEObserverHandlerStartegy implements ServiceRoleStrategy {
                 List<ProcInfo> frontends = OlapUtils.showFrontends(feMaster);
                 resolveProcInfoAlert(roleInstanceEntity.getServiceRoleName(), frontends, map);
             } catch (Exception e) {
-
+                
             }
-
-
+            
         }
     }
+    
     private void resolveProcInfoAlert(String serviceRoleName, List<ProcInfo> frontends,
                                       Map<String, ClusterServiceRoleInstanceEntity> map) {
         for (ProcInfo frontend : frontends) {

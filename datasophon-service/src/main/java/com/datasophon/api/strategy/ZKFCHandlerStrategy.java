@@ -22,16 +22,17 @@ import com.datasophon.api.utils.ProcessUtils;
 import com.datasophon.common.model.ServiceConfig;
 import com.datasophon.common.model.ServiceRoleInfo;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ZKFCHandlerStrategy implements ServiceRoleStrategy {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(ZKFCHandlerStrategy.class);
-
+    
     @Override
     public void handler(Integer clusterId, List<String> hosts, String serviceName) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
@@ -40,17 +41,17 @@ public class ZKFCHandlerStrategy implements ServiceRoleStrategy {
             ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${ZKFC2}", hosts.get(1));
         }
     }
-
+    
     @Override
     public void handlerConfig(Integer clusterId, List<ServiceConfig> list, String serviceName) {
-
+        
     }
-
+    
     @Override
     public void getConfig(Integer clusterId, List<ServiceConfig> list) {
-
+        
     }
-
+    
     @Override
     public void handlerServiceRoleInfo(ServiceRoleInfo serviceRoleInfo, String hostname) {
         Map<String, String> globalVariables = GlobalVariables.get(serviceRoleInfo.getClusterId());
@@ -60,10 +61,10 @@ public class ZKFCHandlerStrategy implements ServiceRoleStrategy {
             serviceRoleInfo.setSortNum(6);
         }
     }
-
+    
     @Override
     public void handlerServiceRoleCheck(ClusterServiceRoleInstanceEntity roleInstanceEntity,
                                         Map<String, ClusterServiceRoleInstanceEntity> map) {
-
+        
     }
 }

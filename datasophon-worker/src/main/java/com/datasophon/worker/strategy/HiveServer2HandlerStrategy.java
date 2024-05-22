@@ -17,7 +17,6 @@
 
 package com.datasophon.worker.strategy;
 
-import cn.hutool.core.io.FileUtil;
 import com.datasophon.common.Constants;
 import com.datasophon.common.cache.CacheUtils;
 import com.datasophon.common.command.ServiceRoleOperateCommand;
@@ -30,12 +29,14 @@ import com.datasophon.worker.utils.KerberosUtils;
 
 import java.util.ArrayList;
 
-public class HiveServer2HandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
+import cn.hutool.core.io.FileUtil;
 
+public class HiveServer2HandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
+    
     public HiveServer2HandlerStrategy(String serviceName, String serviceRoleName) {
         super(serviceName, serviceRoleName);
     }
-
+    
     @Override
     public ExecResult handler(ServiceRoleOperateCommand command) {
         ExecResult startResult = new ExecResult();
@@ -70,7 +71,8 @@ public class HiveServer2HandlerStrategy extends AbstractHandlerStrategy implemen
             commands.add("mysql");
             commands.add("-initSchema");
             ExecResult execResult = ShellUtils.execWithStatus(
-                    Constants.INSTALL_PATH + Constants.SLASH + command.getDecompressPackageName(), commands, 60L, logger);
+                    Constants.INSTALL_PATH + Constants.SLASH + command.getDecompressPackageName(), commands, 60L,
+                    logger);
             if (execResult.getExecResult()) {
                 logger.info("init hive schema success");
             } else {
@@ -90,21 +92,22 @@ public class HiveServer2HandlerStrategy extends AbstractHandlerStrategy implemen
             String hadoopHome = PropertyUtils.getString("HADOOP_HOME");
             ShellUtils.exceShell("sudo -u hdfs " + hadoopHome + "/bin/hdfs dfs -mkdir -p /user/hive/warehouse");
             ShellUtils.exceShell("sudo -u hdfs " + hadoopHome + "/bin/hdfs dfs -mkdir -p /tmp/hive");
-            ShellUtils.exceShell("sudo -u hdfs " + hadoopHome + "/bin/hdfs dfs -mkdir -p /tmp/hadoop-yarn/staging/history/done");
+            ShellUtils.exceShell(
+                    "sudo -u hdfs " + hadoopHome + "/bin/hdfs dfs -mkdir -p /tmp/hadoop-yarn/staging/history/done");
             ShellUtils.exceShell("sudo -u hdfs " + hadoopHome + "/bin/hdfs dfs -chown -R hdfs:hadoop /tmp");
             ShellUtils.exceShell("sudo -u hdfs " + hadoopHome + "/bin/hdfs dfs -chmod -R 775 /tmp");
             ShellUtils
                     .exceShell("sudo -u hdfs " + hadoopHome + "/bin/hdfs dfs -chown hive:hadoop /user/hive/warehouse");
             ShellUtils.exceShell("sudo -u hdfs " + hadoopHome + "/bin/hdfs dfs -chown hive:hadoop /tmp/hive");
             ShellUtils.exceShell("sudo -u hdfs " + hadoopHome + "/bin/hdfs dfs -chmod 777 /tmp/hive");
-
+            
             // 存在 tez 则创建软连接
             final String tezHomePath = Constants.INSTALL_PATH + Constants.SLASH + "tez";
             if (FileUtil.exist(tezHomePath)) {
                 ShellUtils.exceShell("ln -s " + tezHomePath + "/conf/tez-site.xml " + workPath + "/conf/tez-site.xml");
             }
         }
-
+        
         startResult = serviceHandler.start(command.getStartRunner(), command.getStatusRunner(),
                 command.getDecompressPackageName(), command.getRunAs());
         return startResult;

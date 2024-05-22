@@ -36,6 +36,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 @Mapper
 public interface ClusterRoleUserMapper extends BaseMapper<ClusterRoleUserEntity> {
-
+    
     List<UserInfoEntity> getAllClusterManagerByClusterId(@Param("clusterId") Integer clusterId);
 }

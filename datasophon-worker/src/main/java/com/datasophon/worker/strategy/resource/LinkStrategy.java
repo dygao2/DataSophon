@@ -1,26 +1,26 @@
 package com.datasophon.worker.strategy.resource;
 
-
-import cn.hutool.core.io.FileUtil;
 import com.datasophon.common.Constants;
 import com.datasophon.common.utils.ShellUtils;
+
+import java.io.File;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.File;
+import cn.hutool.core.io.FileUtil;
 
 @Slf4j
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class LinkStrategy extends ResourceStrategy {
-
+    
     public static final String LINK_TYPE = "link";
-
+    
     private String source;
-
+    
     private String target;
-
+    
     @Override
     public void exec() {
         String realTarget = basePath + Constants.SLASH + target;

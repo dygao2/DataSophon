@@ -25,5 +25,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 @Mapper
 public interface ClusterUserMapper extends BaseMapper<ClusterUser> {
-
+    
 }

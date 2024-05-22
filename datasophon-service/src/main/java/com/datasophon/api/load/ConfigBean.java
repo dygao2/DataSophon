@@ -25,8 +25,8 @@ import org.springframework.stereotype.Component;
 @Component
 @Data
 public class ConfigBean {
-
+    
     @Value("${server.port}")
     private String serverPort;
-
+    
 }

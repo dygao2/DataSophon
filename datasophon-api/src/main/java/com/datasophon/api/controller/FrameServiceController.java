@@ -17,8 +17,6 @@
 
 package com.datasophon.api.controller;
 
-import cn.hutool.core.io.FileUtil;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.datasophon.api.service.ClusterServiceInstanceService;
 import com.datasophon.api.service.FrameServiceRoleService;
 import com.datasophon.api.service.FrameServiceService;
@@ -27,32 +25,36 @@ import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.ClusterServiceInstanceEntity;
 import com.datasophon.dao.entity.FrameServiceEntity;
 import com.datasophon.dao.entity.FrameServiceRoleEntity;
+
+import java.io.File;
+import java.util.List;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.File;
-import java.util.List;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+
+import cn.hutool.core.io.FileUtil;
 
 @Slf4j
 @RestController
 @RequestMapping("api/frame/service")
 public class FrameServiceController {
-
+    
     @Autowired
     private FrameServiceService frameVersionServiceService;
-
-
+    
     @Autowired
     private FrameServiceRoleService frameServiceRoleService;
-
-
+    
     @Autowired
     private ClusterServiceInstanceService clusterServiceInstanceService;
-
+    
     /**
      * 列表
      */
@@ -60,7 +62,7 @@ public class FrameServiceController {
     public Result list(Integer clusterId) {
         return frameVersionServiceService.getAllFrameService(clusterId);
     }
-
+    
     /**
      * 根据servce id列表查询服务
      */
@@ -68,37 +70,37 @@ public class FrameServiceController {
     public Result getServiceListByServiceIds(List<Integer> serviceIds) {
         return frameVersionServiceService.getServiceListByServiceIds(serviceIds);
     }
-
+    
     /**
      * 信息
      */
     @RequestMapping("/info/{id}")
     public Result info(@PathVariable("id") Integer id) {
         FrameServiceEntity frameVersionService = frameVersionServiceService.getById(id);
-
+        
         return Result.success().put("frameVersionService", frameVersionService);
     }
-
+    
     /**
      * 保存
      */
     @RequestMapping("/save")
     public Result save(@RequestBody FrameServiceEntity frameVersionService) {
         frameVersionServiceService.save(frameVersionService);
-
+        
         return Result.success();
     }
-
+    
     /**
      * 修改
      */
     @RequestMapping("/update")
     public Result update(@RequestBody FrameServiceEntity frameVersionService) {
         frameVersionServiceService.updateById(frameVersionService);
-
+        
         return Result.success();
     }
-
+    
     /**
      * 删除服务组件
      */
@@ -115,15 +117,16 @@ public class FrameServiceController {
         if (roleEntities != null && !roleEntities.isEmpty()) {
             return Result.error("Service 组件正在使用中。");
         }
-
+        
         // delete /DDP/packages 下的软件包
         File targetPackageFile = new File(Constants.MASTER_MANAGE_PACKAGE_PATH, serviceEntity.getPackageName());
         FileUtil.del(targetPackageFile);
         log.info("delete package file to: {}", targetPackageFile.getAbsolutePath());
-        File targetPackageFileMd5 = new File(Constants.MASTER_MANAGE_PACKAGE_PATH, serviceEntity.getPackageName() + ".md5");
+        File targetPackageFileMd5 =
+                new File(Constants.MASTER_MANAGE_PACKAGE_PATH, serviceEntity.getPackageName() + ".md5");
         FileUtil.del(targetPackageFileMd5);
         log.info("delete package md5 file to: {}", targetPackageFileMd5.getAbsolutePath());
-
+        
         // 删除配置
         frameServiceRoleService.remove(Wrappers.<FrameServiceRoleEntity>lambdaQuery()
                 .eq(FrameServiceRoleEntity::getServiceId, id));
@@ -131,5 +134,5 @@ public class FrameServiceController {
         frameVersionServiceService.removeById(id);
         return Result.success();
     }
-
+    
 }

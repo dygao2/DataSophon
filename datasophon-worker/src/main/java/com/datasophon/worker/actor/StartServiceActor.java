@@ -31,9 +31,9 @@ import org.slf4j.LoggerFactory;
 import akka.actor.UntypedActor;
 
 public class StartServiceActor extends UntypedActor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(StartServiceActor.class);
-
+    
     @Override
     public void onReceive(Object msg) throws Throwable {
         if (msg instanceof ServiceRoleOperateCommand) {
@@ -41,7 +41,7 @@ public class StartServiceActor extends UntypedActor {
             logger.info("start to start service role {}", command.getServiceRoleName());
             ExecResult startResult = new ExecResult();
             ServiceHandler serviceHandler = new ServiceHandler(command.getServiceName(), command.getServiceRoleName());
-
+            
             ServiceRoleStrategy serviceRoleHandler =
                     ServiceRoleStrategyContext.getServiceRoleHandler(command.getServiceRoleName());
             if (Objects.nonNull(serviceRoleHandler)) {
@@ -50,13 +50,13 @@ public class StartServiceActor extends UntypedActor {
                 startResult = serviceHandler.start(command.getStartRunner(), command.getStatusRunner(),
                         command.getDecompressPackageName(), command.getRunAs());
             }
-
+            
             getSender().tell(startResult, getSelf());
             logger.info("service role {} start result {}", command.getServiceRoleName(),
                     startResult.getExecResult() ? "success" : "failed");
         } else {
             unhandled(msg);
         }
-
+        
     }
 }

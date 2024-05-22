@@ -2,11 +2,11 @@
 
 ### Paimon：
 
-#### 		目前支持Flink  1.14及以上版本
+#### 目前支持Flink  1.14及以上版本
 
-#### 		目前支持 Hive 3.1、2.3、2.2、2.1 和 2.1-cdh-6.3。支持 Hive Read 的 MR 和 Tez 执行引擎，以及 Hive Write 的 MR 执行引擎（beeline也不支持hive write）
+#### 目前支持 Hive 3.1、2.3、2.2、2.1 和 2.1-cdh-6.3。支持 Hive Read 的 MR 和 Tez 执行引擎，以及 Hive Write 的 MR 执行引擎（beeline也不支持hive write）
 
-#### 	 目前支持 Spark 3.4、3.3、3.2 和 3.1
+#### 目前支持 Spark 3.4、3.3、3.2 和 3.1
 
 快照仓库，根据自己需要选择集成的组件和版本：https://repository.apache.org/content/groups/snapshots/org/apache/paimon/
 
@@ -20,18 +20,22 @@
 
 ### 解压flink-1.16.3安装包
 
-- ```shell
-  tar -zxvf flink-1.16.3-bin-scala_2.12.tgz（这里可以用原datasophon的1.15版本或者是参照官网的步骤定制需要的flink版本，如果用的原flink版本或者已经升级过，直接解压packages中的包即可，如果同时需要升级flink版本，注意保持和service_ddl.json中 decompressPackageName 一致）
-  mv flink-1.16.3-bin-scala_2.12.tgz flink-1.16.3
-  ```
+- 
+
+```shell
+tar -zxvf flink-1.16.3-bin-scala_2.12.tgz（这里可以用原datasophon的1.15版本或者是参照官网的步骤定制需要的flink版本，如果用的原flink版本或者已经升级过，直接解压packages中的包即可，如果同时需要升级flink版本，注意保持和service_ddl.json中 decompressPackageName 一致）
+mv flink-1.16.3-bin-scala_2.12.tgz flink-1.16.3
+```
 
 ### 拷贝相关的包到lib目录
 
-- ```shell
-   cp paimon-flink-1.16-0.7-20231201.002224-11.jar  /opt/datasophon/flink-1.16.3/lib
-   cp flink-sql-connector-hive-3.1.2_2.12-1.16.2.jar  /opt/datasophon/flink-1.16.3/lib
-   ****解决乱七八糟的类找不到的问题：cp /opt/datasophon/hadoop-3.3.3/share/hadoop/mapreduce/hadoop-mapreduce-client-core-3.3.3.jar /opt/datasophon/flink-1.16.3/lib
-  ```
+- 
+
+```shell
+cp paimon-flink-1.16-0.7-20231201.002224-11.jar  /opt/datasophon/flink-1.16.3/lib
+cp flink-sql-connector-hive-3.1.2_2.12-1.16.2.jar  /opt/datasophon/flink-1.16.3/lib
+****解决乱七八糟的类找不到的问题：cp /opt/datasophon/hadoop-3.3.3/share/hadoop/mapreduce/hadoop-mapreduce-client-core-3.3.3.jar /opt/datasophon/flink-1.16.3/lib
+```
 
 ### 检查环境变量
 
@@ -101,8 +105,6 @@ SET 'sql-client.execution.result-mode' = 'tableau';
 
 ![](C:\Users\Hasee\Desktop\paimon-catalogs.png)
 
-
-
 ### Hive：hive-3.1.0集成paimon
 
 解压hive-3.1.0安装包
@@ -136,8 +138,6 @@ FROM test.test_paimon;
 ![](C:\Users\Hasee\Desktop\paimon-hive.png)
 
 ![image-20231203185833490](C:\Users\Hasee\AppData\Roaming\Typora\typora-user-images\image-20231203185833490.png)
-
-
 
 ### Spark：spark-3.2.2集成paimon
 

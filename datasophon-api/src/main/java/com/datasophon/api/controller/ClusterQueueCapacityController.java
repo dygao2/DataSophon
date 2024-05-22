@@ -30,61 +30,61 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("cluster/queue/capacity")
 public class ClusterQueueCapacityController {
-
+    
     @Autowired
     private ClusterQueueCapacityService clusterQueueCapacityService;
-
+    
     /**
      * 列表
      */
     @RequestMapping("/list")
     public Result list(Integer clusterId) {
-
+        
         return clusterQueueCapacityService.listCapacityQueue(clusterId);
-
+        
     }
-
+    
     /**
      * 信息
      */
     @RequestMapping("/info/{id}")
     public Result info(@PathVariable("id") Integer id) {
         ClusterQueueCapacity clusterQueueCapacity = clusterQueueCapacityService.getById(id);
-
+        
         return Result.success().put("clusterQueueCapacity", clusterQueueCapacity);
     }
-
+    
     /**
      * 保存
      */
     @RequestMapping("/save")
     public Result save(@RequestBody ClusterQueueCapacity clusterQueueCapacity) {
         clusterQueueCapacityService.save(clusterQueueCapacity);
-
+        
         return Result.success();
     }
-
+    
     /**
      * 修改
      */
     @RequestMapping("/update")
     public Result update(@RequestBody ClusterQueueCapacity clusterQueueCapacity) {
-
+        
         clusterQueueCapacityService.updateById(clusterQueueCapacity);
-
+        
         return Result.success();
     }
-
+    
     /**
      * 删除
      */
     @RequestMapping("/delete")
     public Result delete(Integer id) {
         clusterQueueCapacityService.removeById(id);
-
+        
         return Result.success();
     }
-
+    
     /**
      * 删除
      */

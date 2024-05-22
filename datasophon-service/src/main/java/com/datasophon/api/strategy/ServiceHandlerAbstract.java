@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class ServiceHandlerAbstract {
-
+    
     public void removeConfigWithKerberos(List<ServiceConfig> list, Map<String, ServiceConfig> map,
                                          List<ServiceConfig> configs) {
         for (ServiceConfig serviceConfig : configs) {
@@ -38,6 +38,7 @@ public abstract class ServiceHandlerAbstract {
             }
         }
     }
+    
     public void removeConfigWithHA(List<ServiceConfig> list, Map<String, ServiceConfig> map,
                                    List<ServiceConfig> configs) {
         for (ServiceConfig serviceConfig : configs) {
@@ -48,7 +49,7 @@ public abstract class ServiceHandlerAbstract {
             }
         }
     }
-
+    
     public void removeConfigWithRack(List<ServiceConfig> list, Map<String, ServiceConfig> map,
                                      List<ServiceConfig> configs) {
         for (ServiceConfig serviceConfig : configs) {
@@ -59,7 +60,7 @@ public abstract class ServiceHandlerAbstract {
             }
         }
     }
-
+    
     public void addConfigWithKerberos(Map<String, String> globalVariables, Map<String, ServiceConfig> map,
                                       List<ServiceConfig> configs, ArrayList<ServiceConfig> kbConfigs) {
         for (ServiceConfig serviceConfig : configs) {
@@ -68,7 +69,7 @@ public abstract class ServiceHandlerAbstract {
             }
         }
     }
-
+    
     public void addConfigWithHA(Map<String, String> globalVariables, Map<String, ServiceConfig> map,
                                 List<ServiceConfig> configs, ArrayList<ServiceConfig> kbConfigs) {
         for (ServiceConfig serviceConfig : configs) {
@@ -77,7 +78,7 @@ public abstract class ServiceHandlerAbstract {
             }
         }
     }
-
+    
     public void addConfigWithRack(Map<String, String> globalVariables, Map<String, ServiceConfig> map,
                                   List<ServiceConfig> configs, List<ServiceConfig> rackConfigs) {
         for (ServiceConfig serviceConfig : configs) {
@@ -86,7 +87,7 @@ public abstract class ServiceHandlerAbstract {
             }
         }
     }
-
+    
     private void addConfig(Map<String, String> globalVariables, Map<String, ServiceConfig> map,
                            List<ServiceConfig> rackConfigs, ServiceConfig serviceConfig) {
         if (map.containsKey(serviceConfig.getName())) {
@@ -109,31 +110,35 @@ public abstract class ServiceHandlerAbstract {
             rackConfigs.add(serviceConfig);
         }
     }
-
+    
     public boolean isEnableKerberos(Integer clusterId, Map<String, String> globalVariables, boolean enableKerberos,
                                     ServiceConfig config, String serviceName) {
         if ((Boolean) config.getValue()) {
             enableKerberos = true;
-            ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${enable" + serviceName + "Kerberos}",
+            ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,
+                    "${enable" + serviceName + "Kerberos}",
                     "true");
         } else {
-            ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${enable" + serviceName + "Kerberos}",
+            ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,
+                    "${enable" + serviceName + "Kerberos}",
                     "false");
         }
         return enableKerberos;
     }
-
+    
     public boolean isEnableHA(Integer clusterId, Map<String, String> globalVariables, boolean enableHA,
                               ServiceConfig config, String serviceName) {
         if ((Boolean) config.getValue()) {
             enableHA = true;
-            ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${enable" + serviceName + "HA}", "true");
+            ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,
+                    "${enable" + serviceName + "HA}", "true");
         } else {
-            ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${enable" + serviceName + "HA}", "false");
+            ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,
+                    "${enable" + serviceName + "HA}", "false");
         }
         return enableHA;
     }
-
+    
     public boolean isEnableRack(boolean enableRack, ServiceConfig config) {
         if ((Boolean) config.getValue()) {
             enableRack = true;

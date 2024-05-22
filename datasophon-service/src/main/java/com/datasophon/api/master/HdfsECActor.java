@@ -36,9 +36,9 @@ import akka.actor.UntypedActor;
  * Used to manage hdfs capacity expansion and reduction
  */
 public class HdfsECActor extends UntypedActor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(HdfsECActor.class);
-
+    
     @Override
     public void onReceive(Object msg) throws Throwable {
         if (msg instanceof HdfsEcCommand) {
@@ -58,5 +58,5 @@ public class HdfsECActor extends UntypedActor {
             unhandled(msg);
         }
     }
-
+    
 }

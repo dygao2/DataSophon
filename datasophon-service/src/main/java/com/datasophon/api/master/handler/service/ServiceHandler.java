@@ -24,9 +24,9 @@ import lombok.Data;
 
 @Data
 public abstract class ServiceHandler {
-
+    
     private ServiceHandler next;
-
+    
     public abstract ExecResult handlerRequest(ServiceRoleInfo serviceRoleInfo) throws Exception;
-
+    
 }

@@ -25,10 +25,10 @@ import lombok.Data;
 
 @Data
 public class ClusterQueueCapacityList {
-
+    
     private String rootId;
-
+    
     private List<ClusterQueueCapacity> nodes;
-
+    
     private List<Links> links;
 }

@@ -29,9 +29,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @Data
 @TableName("t_ddh_cluster_yarn_queue")
 public class ClusterYarnQueue implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     /**
      * 
      */
@@ -73,17 +73,17 @@ public class ClusterYarnQueue implements Serializable {
      * 1: true 2:false
      */
     private Integer allowPreemption;
-
+    
     private Integer clusterId;
-
+    
     private Date createTime;
-
+    
     private String amShare;
-
+    
     @TableField(exist = false)
     private String minResources;
-
+    
     @TableField(exist = false)
     private String maxResources;
-
+    
 }

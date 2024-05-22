@@ -29,9 +29,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @Data
 @TableName("t_ddh_frame_info")
 public class FrameInfoEntity implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     /**
      * 主键
      */
@@ -49,8 +49,8 @@ public class FrameInfoEntity implements Serializable {
      * 框架版本
      */
     private String frameVersion;
-
+    
     @TableField(exist = false)
     private List<FrameServiceEntity> frameServiceList;
-
+    
 }

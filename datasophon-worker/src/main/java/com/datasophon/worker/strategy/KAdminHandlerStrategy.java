@@ -26,11 +26,11 @@ import com.datasophon.worker.handler.ServiceHandler;
 import java.sql.SQLException;
 
 public class KAdminHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
-
-    public KAdminHandlerStrategy(String serviceName,String serviceRoleName) {
-        super(serviceName,serviceRoleName);
+    
+    public KAdminHandlerStrategy(String serviceName, String serviceRoleName) {
+        super(serviceName, serviceRoleName);
     }
-
+    
     @Override
     public ExecResult handler(ServiceRoleOperateCommand command) throws SQLException, ClassNotFoundException {
         ExecResult startResult = new ExecResult();

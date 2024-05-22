@@ -51,7 +51,7 @@ import com.datasophon.dao.entity.ClusterVariable;
 import com.datasophon.dao.entity.FrameInfoEntity;
 import com.datasophon.dao.entity.FrameServiceEntity;
 import com.datasophon.dao.entity.FrameServiceRoleEntity;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -59,8 +59,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.env.PropertyResolver;
-import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -142,7 +140,6 @@ public class LoadServiceMeta implements ApplicationRunner {
         }
     }
 
-
     /**
      * 解析 DDL 并存储到 frame 库
      *
@@ -193,7 +190,6 @@ public class LoadServiceMeta implements ApplicationRunner {
         saveFrameServiceRole(frameCode, serviceName, serviceInfo, serviceEntity);
     }
 
-
     private void putServiceHomeToVariable(String frameCode,
                                           List<ClusterInfoEntity> clusters, String serviceName,
                                           String decompressPackageName) {
@@ -211,10 +207,10 @@ public class LoadServiceMeta implements ApplicationRunner {
     }
 
     private void saveFrameServiceRole(
-            String frameCode,
-            String serviceName,
-            ServiceInfo serviceInfo,
-            FrameServiceEntity serviceEntity) {
+                                      String frameCode,
+                                      String serviceName,
+                                      ServiceInfo serviceInfo,
+                                      FrameServiceEntity serviceEntity) {
         List<ServiceRoleInfo> serviceRoles = serviceInfo.getRoles();
 
         for (ServiceRoleInfo serviceRole : serviceRoles) {
@@ -271,14 +267,14 @@ public class LoadServiceMeta implements ApplicationRunner {
     }
 
     private FrameServiceEntity saveFrameService(
-            String frameCode,
-            FrameInfoEntity frameInfo,
-            String serviceName,
-            String serviceDdl,
-            ServiceInfo serviceInfo,
-            String serviceInfoMd5,
-            List<ServiceConfig> allParameters,
-            Map<Generators, List<ServiceConfig>> configFileMap) {
+                                                String frameCode,
+                                                FrameInfoEntity frameInfo,
+                                                String serviceName,
+                                                String serviceDdl,
+                                                ServiceInfo serviceInfo,
+                                                String serviceInfoMd5,
+                                                List<ServiceConfig> allParameters,
+                                                Map<Generators, List<ServiceConfig>> configFileMap) {
         FrameServiceEntity serviceEntity =
                 frameServiceService.getServiceByFrameIdAndServiceName(
                         frameInfo.getId(), serviceName);
@@ -328,9 +324,9 @@ public class LoadServiceMeta implements ApplicationRunner {
     }
 
     private void buildConfigFileMap(
-            ServiceInfo serviceInfo,
-            Map<String, ServiceConfig> map,
-            Map<Generators, List<ServiceConfig>> configFileMap) {
+                                    ServiceInfo serviceInfo,
+                                    Map<String, ServiceConfig> map,
+                                    Map<Generators, List<ServiceConfig>> configFileMap) {
         ConfigWriter configWriter = serviceInfo.getConfigWriter();
         List<Generators> generators = configWriter.getGenerators().stream().filter(g -> {
             if (StringUtils.isNotEmpty(g.getConditionalOnProperty())) {
@@ -392,7 +388,7 @@ public class LoadServiceMeta implements ApplicationRunner {
     }
 
     private void updateServiceInstanceConfig(
-            String frameCode, String serviceName, List<ServiceConfig> parameters) {
+                                             String frameCode, String serviceName, List<ServiceConfig> parameters) {
         // 查询frameCode相同的集群
         List<ClusterInfoEntity> clusters = clusterInfoService.getClusterByFrameCode(frameCode);
         // 查询集群的服务实例
@@ -415,12 +411,12 @@ public class LoadServiceMeta implements ApplicationRunner {
     }
 
     private void buildFrameServiceRole(
-            String frameCode,
-            FrameServiceEntity serviceEntity,
-            ServiceRoleInfo serviceRole,
-            String serviceRoleJson,
-            String serviceRoleJsonMd5,
-            FrameServiceRoleEntity role) {
+                                       String frameCode,
+                                       FrameServiceEntity serviceEntity,
+                                       ServiceRoleInfo serviceRole,
+                                       String serviceRoleJson,
+                                       String serviceRoleJsonMd5,
+                                       FrameServiceRoleEntity role) {
         role.setServiceId(serviceEntity.getId());
         role.setServiceRoleName(serviceRole.getName());
         role.setCardinality(serviceRole.getCardinality());
@@ -433,15 +429,15 @@ public class LoadServiceMeta implements ApplicationRunner {
     }
 
     private void buildServiceEntity(
-            String frameCode,
-            Integer frameInfoId,
-            String serviceName,
-            String serviceDdl,
-            ServiceInfo serviceInfo,
-            String serviceInfoMd5,
-            FrameServiceEntity serviceEntity,
-            Map<Generators, List<ServiceConfig>> configFileMap,
-            String decompressPackageName) {
+                                    String frameCode,
+                                    Integer frameInfoId,
+                                    String serviceName,
+                                    String serviceDdl,
+                                    ServiceInfo serviceInfo,
+                                    String serviceInfoMd5,
+                                    FrameServiceEntity serviceEntity,
+                                    Map<Generators, List<ServiceConfig>> configFileMap,
+                                    String decompressPackageName) {
         serviceEntity.setServiceName(serviceName);
         serviceEntity.setLabel(serviceInfo.getLabel());
         serviceEntity.setFrameId(frameInfoId);

@@ -19,22 +19,23 @@
 
 package com.datasophon.api.migration;
 
-import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
+
+import lombok.Getter;
 
 @Getter
 public enum ScriptType {
-
+    
     UPGRADE("V"),
-
+    
     ROLLBACK("R");
-
+    
     private final String prefix;
-
+    
     ScriptType(String prefix) {
         this.prefix = prefix;
     }
-
+    
     public static ScriptType of(String version) {
         if (StringUtils.isBlank(version)) {
             return null;

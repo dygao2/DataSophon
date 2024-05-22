@@ -17,7 +17,6 @@
 
 package com.datasophon.worker.strategy;
 
-import cn.hutool.core.io.FileUtil;
 import com.datasophon.common.Constants;
 import com.datasophon.common.cache.CacheUtils;
 import com.datasophon.common.command.ServiceRoleOperateCommand;
@@ -29,12 +28,14 @@ import com.datasophon.worker.utils.KerberosUtils;
 
 import java.util.ArrayList;
 
-public class NameNodeHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
+import cn.hutool.core.io.FileUtil;
 
+public class NameNodeHandlerStrategy extends AbstractHandlerStrategy implements ServiceRoleStrategy {
+    
     public NameNodeHandlerStrategy(String serviceName, String serviceRoleName) {
         super(serviceName, serviceRoleName);
     }
-
+    
     @Override
     public ExecResult handler(ServiceRoleOperateCommand command) {
         ServiceHandler serviceHandler = new ServiceHandler(command.getServiceName(), command.getServiceRoleName());
@@ -78,7 +79,8 @@ public class NameNodeHandlerStrategy extends AbstractHandlerStrategy implements 
             commands.add("sh");
             commands.add(workPath + "/ranger-hdfs-plugin/enable-hdfs-plugin.sh");
             if (!FileUtil.exist(workPath + "/ranger-hdfs-plugin/success.id")) {
-                ExecResult execResult = ShellUtils.execWithStatus(workPath + "/ranger-hdfs-plugin", commands, 30L, logger);
+                ExecResult execResult =
+                        ShellUtils.execWithStatus(workPath + "/ranger-hdfs-plugin", commands, 30L, logger);
                 if (execResult.getExecResult()) {
                     logger.info("Enable ranger hdfs plugin success");
                     // 写入ranger plugin集成成功标识
@@ -102,8 +104,8 @@ public class NameNodeHandlerStrategy extends AbstractHandlerStrategy implements 
         }
         ExecResult startResult = serviceHandler.start(command.getStartRunner(), command.getStatusRunner(),
                 command.getDecompressPackageName(), command.getRunAs());
-
+        
         return startResult;
     }
-
+    
 }

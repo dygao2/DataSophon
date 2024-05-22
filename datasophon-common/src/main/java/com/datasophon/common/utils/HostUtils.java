@@ -19,7 +19,7 @@ package com.datasophon.common.utils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.*;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import com.google.common.net.InetAddresses;
@@ -31,13 +31,13 @@ import com.google.common.net.InetAddresses;
  */
 public enum HostUtils {
     ;
-
+    
     public static final Pattern HOST_NAME_STR = Pattern.compile("[0-9a-zA-Z-.]{1,64}");
-
+    
     public static boolean checkIP(String ipStr) {
         return InetAddresses.isInetAddress(ipStr);
     }
-
+    
     private static void checkIPThrow(String ipStr, Map<String, String> ipHost) {
         if (!checkIP(ipStr)) {
             throw new RuntimeException("Invalid IP in file /etc/hosts, IP：" + ipStr);
@@ -46,26 +46,26 @@ public enum HostUtils {
             throw new RuntimeException("Duplicate ip in file /etc/hosts, IP：" + ipStr);
         }
     }
-
+    
     public static boolean checkHostname(String hostname) {
         if (!HOST_NAME_STR.matcher(hostname).matches()) {
             return false;
         }
         return !hostname.startsWith("-") && !hostname.endsWith("-");
     }
-
+    
     private static void validHostname(String hostname) {
         if (!checkHostname(hostname)) {
             throw new RuntimeException("Invalid hostname in file /etc/hosts, hostname：" + hostname);
         }
     }
-
+    
     public static String findIp(String hostname) {
         validHostname(hostname);
         String ip = getIp(hostname);
         return ip;
     }
-
+    
     public static String getHostName(String hostOrIp) {
         try {
             InetAddress byName = InetAddress.getByName(hostOrIp);
@@ -74,7 +74,7 @@ public enum HostUtils {
             throw new RuntimeException(e);
         }
     }
-
+    
     public static String getIp(String hostName) {
         try {
             InetAddress byName = InetAddress.getByName(hostName);
@@ -83,7 +83,7 @@ public enum HostUtils {
             throw new RuntimeException(e);
         }
     }
-
+    
     public static String getLocalIp() {
         try {
             InetAddress ip = InetAddress.getLocalHost();
@@ -92,7 +92,7 @@ public enum HostUtils {
             throw new RuntimeException(e);
         }
     }
-
+    
     public static String getLocalHostName() {
         try {
             InetAddress ip = InetAddress.getLocalHost();
@@ -101,5 +101,5 @@ public enum HostUtils {
             throw new RuntimeException(e);
         }
     }
-
+    
 }

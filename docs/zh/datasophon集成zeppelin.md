@@ -1,7 +1,9 @@
 ### 1、构建安装包
+
 下载安装包 zeppelin-0.10.1-bin-all.tgz
 
 [https://zeppelin.apache.org/download.html](https://zeppelin.apache.org/download.html)
+
 ```shell
 tar -zxvf zeppelin-0.10.1-bin-all.tgz
 mv zeppelin-0.10.1-bin-all zeppelin-0.10.1
@@ -14,7 +16,9 @@ md5sum zeppelin-0.10.1.tar.gz
 echo 'c2e7f95d459777683c966a1d087754de' > zeppelin-0.10.1.tar.gz.md5
 cp ./zeppelin-0.10.1.tar.gz ./zeppelin-0.10.1.tar.gz.md5 /opt/datasophon/DDP/packages/
 ```
+
 control_zeppeline.sh：
+
 ```shell
 #!/bin/bash
 
@@ -67,7 +71,9 @@ esac
 
 exit 0
 ```
+
 ### 2、元数据文件
+
 ```shell
 # api元数据目录
 cd /opt/apps/datasophon-manager-1.2.0/conf/meta/DDP-1.2.0
@@ -80,7 +86,9 @@ cd /opt/datasophon/datasophon-worker/conf/templates
 touch zeppelin-env.ftl
 touch zeppelin-site.ftl
 ```
+
 service_ddl.json：
+
 ```shell
 {
   "name": "ZEPPELIN",
@@ -190,7 +198,9 @@ service_ddl.json：
   ]
 }
 ```
+
 zeppelin-env.ftl：
+
 ```shell
 #!/bin/bash
 
@@ -203,7 +213,9 @@ export JAVA_HOME=$parent_dir/jdk1.8.0_311
 export ${item.name}=${item.value}
 </#list>
 ```
+
 zeppelin-site.ftl
+
 ```shell
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
@@ -1038,12 +1050,18 @@ zeppelin-site.ftl
 </configuration>
 
 ```
+
 ### 3、重启
+
 各节点worker重启
+
 ```shell
 sh /opt/datasophon/datasophon-worker/bin/datasophon-worker.sh restart worker debug
 ```
+
 主节点重启api
+
 ```shell
 sh /opt/apps/datasophon-manager-1.2.0/bin/datasophon-api.sh restart api debug
 ```
+

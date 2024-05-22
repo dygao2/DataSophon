@@ -32,9 +32,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @Data
 @TableName("t_ddh_cluster_info")
 public class ClusterInfoEntity implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     /**
      * 主键
      */
@@ -72,11 +72,11 @@ public class ClusterInfoEntity implements Serializable {
      * 集群框架id
      */
     private Integer frameId;
-
+    
     @TableField(exist = false)
     private List<UserInfoEntity> clusterManagerList;
-
+    
     @TableField(exist = false)
     private Integer clusterStateCode;
-
+    
 }

@@ -23,7 +23,7 @@ import lombok.Data;
 
 @Data
 public class PromDataInfo {
-
+    
     /**
      * prometheus结果类型
      * vector--瞬时向量
@@ -32,7 +32,7 @@ public class PromDataInfo {
      * string--字符串
      */
     private String resultType;
-
+    
     /**
      * prometheus指标属性和值
      */

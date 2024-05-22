@@ -17,28 +17,29 @@
 
 package com.datasophon.worker.actor;
 
-import akka.actor.ActorRef;
-import akka.actor.Props;
-import akka.actor.Terminated;
-import akka.actor.UntypedActor;
-import com.alibaba.fastjson.JSONObject;
-import com.datasophon.common.model.StartWorkerMessage;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
+
 import scala.Option;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import akka.actor.ActorRef;
+import akka.actor.Props;
+import akka.actor.Terminated;
+import akka.actor.UntypedActor;
+
 public class WorkerActor extends UntypedActor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(WorkerActor.class);
-
+    
     @Override
     public void preRestart(Throwable reason, Option<Object> message) {
         logger.info("worker actor restart by reason {}", reason.getMessage());
     }
-
+    
     @Override
     public void preStart() throws IOException {
         ActorRef installServiceActor = getContext().actorOf(Props.create(InstallServiceActor.class),
@@ -69,7 +70,7 @@ public class WorkerActor extends UntypedActor {
         ActorRef rMStateActor =
                 getContext().actorOf(Props.create(RMStateActor.class), getActorRefName(RMStateActor.class));
         ActorRef pingActor = getContext().actorOf(Props.create(PingActor.class), getActorRefName(PingActor.class));
-
+        
         // 添加监听服务
         getContext().watch(installServiceActor);
         getContext().watch(configureServiceActor);
@@ -85,18 +86,18 @@ public class WorkerActor extends UntypedActor {
         getContext().watch(kerberosActor);
         getContext().watch(rMStateActor);
         getContext().watch(nMStateActor);
-		getContext().watch(pingActor);
+        getContext().watch(pingActor);
     }
-
+    
     /** Get ActorRef name from Class name. */
     private String getActorRefName(Class clazz) {
         return StringUtils.uncapitalize(clazz.getSimpleName());
     }
-
+    
     @Override
     public void onReceive(Object message) throws Throwable {
         if (message instanceof String) {
-
+            
         } else if (message instanceof Terminated) {
             Terminated t = (Terminated) message;
             logger.info("find actor {} terminated", t.getActor());

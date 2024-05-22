@@ -30,48 +30,55 @@ import com.datasophon.common.utils.HostUtils;
 import com.datasophon.common.utils.PlaceholderUtils;
 import com.datasophon.dao.entity.ClusterInfoEntity;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
-import java.util.*;
-
 public class ZkServerHandlerStrategy implements ServiceRoleStrategy {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(ZkServerHandlerStrategy.class);
-
+    
     @Override
     public void handler(Integer clusterId, List<String> hosts, String serviceName) {
         // 保存zkUrls到全局变量
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
         String join = String.join(":2181,", hosts);
         String zkUrls = join + ":2181";
-        ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${zkUrls}", zkUrls);
+        ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${zkUrls}", zkUrls);
         // 保存hbaseZkUrls到全局变量
-        String hbaseZkUrls=String.join(",", hosts);
-        ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${zkHostsUrl}", hbaseZkUrls);
+        String hbaseZkUrls = String.join(",", hosts);
+        ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName, "${zkHostsUrl}", hbaseZkUrls);
     }
-
+    
     @Override
-    public void handlerConfig(Integer clusterId, List<ServiceConfig> list,String serviceName) {
+    public void handlerConfig(Integer clusterId, List<ServiceConfig> list, String serviceName) {
         Map<String, String> globalVariables = GlobalVariables.get(clusterId);
         ClusterInfoEntity clusterInfo = ProcessUtils.getClusterInfo(clusterId);
         boolean enableKerberos = false;
         Map<String, ServiceConfig> map = ProcessUtils.translateToMap(list);
-
+        
         for (ServiceConfig config : list) {
             if ("enableKerberos".equals(config.getName())) {
                 if ((Boolean) config.getValue()) {
                     enableKerberos = true;
-                    ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${enableZOOKEEPERKerberos}",
+                    ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,
+                            "${enableZOOKEEPERKerberos}",
                             "true");
                 } else {
-                    ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,"${enableZOOKEEPERKerberos}",
+                    ProcessUtils.generateClusterVariable(globalVariables, clusterId, serviceName,
+                            "${enableZOOKEEPERKerberos}",
                             "false");
                 }
             }
         }
-
+        
         String key = clusterInfo.getClusterFrame() + Constants.UNDERLINE + "ZOOKEEPER" + Constants.CONFIG;
         List<ServiceConfig> configs = ServiceConfigMap.get(key);
         ArrayList<ServiceConfig> kbConfigs = new ArrayList<>();
@@ -107,6 +114,7 @@ public class ZkServerHandlerStrategy implements ServiceRoleStrategy {
         }
         list.addAll(kbConfigs);
     }
+    
     /**
      *
      * @param clusterId
@@ -117,15 +125,15 @@ public class ZkServerHandlerStrategy implements ServiceRoleStrategy {
         // add server.x config
         ClusterInfoService clusterInfoService = SpringTool.getApplicationContext().getBean(ClusterInfoService.class);
         ClusterInfoEntity clusterInfo = clusterInfoService.getById(clusterId);
-
+        
         String hostMapKey = clusterInfo.getClusterCode() + Constants.UNDERLINE + Constants.SERVICE_ROLE_HOST_MAPPING;
         HashMap<String, List<String>> hostMap = (HashMap<String, List<String>>) CacheUtils.get(hostMapKey);
-
+        
         if (Objects.nonNull(hostMap)) {
             List<String> zkServers = hostMap.get("ZkServer");
-
+            
             Map<String, ServiceConfig> map = ProcessUtils.translateToMap(list);
-
+            
             Integer myid = 1;
             for (String server : zkServers) {
                 ServiceConfig serviceConfig = new ServiceConfig();
@@ -150,15 +158,15 @@ public class ZkServerHandlerStrategy implements ServiceRoleStrategy {
             }
         }
     }
-
+    
     @Override
     public void handlerServiceRoleInfo(ServiceRoleInfo serviceRoleInfo, String hostname) {
-
+        
     }
-
+    
     @Override
     public void handlerServiceRoleCheck(ClusterServiceRoleInstanceEntity roleInstanceEntity,
                                         Map<String, ClusterServiceRoleInstanceEntity> map) {
-
+        
     }
 }

@@ -33,8 +33,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 @Mapper
 public interface ClusterHostMapper extends BaseMapper<ClusterHostDO> {
-
+    
     ClusterHostDO getClusterHostByHostname(@Param("hostname") String hostname);
-
+    
     void updateBatchNodeLabel(@Param("hostIds") String hostIds, @Param("nodeLabel") String nodeLabel);
 }

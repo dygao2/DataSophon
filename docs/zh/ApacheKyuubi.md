@@ -1,8 +1,8 @@
-# ApacheKyuubi  
+# ApacheKyuubi
 
 ## 概述
 `
-  ApacheKyuubi是一个分布式多租户网关,支持Spark,Flink,Hive等计算引擎，
+ApacheKyuubi是一个分布式多租户网关,支持Spark,Flink,Hive等计算引擎，
 依赖Kyuubi我们可以更方便的对数据湖组件进行集成.
 `
 ## 连接器说明
@@ -11,7 +11,7 @@
 `
 ## 服务认证
 `
- ApacheKyuubi对于认证支持多种方式,默认对Kerberos做了集成,只需要在安装时打开相关选项即可，如果
+ApacheKyuubi对于认证支持多种方式,默认对Kerberos做了集成,只需要在安装时打开相关选项即可，如果
 需要集成其他认证模式可以参考:https://kyuubi.readthedocs.io/en/v1.7.3/security/index.html
 `
 ## 权限集成
@@ -64,5 +64,4 @@ _HOST是通配)
 ```
 这里只列举简单的说明与基本使用方式,ApacheKyuubi的功能远不止于此,更详细的操作请参考官方文档:https://kyuubi.readthedocs.io/en/v1.7.3
 ```
-
 

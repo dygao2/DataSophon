@@ -43,8 +43,6 @@ other::r-x
 [root@master bin]# hadoop fs -setfacl -R -m user:lzy:rwx /
 ```
 
-   
-
 3. hive和impala
 
 用hive管理员登录
@@ -123,6 +121,4 @@ principal="lzy/master@HADOOP.COM"
 serviceName=kafka;
 };
 ```
-
-   
 

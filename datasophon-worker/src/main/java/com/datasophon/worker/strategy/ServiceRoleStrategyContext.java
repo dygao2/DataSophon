@@ -17,15 +17,15 @@
 
 package com.datasophon.worker.strategy;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ServiceRoleStrategyContext {
-
+    
     private static final Map<String, ServiceRoleStrategy> map = new ConcurrentHashMap<>();
-
+    
     static {
         map.put("NameNode", new NameNodeHandlerStrategy("HDFS", "NameNode"));
         map.put("ZKFC", new ZKFCHandlerStrategy("HDFS", "ZKFC"));
@@ -47,19 +47,18 @@ public class ServiceRoleStrategyContext {
         map.put("SRBE", new BEHandlerStrategy("STARROCKS", "SRBE"));
         map.put("DorisBE", new BEHandlerStrategy("DORIS", "DorisBE"));
         map.put("HistoryServer", new HistoryServerHandlerStrategy("YARN", "HistoryServer"));
-
+        
         // TEZ Server service
         map.put("TezServer", new TezServerHandlerStrategy("TEZ", "TezServer"));
-        //kyuubi
+        // kyuubi
         map.put("KyuubiServer", new KyuubiServerHandlerStrategy("KYUUBI", "KyuubiServer"));
-        //flink
+        // flink
         map.put("FlinkClient", new FlinkHandlerStrategy("FLINK", "FlinkClient"));
-
-        //DolphinScheduler
-        map.put("MasterServer", new DSMasterHandlerStrategy("USCHEDULER", "MasterServer2"));
-
+        
+        // DolphinScheduler
+        map.put("MasterServer", new DSMasterHandlerStrategy("DS", "MasterServer"));
     }
-
+    
     public static ServiceRoleStrategy getServiceRoleHandler(String type) {
         if (StringUtils.isBlank(type)) {
             return null;

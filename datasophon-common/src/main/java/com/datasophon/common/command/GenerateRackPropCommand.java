@@ -20,9 +20,10 @@ package com.datasophon.common.command;
 import java.io.Serializable;
 
 import lombok.Data;
+
 @Data
 public class GenerateRackPropCommand implements Serializable {
-
+    
     private Integer clusterId;
-
+    
 }

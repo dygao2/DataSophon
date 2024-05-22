@@ -1,5 +1,7 @@
 ### 1、构建安装包
+
 下载redis tar包 redis-7.2.3.tar.gz
+
 ```shell
 tar -zxvf redis-7.2.3.tar.gz
 cd redis-7.2.3
@@ -30,15 +32,20 @@ md5sum redis-7.2.3.tar.gz
 echo 'd20743bd570ab78efaf0a9aa3b28caf5' > redis-7.2.3.tar.gz.md5
 cp ./redis-7.2.3.tar.gz ./redis-7.2.3.tar.gz.md5 /opt/datasophon/DDP/packages/
 ```
+
 ### 2、元数据文件
+
 **api节点元数据：**
+
 ```shell
 cd /opt/apps/datasophon-manager-1.2.0/conf/meta/DDP-1.2.0
 mkdir REDIS
 cd REDIS	
 touch service_ddl.json
 ```
+
 service_ddl.json：
+
 ```shell
 {
   "name": "REDIS",
@@ -237,6 +244,7 @@ service_ddl.json：
 ```
 
 **各worker节点元数据：**
+
 ```shell
 cd /opt/datasophon/datasophon-worker/conf/templates
 touch redis-cluster.ftl
@@ -244,7 +252,9 @@ touch redis-control.ftl
 touch redis-master.ftl
 touch redis-slave.ftl
 ```
+
 redis-cluster.ftl：
+
 ```shell
 #!/bin/bash
 
@@ -338,7 +348,9 @@ main() {
 # 执行主函数
 main
 ```
+
 redis-control.ftl：
+
 ```shell
 #!/bin/bash
 
@@ -437,7 +449,9 @@ case $1 in
         ;;
 esac
 ```
+
 redis-master.ftl：
+
 ```shell
 bind 0.0.0.0
 daemonize yes
@@ -458,7 +472,9 @@ cluster-node-timeout 5000
 ${item.name} ${item.value}
 </#list>
 ```
+
 redis-slave.ftl：
+
 ```shell
 bind 0.0.0.0
 daemonize yes
@@ -479,8 +495,11 @@ cluster-node-timeout 5000
 ${item.name} ${item.value}
 </#list>
 ```
+
 ### 3、修改源码
+
 com.datasophon.api.strategy.RedisHandlerStrategy
+
 ```java
 package com.datasophon.api.strategy;
 
@@ -553,11 +572,15 @@ public class RedisHandlerStrategy extends ServiceHandlerAbstract implements Serv
     }
 }
 ```
+
 com.datasophon.api.strategy.ServiceRoleStrategyContext
+
 ```java
 map.put("REDIS", new RedisHandlerStrategy());
 ```
+
 com.datasophon.worker.strategy.RedisHandlerStrategy
+
 ```java
 package com.datasophon.worker.strategy;
 
@@ -594,18 +617,27 @@ public class RedisHandlerStrategy extends AbstractHandlerStrategy implements Ser
     }
 }
 ```
+
 com.datasophon.worker.strategy.ServiceRoleStrategyContext
+
 ```java
 map.put("RedisMaster", new RedisHandlerStrategy("REDIS", "RedisMaster"));
 map.put("RedisWorker", new RedisHandlerStrategy("REDIS", "RedisWorker"));
 ```
+
 **打包部署**
+
 ### 4、重启
+
 各节点worker重启
+
 ```shell
 sh /opt/datasophon/datasophon-worker/bin/datasophon-worker.sh restart worker debug
 ```
+
 主节点重启api
+
 ```shell
 sh /opt/apps/datasophon-manager-1.2.0/bin/datasophon-api.sh restart api debug
 ```
+

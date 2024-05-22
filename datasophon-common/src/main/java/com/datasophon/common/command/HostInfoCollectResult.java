@@ -24,7 +24,7 @@ import lombok.Data;
 
 @Data
 public class HostInfoCollectResult implements Serializable {
-
+    
     private static final long serialVersionUID = 4197649708954689128L;
     private int coreNum;
     private double totalMem;
@@ -36,5 +36,5 @@ public class HostInfoCollectResult implements Serializable {
     private double diskUsedPersent;
     private double averageLoad;
     private String clusterCode;
-
+    
 }

@@ -17,7 +17,6 @@
 
 package com.datasophon.api.master;
 
-import akka.actor.UntypedActor;
 import com.datasophon.api.master.handler.service.ServiceHandler;
 import com.datasophon.api.master.handler.service.ServiceStopHandler;
 import com.datasophon.api.service.ClusterServiceRoleGroupConfigService;
@@ -35,28 +34,31 @@ import com.datasophon.dao.entity.ClusterServiceRoleGroupConfig;
 import com.datasophon.dao.entity.ClusterServiceRoleInstanceEntity;
 import com.datasophon.dao.enums.NeedRestart;
 import com.datasophon.dao.enums.ServiceRoleState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import akka.actor.UntypedActor;
+
 public class WorkerServiceActor extends UntypedActor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(WorkerServiceActor.class);
-
+    
     @Override
     public void onReceive(Object message) throws Throwable {
         if (message instanceof ExecuteServiceRoleCommand) {
             ExecuteServiceRoleCommand executeServiceRoleCommand = (ExecuteServiceRoleCommand) message;
-
+            
             ClusterServiceRoleGroupConfigService roleGroupConfigService =
                     SpringTool.getApplicationContext().getBean(ClusterServiceRoleGroupConfigService.class);
             ClusterServiceRoleInstanceService roleInstanceService =
                     SpringTool.getApplicationContext().getBean(ClusterServiceRoleInstanceService.class);
-
+            
             ServiceRoleInfo serviceRoleInfo = executeServiceRoleCommand.getWorkerRole();
             ExecResult execResult = new ExecResult();
             Integer serviceInstanceId = serviceRoleInfo.getServiceInstanceId();
@@ -152,5 +154,5 @@ public class WorkerServiceActor extends UntypedActor {
             unhandled(message);
         }
     }
-
+    
 }

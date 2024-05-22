@@ -25,7 +25,7 @@ import com.datasophon.common.utils.ShellUtils;
 import akka.actor.UntypedActor;
 
 public class ExecuteCmdActor extends UntypedActor {
-
+    
     @Override
     public void onReceive(Object msg) throws Throwable {
         if (msg instanceof ExecuteCmdCommand) {

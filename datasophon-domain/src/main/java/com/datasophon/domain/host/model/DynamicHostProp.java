@@ -1,13 +1,15 @@
 package com.datasophon.domain.host.model;
 
 import com.datasophon.domain.host.enums.HostState;
-import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
 
+import lombok.Data;
+
 @Data
 public class DynamicHostProp {
+    
     /**
      * 已用内存
      */
@@ -32,6 +34,6 @@ public class DynamicHostProp {
      * 1:受管 2：断线
      */
     private Integer managed;
-
+    
     private List<ServiceRole> serviceRoles;
 }

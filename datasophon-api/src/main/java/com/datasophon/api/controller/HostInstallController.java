@@ -21,20 +21,28 @@ import com.datasophon.api.security.UserPermission;
 import com.datasophon.api.service.InstallService;
 import com.datasophon.common.utils.Result;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @Validated
 @RestController
 @RequestMapping("host/install")
 public class HostInstallController {
-
+    
     @Autowired
     private InstallService installService;
-
+    
     /**
      * 获取安装步骤
      */
@@ -42,7 +50,7 @@ public class HostInstallController {
     public Result getInstallStep(Integer type) {
         return installService.getInstallStep(type);
     }
-
+    
     /**
      * 解析主机列表
      */
@@ -56,7 +64,7 @@ public class HostInstallController {
                                    @RequestParam Integer pageSize) {
         return installService.analysisHostList(clusterId, hosts, sshUser, sshPort, page, pageSize);
     }
-
+    
     /**
      * 查询主机校验状态
      */
@@ -65,7 +73,7 @@ public class HostInstallController {
     public Result getHostCheckStatus(Integer clusterId, String sshUser, Integer sshPort) {
         return installService.getHostCheckStatus(clusterId, sshUser, sshPort);
     }
-
+    
     /**
      * 重新进行主机环境校验
      */
@@ -74,7 +82,7 @@ public class HostInstallController {
     public Result rehostCheck(Integer clusterId, String hostnames, String sshUser, Integer sshPort) {
         return installService.rehostCheck(clusterId, hostnames, sshUser, sshPort);
     }
-
+    
     /**
      * 查询主机校验是否全部完成
      */
@@ -83,7 +91,7 @@ public class HostInstallController {
     public Result hostCheckCompleted(Integer clusterId) {
         return installService.hostCheckCompleted(clusterId);
     }
-
+    
     /**
      * 主机管理agent分发安装进度列表
      */
@@ -92,12 +100,12 @@ public class HostInstallController {
     public Result dispatcherHostAgentList(Integer clusterId, Integer installStateCode, Integer page, Integer pageSize) {
         return installService.dispatcherHostAgentList(clusterId, installStateCode, page, pageSize);
     }
-
+    
     @PostMapping("/dispatcherHostAgentCompleted")
     public Result dispatcherHostAgentCompleted(Integer clusterId) {
         return installService.dispatcherHostAgentCompleted(clusterId);
     }
-
+    
     /**
      * 主机管理agent分发取消
      */
@@ -105,7 +113,7 @@ public class HostInstallController {
     public Result cancelDispatcherHostAgent(Integer clusterId, String hostname, Integer installStateCode) {
         return installService.cancelDispatcherHostAgent(clusterId, hostname, installStateCode);
     }
-
+    
     /**
      * 主机管理agent分发安装重试
      *
@@ -117,7 +125,7 @@ public class HostInstallController {
     public Result reStartDispatcherHostAgent(Integer clusterId, String hostnames) {
         return installService.reStartDispatcherHostAgent(clusterId, hostnames);
     }
-
+    
     /**
      * 主机管理agent操作(启动(start)、停止(stop)、重启(restart))
      * @param clusterHostIds
@@ -130,7 +138,7 @@ public class HostInstallController {
                                            @RequestParam String commandType) throws Exception {
         return installService.generateHostAgentCommand(clusterHostIds, commandType);
     }
-
+    
     /**
      * 启动/停止 主机上服务启动
      * @param clusterHostIds
@@ -139,9 +147,9 @@ public class HostInstallController {
      */
     @PostMapping("/generateHostServiceCommand")
     public Result generateHostServiceCommand(
-            @RequestParam String clusterHostIds,
-            @RequestParam String commandType) throws Exception {
+                                             @RequestParam String clusterHostIds,
+                                             @RequestParam String commandType) throws Exception {
         return installService.generateHostServiceCommand(clusterHostIds, commandType);
     }
-
+    
 }

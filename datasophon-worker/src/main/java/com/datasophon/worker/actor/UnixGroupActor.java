@@ -28,9 +28,9 @@ import org.slf4j.LoggerFactory;
 import akka.actor.UntypedActor;
 
 public class UnixGroupActor extends UntypedActor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(UnixGroupActor.class);
-
+    
     @Override
     public void onReceive(Object msg) throws Throwable {
         if (msg instanceof CreateUnixGroupCommand) {

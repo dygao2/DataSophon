@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 import cn.hutool.core.io.FileUtil;
 
 public class CheckWorkerMd5Handler implements DispatcherWorkerHandler {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(CheckWorkerMd5Handler.class);
     @Override
     public boolean handle(ClientSession session, HostInfo hostInfo) {

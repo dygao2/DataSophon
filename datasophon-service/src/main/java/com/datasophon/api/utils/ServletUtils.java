@@ -38,35 +38,35 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import cn.hutool.core.convert.Convert;
 
 public class ServletUtils {
-
+    
     /**
      * 获取String参数
      */
     public static String getParameter(String name) {
         return getRequest().getParameter(name);
     }
-
+    
     /**
      * 获取String参数
      */
     public static String getParameter(String name, String defaultValue) {
         return Convert.toStr(getRequest().getParameter(name), defaultValue);
     }
-
+    
     /**
      * 获取Integer参数
      */
     public static Integer getParameterToInt(String name) {
         return Convert.toInt(getRequest().getParameter(name));
     }
-
+    
     /**
      * 获取Integer参数
      */
     public static Integer getParameterToInt(String name, Integer defaultValue) {
         return Convert.toInt(getRequest().getParameter(name), defaultValue);
     }
-
+    
     /**
      * 获取request
      */
@@ -77,7 +77,7 @@ public class ServletUtils {
             return null;
         }
     }
-
+    
     /**
      * 获取response
      */
@@ -88,14 +88,14 @@ public class ServletUtils {
             return null;
         }
     }
-
+    
     /**
      * 获取session
      */
     public static HttpSession getSession() {
         return getRequest().getSession();
     }
-
+    
     public static ServletRequestAttributes getRequestAttributes() {
         try {
             RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
@@ -104,7 +104,7 @@ public class ServletUtils {
             return null;
         }
     }
-
+    
     public static Map<String, String> getHeaders(HttpServletRequest request) {
         Map<String, String> map = new LinkedHashMap<>();
         Enumeration<String> enumeration = request.getHeaderNames();
@@ -117,7 +117,7 @@ public class ServletUtils {
         }
         return map;
     }
-
+    
     /**
      * 将字符串渲染到客户端
      *
@@ -136,7 +136,7 @@ public class ServletUtils {
         }
         return null;
     }
-
+    
     /**
      * 内容编码
      *
@@ -150,7 +150,7 @@ public class ServletUtils {
             return "";
         }
     }
-
+    
     /**
      * 内容解码
      *

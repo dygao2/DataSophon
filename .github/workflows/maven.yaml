@@ -34,12 +34,13 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-#       - name: Check Style
-#         run: |
-#           ./mvnw -T 2C -B --no-snapshot-updates clean checkstyle:check
+      - name: Check Code Style
+        run: |
+          ./mvnw -T 2C -B --no-snapshot-updates clean checkstyle:check
       - name: Build and Package
         run: |
-          ./mvnw -Pgoogle-mirror -B clean install \
-                 -Dmaven.test.skip=true \
-                 --no-snapshot-updates \
-                 -pl !datasophon-ui,!datasophon-api,!datasophon-service -am
+          ./mvnw -Pgoogle-mirror -B clean package \
+          -Dmaven.test.skip=true \
+          -Dspotless.check.skip=true \
+          --no-snapshot-updates \
+          -pl !datasophon-ui,!datasophon-api,!datasophon-service -am

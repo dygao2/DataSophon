@@ -23,7 +23,7 @@ import com.datasophon.dao.entity.UserInfoEntity;
 import javax.servlet.http.HttpServletRequest;
 
 public interface Authenticator {
-
+    
     /**
      * Verifying legality via username and password
      *
@@ -33,7 +33,7 @@ public interface Authenticator {
      * @return result object
      */
     Result authenticate(String username, String password, String extra);
-
+    
     /**
      * Get authenticated user
      *

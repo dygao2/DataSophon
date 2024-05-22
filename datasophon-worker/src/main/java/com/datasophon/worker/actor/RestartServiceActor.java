@@ -24,7 +24,7 @@ import com.datasophon.worker.handler.ServiceHandler;
 import akka.actor.UntypedActor;
 
 public class RestartServiceActor extends UntypedActor {
-
+    
     @Override
     public void onReceive(Object msg) throws Throwable {
         if (msg instanceof ServiceRoleOperateCommand) {

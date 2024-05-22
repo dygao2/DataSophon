@@ -17,9 +17,6 @@
 
 package com.datasophon.api.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.additional.query.impl.LambdaQueryChainWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.datasophon.api.service.AlertGroupService;
 import com.datasophon.api.service.ClusterAlertGroupMapService;
 import com.datasophon.api.service.ClusterAlertQuotaService;
@@ -30,36 +27,42 @@ import com.datasophon.dao.entity.AlertGroupEntity;
 import com.datasophon.dao.entity.ClusterAlertGroupMap;
 import com.datasophon.dao.entity.ClusterAlertQuota;
 import com.datasophon.dao.mapper.AlertGroupMapper;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.additional.query.impl.LambdaQueryChainWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
 @Service("alertGroupService")
 public class AlertGroupServiceImpl extends ServiceImpl<AlertGroupMapper, AlertGroupEntity>
         implements
             AlertGroupService {
-
+    
     @Autowired
     private ClusterAlertGroupMapService alertGroupMapService;
-
+    
     @Autowired
     private ClusterAlertQuotaService quotaService;
-
+    
     @Override
     public Result getAlertGroupList(Integer clusterId, String alertGroupName, Integer page, Integer pageSize) {
         Integer offset = (page - 1) * pageSize;
-
+        
         List<ClusterAlertGroupMap> alertGroupMapList =
                 alertGroupMapService.list(new QueryWrapper<ClusterAlertGroupMap>().eq(Constants.CLUSTER_ID, clusterId));
         if (CollectionUtils.isEmpty(alertGroupMapList)) {
             return Result.successEmptyCount();
         }
-
+        
         List<Integer> groupIds =
                 alertGroupMapList.stream().map(ClusterAlertGroupMap::getAlertGroupId).collect(Collectors.toList());
         LambdaQueryChainWrapper<AlertGroupEntity> wrapper = this.lambdaQuery()
@@ -70,7 +73,7 @@ public class AlertGroupServiceImpl extends ServiceImpl<AlertGroupMapper, AlertGr
         if (CollectionUtils.isEmpty(alertGroupList)) {
             return Result.successEmptyCount();
         }
-
+        
         Set<Integer> alertGroupIdList =
                 alertGroupList.stream().map(AlertGroupEntity::getId).collect(Collectors.toSet());
         // 查询告警组下告警指标个数
@@ -85,10 +88,10 @@ public class AlertGroupServiceImpl extends ServiceImpl<AlertGroupMapper, AlertGr
                 a.setAlertQuotaNum(quotaCnt);
             });
         }
-
+        
         return Result.success(alertGroupList).put(Constants.TOTAL, count);
     }
-
+    
     @Override
     public Result saveAlertGroup(AlertGroupEntity alertGroup) {
         this.save(alertGroup);

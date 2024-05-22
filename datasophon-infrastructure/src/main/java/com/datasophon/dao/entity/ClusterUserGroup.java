@@ -27,9 +27,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @Data
 @TableName("t_ddh_cluster_user_group")
 public class ClusterUserGroup implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     /**
      * 
      */
@@ -43,9 +43,9 @@ public class ClusterUserGroup implements Serializable {
      * 
      */
     private Integer groupId;
-
+    
     private Integer clusterId;
-
+    
     private Integer userGroupType;
-
+    
 }

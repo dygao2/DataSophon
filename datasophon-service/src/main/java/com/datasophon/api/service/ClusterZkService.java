@@ -17,14 +17,15 @@
 
 package com.datasophon.api.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.datasophon.dao.entity.ClusterZk;
 
 import java.util.List;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+
 public interface ClusterZkService extends IService<ClusterZk> {
-
+    
     Integer getMaxMyId(Integer clusterId);
-
+    
     List<ClusterZk> getAllZkServer(Integer clusterId);
 }

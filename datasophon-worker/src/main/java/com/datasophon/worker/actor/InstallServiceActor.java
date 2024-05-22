@@ -17,31 +17,35 @@
 
 package com.datasophon.worker.actor;
 
-import akka.actor.UntypedActor;
 import com.datasophon.common.Constants;
 import com.datasophon.common.command.InstallServiceRoleCommand;
 import com.datasophon.common.enums.ServiceRoleType;
 import com.datasophon.common.utils.ExecResult;
 import com.datasophon.common.utils.ShellUtils;
 import com.datasophon.worker.handler.InstallServiceHandler;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import akka.actor.UntypedActor;
+
 public class InstallServiceActor extends UntypedActor {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(InstallServiceActor.class);
-
+    
     @Override
     public void onReceive(Object msg) throws Throwable {
         if (msg instanceof InstallServiceRoleCommand) {
             InstallServiceRoleCommand command = (InstallServiceRoleCommand) msg;
             ExecResult installResult = new ExecResult();
-            InstallServiceHandler serviceHandler = new InstallServiceHandler(command.getFrameCode(), command.getServiceName(), command.getServiceRoleName());
-
+            InstallServiceHandler serviceHandler = new InstallServiceHandler(command.getFrameCode(),
+                    command.getServiceName(), command.getServiceRoleName());
+            
             logger.info("Start install package {}", command.getPackageName());
             if (command.getDecompressPackageName().contains("kerberos")) {
                 ArrayList<String> commands = new ArrayList<>();
@@ -66,14 +70,16 @@ public class InstallServiceActor extends UntypedActor {
                 installResult = serviceHandler.install(command);
                 // 其他服务创建软连接
                 String appHome = Constants.INSTALL_PATH + Constants.SLASH + command.getDecompressPackageName();
-                String appLinkHome = Constants.INSTALL_PATH + Constants.SLASH + StringUtils.lowerCase(command.getServiceName());
+                String appLinkHome =
+                        Constants.INSTALL_PATH + Constants.SLASH + StringUtils.lowerCase(command.getServiceName());
                 if (!new File(appLinkHome).exists()) {
                     ShellUtils.exceShell("ln -s " + appHome + " " + appLinkHome);
                     logger.info("Create symbolic dir: {}", appLinkHome);
                 }
             }
             getSender().tell(installResult, getSelf());
-            logger.info("Install {} {}", command.getPackageName(), installResult.getExecResult() ? "success" : "failed");
+            logger.info("Install {} {}", command.getPackageName(),
+                    installResult.getExecResult() ? "success" : "failed");
         } else {
             unhandled(msg);
         }

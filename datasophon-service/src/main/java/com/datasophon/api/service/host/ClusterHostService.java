@@ -17,25 +17,24 @@
 
 package com.datasophon.api.service.host;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.ClusterHostDO;
 
 import java.util.List;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 
 public interface ClusterHostService extends IService<ClusterHostDO> {
-
+    
     ClusterHostDO getClusterHostByHostname(String hostname);
-
+    
     Result listByPage(Integer clusterId, String hostname, String ip, String cpuArchitecture, Integer hostState,
                       String orderField, String orderType, Integer page, Integer pageSize);
-
+    
     List<ClusterHostDO> getHostListByClusterId(Integer id);
-
+    
     Result getRoleListByHostname(Integer clusterId, String hostname);
-
-
+    
     /**
      * 批量删除主机。
      * 删除主机，首先停止主机上的服务
@@ -46,16 +45,16 @@ public interface ClusterHostService extends IService<ClusterHostDO> {
      * @return
      */
     Result deleteHosts(String hostIds);
-
+    
     Result getRack(Integer clusterId);
-
+    
     void removeHostByClusterId(Integer id);
-
+    
     void updateBatchNodeLabel(List<String> hostIds, String nodeLabel);
-
+    
     List<ClusterHostDO> getHostListByIds(List<String> ids);
-
+    
     Result assignRack(Integer clusterId, String rack, String hostIds);
-
+    
     List<ClusterHostDO> getClusterHostByRack(Integer clusterId, String rack);
 }

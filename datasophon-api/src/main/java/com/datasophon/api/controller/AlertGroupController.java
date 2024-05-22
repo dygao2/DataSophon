@@ -24,7 +24,9 @@ import com.datasophon.common.utils.Result;
 import com.datasophon.dao.entity.AlertGroupEntity;
 import com.datasophon.dao.entity.ClusterAlertQuota;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,13 +37,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("alert/group")
 public class AlertGroupController {
-
+    
     @Autowired
     private AlertGroupService alertGroupService;
-
+    
     @Autowired
     private ClusterAlertQuotaService alertQuotaService;
-
+    
     /**
      * 列表
      */
@@ -49,17 +51,17 @@ public class AlertGroupController {
     public Result list(Integer clusterId, String alertGroupName, Integer page, Integer pageSize) {
         return alertGroupService.getAlertGroupList(clusterId, alertGroupName, page, pageSize);
     }
-
+    
     /**
      * 信息
      */
     @RequestMapping("/info/{id}")
     public Result info(@PathVariable("id") Integer id) {
         AlertGroupEntity alertGroup = alertGroupService.getById(id);
-
+        
         return Result.success().put("alertGroup", alertGroup);
     }
-
+    
     /**
      * 保存
      */
@@ -68,23 +70,23 @@ public class AlertGroupController {
         alertGroup.setCreateTime(new Date());
         return alertGroupService.saveAlertGroup(alertGroup);
     }
-
+    
     /**
      * 修改
      */
     @RequestMapping("/update")
     public Result update(@RequestBody AlertGroupEntity alertGroup) {
         alertGroupService.updateById(alertGroup);
-
+        
         return Result.success();
     }
-
+    
     /**
      * 删除
      */
     @RequestMapping("/delete")
     public Result delete(@RequestBody Integer[] ids) {
-
+        
         // 校验是否绑定告警指标
         List<ClusterAlertQuota> list =
                 alertQuotaService.lambdaQuery().in(ClusterAlertQuota::getAlertGroupId, ids).list();
@@ -92,8 +94,8 @@ public class AlertGroupController {
             return Result.error(Status.ALERT_GROUP_TIPS_ONE.getMsg());
         }
         alertGroupService.removeByIds(Arrays.asList(ids));
-
+        
         return Result.success();
     }
-
+    
 }

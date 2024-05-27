@@ -52,15 +52,15 @@ import akka.actor.ActorRef;
 public class ClusterAlertHistoryServiceImpl extends ServiceImpl<ClusterAlertHistoryMapper, ClusterAlertHistory>
         implements
             ClusterAlertHistoryService {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(ClusterAlertHistoryServiceImpl.class);
-
+    
     @Autowired
     private ClusterServiceRoleInstanceService roleInstanceService;
-
+    
     @Autowired
     private ClusterInfoService clusterInfoService;
-
+    
     @Override
     public void saveAlertHistory(String alertMessage) {
         logger.warn("Receive Alert Message : {}", alertMessage);
@@ -71,7 +71,7 @@ public class ClusterAlertHistoryServiceImpl extends ServiceImpl<ClusterAlertHist
                 ActorUtils.actorSystem.dispatcher(),
                 ActorRef.noSender());
     }
-
+    
     @Override
     public Result getAlertList(Integer serviceInstanceId) {
         List<ClusterAlertHistory> list = this.list(new QueryWrapper<ClusterAlertHistory>()
@@ -80,7 +80,7 @@ public class ClusterAlertHistoryServiceImpl extends ServiceImpl<ClusterAlertHist
                 .orderByDesc(Constants.CREATE_TIME));
         return Result.success(list);
     }
-
+    
     @Override
     public Result getAllAlertList(Integer clusterId, Integer page, Integer pageSize) {
         int offset = (page - 1) * pageSize;
@@ -94,7 +94,7 @@ public class ClusterAlertHistoryServiceImpl extends ServiceImpl<ClusterAlertHist
                 .eq(Constants.IS_ENABLED, 1));
         return Result.success(list).put(Constants.TOTAL, count);
     }
-
+    
     @Override
     public void removeAlertByRoleInstanceIds(List<Integer> ids) {
         ClusterServiceRoleInstanceEntity roleInstanceEntity = roleInstanceService.getById(ids.get(0));

@@ -52,15 +52,15 @@ import akka.actor.ActorRef;
 public class ClusterAlertHistoryServiceImpl extends ServiceImpl<ClusterAlertHistoryMapper, ClusterAlertHistory>
         implements
             ClusterAlertHistoryService {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(ClusterAlertHistoryServiceImpl.class);
-    
+
     @Autowired
     private ClusterServiceRoleInstanceService roleInstanceService;
-    
+
     @Autowired
     private ClusterInfoService clusterInfoService;
-    
+
     @Override
     public void saveAlertHistory(String alertMessage) {
         logger.warn("Receive Alert Message : {}", alertMessage);
@@ -71,18 +71,19 @@ public class ClusterAlertHistoryServiceImpl extends ServiceImpl<ClusterAlertHist
                 ActorUtils.actorSystem.dispatcher(),
                 ActorRef.noSender());
     }
-    
+
     @Override
     public Result getAlertList(Integer serviceInstanceId) {
         List<ClusterAlertHistory> list = this.list(new QueryWrapper<ClusterAlertHistory>()
                 .eq(serviceInstanceId != null, Constants.SERVICE_INSTANCE_ID, serviceInstanceId)
-                .eq(Constants.IS_ENABLED, 1));
+                .eq(Constants.IS_ENABLED, 1)
+                .orderByDesc(Constants.CREATE_TIME));
         return Result.success(list);
     }
-    
+
     @Override
     public Result getAllAlertList(Integer clusterId, Integer page, Integer pageSize) {
-        Integer offset = (page - 1) * pageSize;
+        int offset = (page - 1) * pageSize;
         List<ClusterAlertHistory> list = this.list(new QueryWrapper<ClusterAlertHistory>()
                 .eq(Constants.CLUSTER_ID, clusterId)
                 .eq(Constants.IS_ENABLED, 1)
@@ -93,7 +94,7 @@ public class ClusterAlertHistoryServiceImpl extends ServiceImpl<ClusterAlertHist
                 .eq(Constants.IS_ENABLED, 1));
         return Result.success(list).put(Constants.TOTAL, count);
     }
-    
+
     @Override
     public void removeAlertByRoleInstanceIds(List<Integer> ids) {
         ClusterServiceRoleInstanceEntity roleInstanceEntity = roleInstanceService.getById(ids.get(0));

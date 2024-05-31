@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import lombok.SneakyThrows;
 
-import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.proxy.ProxyServlet;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.websocket.api.Session;
@@ -63,7 +62,8 @@ public class GrafanaProxyConfiguration {
     public ServletRegistrationBean<Servlet> grafanaHttpProxy() {
         ServletRegistrationBean<Servlet> servlet = new ServletRegistrationBean<>(new GrafanaProxyServlet(),
                 GRAFANA_PATH + "/*");
-        servlet.setInitParameters(MapUtil.builder("maxThreads", maxThreads).build());
+        servlet.setInitParameters(MapUtil.builder("maxThreads", maxThreads)
+                .put("preserveHost", "true").build());
         return servlet;
     }
     
@@ -285,12 +285,7 @@ public class GrafanaProxyConfiguration {
             request.setSubProtocols(upgradeRequest.getSubProtocols());
             
             Map<String, List<String>> headers = upgradeRequest.getHeaders();
-            headers.forEach((k, v) -> {
-                if (!k.equalsIgnoreCase(HttpHeader.HOST.asString())) {
-                    request.setHeader(k, v);
-                }
-            });
-            
+            headers.forEach(request::setHeader);
             return request;
         }
         

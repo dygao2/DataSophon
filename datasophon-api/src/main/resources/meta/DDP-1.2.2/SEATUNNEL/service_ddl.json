@@ -18,7 +18,7 @@
         "type": "replace",
         "source": "config/seatunnel-env.sh",
         "regex":"\/opt\/spark",
-        "replacement": "/opt/datasophon/spark"
+        "replacement": "/opt/datasophon/spark3"
       },{
         "type": "replace",
         "source": "config/seatunnel-env.sh",

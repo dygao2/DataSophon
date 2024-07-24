@@ -1761,7 +1761,7 @@ worker打包替换旧包
         "filename": "config.xml",
         "configFormat": "custom",
         "outputDirectory": "etc",
-        "templateName": "clickhouse-server-config.flt",
+        "templateName": "clickhouse-server-config.ftl",
         "includeParams": [
           "tcpPort",
           "shardAddress",
@@ -1772,7 +1772,7 @@ worker打包替换旧包
         "filename": "users.xml",
         "configFormat": "custom",
         "outputDirectory": "etc",
-        "templateName": "clickhouse-user.flt",
+        "templateName": "clickhouse-user.ftl",
         "includeParams": [
           "username",
           "password"

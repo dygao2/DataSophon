@@ -48,6 +48,7 @@ public class ServiceConfigureAsyncHandler extends ServiceHandler {
         execResult.setExecResult(true);
         // config
         GenerateServiceConfigCommand generateServiceConfigCommand = new GenerateServiceConfigCommand();
+        generateServiceConfigCommand.setClusterId(serviceRoleInfo.getClusterId());
         generateServiceConfigCommand.setServiceName(serviceRoleInfo.getParentName());
         generateServiceConfigCommand.setCofigFileMap(serviceRoleInfo.getConfigFileMap());
         generateServiceConfigCommand.setDecompressPackageName(serviceRoleInfo.getDecompressPackageName());
@@ -62,7 +63,6 @@ public class ServiceConfigureAsyncHandler extends ServiceHandler {
         Timeout timeout = new Timeout(Duration.create(180, TimeUnit.SECONDS));
         final Future<Object> configureFuture = Patterns.ask(configActor, generateServiceConfigCommand, timeout);
         configureFuture.onComplete(new OnComplete<Object>() {
-            
             @Override
             public void onComplete(Throwable failure, Object success) throws Throwable {
                 if (failure != null) {

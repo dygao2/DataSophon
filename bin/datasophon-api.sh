@@ -158,7 +158,7 @@ case $startStop in
       fi
       echo starting $command, logging to $log
 
-      exec_command="$DDH_OPTS -classpath $DDH_CONF_DIR:$DDH_LIB_JARS $CLASS"
+      exec_command="$DDH_OPTS -Dspring.profiles.active=config -classpath $DDH_CONF_DIR:$DDH_LIB_JARS $CLASS"
 
       echo "nohup $JAVA $exec_command > $log 2>&1 &"
       nohup $JAVA $exec_command > $log 2>&1 &

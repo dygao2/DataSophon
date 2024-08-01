@@ -390,6 +390,24 @@
           "hadoopHome",
           "rangerAdminUrl"
         ]
+      },
+      {
+        "filename": "whitelist",
+        "configFormat": "custom",
+        "outputDirectory": "etc/hadoop/",
+        "templateName": "properties3.ftl",
+        "includeParams": [
+
+        ]
+      },
+      {
+        "filename": "blacklist",
+        "configFormat": "custom",
+        "outputDirectory": "etc/hadoop/",
+        "templateName": "properties3.ftl",
+        "includeParams": [
+
+        ]
       }
     ]
   },

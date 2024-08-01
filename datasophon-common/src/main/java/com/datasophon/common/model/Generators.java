@@ -34,6 +34,9 @@ public class Generators implements Serializable {
     private List<String> includeParams;
     
     private String templateName;
+    
+    private String conditionalOnProperty;
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) {

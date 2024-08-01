@@ -17,6 +17,8 @@
 
 package com.datasophon.api.service.impl;
 
+import static com.datasophon.common.Constants.GRAFANA_PATH;
+
 import com.datasophon.api.load.GlobalVariables;
 import com.datasophon.api.service.ClusterServiceDashboardService;
 import com.datasophon.common.Constants;
@@ -26,9 +28,12 @@ import com.datasophon.dao.entity.ClusterServiceDashboard;
 import com.datasophon.dao.mapper.ClusterServiceDashboardMapper;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -40,16 +45,46 @@ public class ClusterServiceDashboardServiceImpl
         implements
             ClusterServiceDashboardService {
     
+    @Value("${datasophon.proxy-grafana.enable:false}")
+    private boolean proxy;
+    
+    @Value("${server.servlet.context-path}")
+    private String contextPath;
+    
     @Autowired
     ClusterServiceDashboardService dashboardService;
     
     @Override
     public Result getDashboardUrl(Integer clusterId) {
-        Map<String, String> globalVariables = GlobalVariables.get(clusterId);
         ClusterServiceDashboard dashboard = dashboardService
                 .getOne(new QueryWrapper<ClusterServiceDashboard>().eq(Constants.SERVICE_NAME, "TOTAL"));
-        String dashboardUrl = PlaceholderUtils.replacePlaceholders(dashboard.getDashboardUrl(), globalVariables,
-                Constants.REGEX_VARIABLE);
-        return Result.success(dashboardUrl);
+        if (Objects.nonNull(dashboard) && StringUtils.hasText(dashboard.getDashboardUrl())) {
+            return Result.success(getDashboardUrl(clusterId, dashboard));
+        } else {
+            return Result.error("缺少集群总览");
+        }
+    }
+    
+    @Override
+    public String getGrafanaHost(Integer clusterId) {
+        Map<String, String> globalVariables = GlobalVariables.get(clusterId);
+        return globalVariables.get("${grafanaHost}") + ":3000";
+    }
+    
+    @Override
+    public String getDashboardUrl(Integer clusterId, ClusterServiceDashboard dashboard) {
+        String url = dashboard.getDashboardUrl();
+        if (proxy) {
+            // 兼容旧记录
+            if (url.startsWith("http://${grafanaHost}:3000")) {
+                url = url.substring(26);
+            }
+            return contextPath + GRAFANA_PATH + "/" + clusterId + url;
+        } else {
+            Map<String, String> globalVariables = GlobalVariables.get(clusterId);
+            String dashboardUrl = PlaceholderUtils.replacePlaceholders(dashboard.getDashboardUrl(), globalVariables,
+                    Constants.REGEX_VARIABLE);
+            return dashboardUrl;
+        }
     }
 }

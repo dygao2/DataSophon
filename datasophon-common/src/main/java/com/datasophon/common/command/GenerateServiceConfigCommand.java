@@ -32,6 +32,8 @@ public class GenerateServiceConfigCommand implements Serializable {
     
     private static final long serialVersionUID = -4211566568993105684L;
     
+    private Integer clusterId;
+    
     private String serviceName;
     
     private String decompressPackageName;

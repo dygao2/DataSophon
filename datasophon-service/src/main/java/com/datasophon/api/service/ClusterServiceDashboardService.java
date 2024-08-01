@@ -32,4 +32,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface ClusterServiceDashboardService extends IService<ClusterServiceDashboard> {
     
     Result getDashboardUrl(Integer clusterId);
+    
+    String getGrafanaHost(Integer clusterId);
+    
+    String getDashboardUrl(Integer clusterId, ClusterServiceDashboard dashboard);
 }

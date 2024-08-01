@@ -261,4 +261,6 @@ public final class Constants {
     public static final String ROOT = "root";
     
     public static final String DISPATCHER_WORK = "dispatcher-worker.sh";
+    
+    public static final String GRAFANA_PATH = "/grafana";
 }

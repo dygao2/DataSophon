@@ -59,8 +59,16 @@
     }
   ],
   "configWriter": {
-    "generators": [
-    ]
+    "generators": [{
+       "filename": "custom.ini",
+       "configFormat": "custom",
+       "outputDirectory": "conf",
+       "templateName": "grafana.ftl",
+       "conditionalOnProperty": "datasophon.proxy-grafana.enable",
+       "includeParams": [
+
+       ]
+    }]
   },
   "parameters": [
   ]

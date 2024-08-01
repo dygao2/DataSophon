@@ -72,6 +72,7 @@ public class ConfigureServiceHandler {
     
     public ExecResult configure(Map<Generators, List<ServiceConfig>> cofigFileMap,
                                 String decompressPackageName,
+                                Integer clusterId,
                                 Integer myid,
                                 String serviceRoleName,
                                 RunAs runAs) {
@@ -79,10 +80,13 @@ public class ConfigureServiceHandler {
         try {
             
             String hostName = InetAddress.getLocalHost().getHostName();
+            String ip = InetAddress.getLocalHost().getHostAddress();
             HashMap<String, String> paramMap = new HashMap<>();
+            paramMap.put("${clusterId}", String.valueOf(clusterId));
             paramMap.put("${host}", hostName);
+            paramMap.put("${ip}", ip);
             paramMap.put("${user}", "root");
-            paramMap.put("${myid}", myid + "");
+            paramMap.put("${myid}", String.valueOf(myid));
             logger.info("Start to configure service role {}", serviceRoleName);
             for (Generators generators : cofigFileMap.keySet()) {
                 List<ServiceConfig> configs = cofigFileMap.get(generators);
@@ -163,6 +167,13 @@ public class ConfigureServiceHandler {
                     serviceConfig.setName("node.id");
                     serviceConfig.setValue(IdUtil.simpleUUID());
                     customConfList.add(serviceConfig);
+                }
+                if ("Grafana".equals(serviceRoleName)) {
+                    ServiceConfig clusterIdConfig = new ServiceConfig();
+                    clusterIdConfig.setName("clusterId");
+                    clusterIdConfig.setValue(String.valueOf(clusterId));
+                    clusterIdConfig.setConfigType("map");
+                    customConfList.add(clusterIdConfig);
                 }
                 configs.addAll(customConfList);
                 if (!configs.isEmpty()) {

@@ -76,13 +76,14 @@ public class ClusterAlertHistoryServiceImpl extends ServiceImpl<ClusterAlertHist
     public Result getAlertList(Integer serviceInstanceId) {
         List<ClusterAlertHistory> list = this.list(new QueryWrapper<ClusterAlertHistory>()
                 .eq(serviceInstanceId != null, Constants.SERVICE_INSTANCE_ID, serviceInstanceId)
-                .eq(Constants.IS_ENABLED, 1));
+                .eq(Constants.IS_ENABLED, 1)
+                .orderByDesc(Constants.CREATE_TIME));
         return Result.success(list);
     }
     
     @Override
     public Result getAllAlertList(Integer clusterId, Integer page, Integer pageSize) {
-        Integer offset = (page - 1) * pageSize;
+        int offset = (page - 1) * pageSize;
         List<ClusterAlertHistory> list = this.list(new QueryWrapper<ClusterAlertHistory>()
                 .eq(Constants.CLUSTER_ID, clusterId)
                 .eq(Constants.IS_ENABLED, 1)

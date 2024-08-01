@@ -64,6 +64,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.env.PropertyResolver;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,6 +82,9 @@ import cn.hutool.crypto.SecureUtil;
 public class LoadServiceMeta implements ApplicationRunner {
     
     private static final Logger logger = LoggerFactory.getLogger(LoadServiceMeta.class);
+    
+    @Autowired
+    private PropertyResolver propertyResolver;
     
     @Autowired
     private FrameServiceService frameServiceService;
@@ -328,7 +332,12 @@ public class LoadServiceMeta implements ApplicationRunner {
                                     Map<String, ServiceConfig> map,
                                     Map<Generators, List<ServiceConfig>> configFileMap) {
         ConfigWriter configWriter = serviceInfo.getConfigWriter();
-        List<Generators> generators = configWriter.getGenerators();
+        List<Generators> generators = configWriter.getGenerators().stream().filter(g -> {
+            if (StringUtils.isNotEmpty(g.getConditionalOnProperty())) {
+                return propertyResolver.getProperty(g.getConditionalOnProperty(), boolean.class, false);
+            }
+            return true;
+        }).collect(Collectors.toList());
         for (Generators generator : generators) {
             List<ServiceConfig> list = new ArrayList<>();
             List<String> includeParams = generator.getIncludeParams();

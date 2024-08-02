@@ -44,6 +44,8 @@ public class ZKFCHandlerStrategy extends AbstractHandlerStrategy implements Serv
             commands.add(workPath + "/bin/hdfs");
             commands.add("zkfc");
             commands.add("-formatZK");
+            commands.add("-nonInteractive");
+            commands.add("-force");
             ExecResult execResult = ShellUtils.execWithStatus(workPath, commands, 300L, logger);
             if (execResult.getExecResult()) {
                 logger.info("zkfc format success");

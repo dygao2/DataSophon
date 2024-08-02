@@ -168,6 +168,27 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-md5</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <target>
+                                <echo message="Generating MD5 file" />
+                                <checksum algorithm="MD5" file="${project.build.directory}/datasophon-worker.tar.gz" forceoverwrite="yes" />
+                                <move file="${project.build.directory}/datasophon-worker.tar.gz.MD5" tofile="${project.build.directory}/datasophon-worker.tar.gz.md5" />
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 

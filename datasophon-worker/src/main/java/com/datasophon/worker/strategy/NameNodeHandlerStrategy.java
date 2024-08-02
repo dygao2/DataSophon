@@ -48,6 +48,8 @@ public class NameNodeHandlerStrategy extends AbstractHandlerStrategy implements 
                 commands.add(workPath + "/bin/hdfs");
                 commands.add("namenode");
                 commands.add("-bootstrapStandby");
+                commands.add("-nonInteractive");
+                commands.add("-force");
                 ExecResult execResult = ShellUtils.execWithStatus(workPath, commands, 30L, logger);
                 if (execResult.getExecResult()) {
                     logger.info("Namenode standby success");
@@ -61,6 +63,8 @@ public class NameNodeHandlerStrategy extends AbstractHandlerStrategy implements 
                 commands.add(workPath + "/bin/hdfs");
                 commands.add("namenode");
                 commands.add("-format");
+                commands.add("-nonInteractive");
+                commands.add("-force");
                 commands.add("smhadoop");
                 // 清空namenode元数据
                 FileUtil.del("/data/dfs/nn/current");

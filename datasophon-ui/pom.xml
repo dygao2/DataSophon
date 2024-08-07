@@ -27,8 +27,8 @@
     <artifactId>datasophon-ui</artifactId>
 
     <properties>
-        <build.node.version>v12.16.3</build.node.version>
-        <build.npm.version>6.14.4</build.npm.version>
+        <build.node.version>v20.16.0</build.node.version>
+        <build.npm.version>10.8.1</build.npm.version>
         <deployed.dir>.deployed</deployed.dir>
         <dist.dir>dist</dist.dir>
         <nodemodules.dir>node_modules</nodemodules.dir>

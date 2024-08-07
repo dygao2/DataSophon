@@ -4,8 +4,8 @@
   "homepage": "https://iczer.github.io/vue-antd-admin",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "serve": "SET NODE_OPTIONS=--openssl-legacy-provider &&vue-cli-service serve",
+    "build": "SET NODE_OPTIONS=--openssl-legacy-provider &&vue-cli-service build",
     "lint": "vue-cli-service lint",
     "predeploy-yarn": "yarn build",
     "deploy": "node deploy.sh.js",

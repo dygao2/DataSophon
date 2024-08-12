@@ -79,7 +79,7 @@
       "configType": "map",
       "required": true,
       "type": "input",
-      "value": "",
+      "value": "${apiHost}:${apiPort}",
       "configurableInWizard": true,
       "hidden": false,
       "defaultValue": "${apiHost}:${apiPort}"

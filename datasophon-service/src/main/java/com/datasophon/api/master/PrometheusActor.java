@@ -130,7 +130,7 @@ public class PrometheusActor extends UntypedActor {
             serviceRoleInfo.setName("Prometheus");
             serviceRoleInfo.setParentName("PROMETHEUS");
             serviceRoleInfo.setConfigFileMap(configFileMap);
-            serviceRoleInfo.setDecompressPackageName("prometheus-2.17.2");
+            serviceRoleInfo.setDecompressPackageName("prometheus");
             if (Objects.nonNull(prometheusInstance)) {
                 serviceRoleInfo.setHostname(prometheusInstance.getHostname());
                 ServiceConfigureHandler configureHandler = new ServiceConfigureHandler();
@@ -208,7 +208,7 @@ public class PrometheusActor extends UntypedActor {
                 serviceRoleInfo.setName("Prometheus");
                 serviceRoleInfo.setParentName("PROMETHEUS");
                 serviceRoleInfo.setConfigFileMap(configFileMap);
-                serviceRoleInfo.setDecompressPackageName("prometheus-2.17.2");
+                serviceRoleInfo.setDecompressPackageName("prometheus");
                 serviceRoleInfo.setHostname(prometheusInstance.getHostname());
                 ServiceConfigureHandler configureHandler = new ServiceConfigureHandler();
                 ExecResult execResult = configureHandler.handlerRequest(serviceRoleInfo);
@@ -314,7 +314,7 @@ public class PrometheusActor extends UntypedActor {
             serviceRoleInfo.setName("Prometheus");
             serviceRoleInfo.setParentName("PROMETHEUS");
             serviceRoleInfo.setConfigFileMap(configFileMap);
-            serviceRoleInfo.setDecompressPackageName("prometheus-2.17.2");
+            serviceRoleInfo.setDecompressPackageName("prometheus");
             serviceRoleInfo.setHostname(prometheusInstance.getHostname());
             ServiceConfigureHandler configureHandler = new ServiceConfigureHandler();
             ExecResult execResult = configureHandler.handlerRequest(serviceRoleInfo);

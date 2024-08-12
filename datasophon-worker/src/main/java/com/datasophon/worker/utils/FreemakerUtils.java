@@ -134,7 +134,7 @@ public class FreemakerUtils {
         data.put("itemList", configs);
         data.put("serviceName", serviceName);
         // 3.产生输出
-        processOut(generators, template, data, "prometheus-2.17.2");
+        processOut(generators, template, data, "prometheus");
     }
     
     public static void generatePromScrapeConfig(Generators generators, List<ServiceConfig> configs,

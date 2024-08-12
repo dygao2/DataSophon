@@ -157,8 +157,10 @@ public class ClusterInfoServiceImpl extends ServiceImpl<ClusterInfoMapper, Clust
         globalVariables.put("${INSTALL_PATH}", Constants.INSTALL_PATH);
         globalVariables.put("${apiHost}", CacheUtils.getString("hostname"));
         globalVariables.put("${apiPort}", configBean.getServerPort());
-        globalVariables.put("${HADOOP_HOME}", Constants.INSTALL_PATH + Constants.SLASH
-                + PackageUtils.getServiceDcPackageName(clusterInfo.getClusterFrame(), "HDFS"));
+        String path = PackageUtils.getServiceDcPackageName(clusterInfo.getClusterFrame(), "HDFS") == null
+                ? Constants.INSTALL_PATH + Constants.SLASH + "hadoop"
+                : Constants.INSTALL_PATH + Constants.SLASH + PackageUtils.getServiceDcPackageName(clusterInfo.getClusterFrame(), "HDFS");
+        globalVariables.put("${HADOOP_HOME}", path);
         
         GlobalVariables.put(clusterInfo.getId(), globalVariables);
     }

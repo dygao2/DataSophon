@@ -162,18 +162,29 @@ public class ClusterHostServiceImpl extends ServiceImpl<ClusterHostMapper, Clust
         String[] ids = hostIds.split(Constants.COMMA);
         for (String hostId : ids) {
             ClusterHostDO host = this.getById(hostId);
-            // 获取主机上安装的服务
-            List<ClusterServiceRoleInstanceEntity> list =
+            // 获取主机上运行的服务
+            List<ClusterServiceRoleInstanceEntity> listRunningService =
                     roleInstanceService.list(new QueryWrapper<ClusterServiceRoleInstanceEntity>()
                             .eq(Constants.CLUSTER_ID, host.getClusterId())
                             .eq(Constants.HOSTNAME, host.getHostname())
                             .eq(Constants.SERVICE_ROLE_STATE, ServiceRoleState.RUNNING)
                             .ne(Constants.ROLE_TYPE, RoleType.CLIENT));
-            List<String> roles = list.stream().map(ClusterServiceRoleInstanceEntity::getServiceRoleName)
+            List<String> runningRoles = listRunningService.stream().map(ClusterServiceRoleInstanceEntity::getServiceRoleName)
                     .collect(Collectors.toList());
-            if (!list.isEmpty()) {
-                return Result.error(host.getHostname() + Status.HOST_EXIT_ONE_RUNNING_ROLE.getMsg() + roles);
+            if (!listRunningService.isEmpty()) {
+                return Result.error(host.getHostname() + Status.HOST_EXIT_ONE_RUNNING_ROLE.getMsg() + runningRoles);
             }
+            // 获取主机上安装的服务
+            List<ClusterServiceRoleInstanceEntity> listInstalledSerivce =
+                    roleInstanceService.list(new QueryWrapper<ClusterServiceRoleInstanceEntity>()
+                            .eq(Constants.CLUSTER_ID, host.getClusterId())
+                            .eq(Constants.HOSTNAME, host.getHostname()));
+            List<String> installedRoles = listInstalledSerivce.stream().map(ClusterServiceRoleInstanceEntity::getServiceRoleName)
+                    .collect(Collectors.toList());
+            if (!listInstalledSerivce.isEmpty()) {
+                return Result.error(host.getHostname() + Status.HOST_EXIT_ONE_INSTALLED_ROLE.getMsg() + installedRoles);
+            }
+
             ClusterInfoEntity clusterInfo = clusterInfoService.getById(host.getClusterId());
             String clusterCode = clusterInfo.getClusterCode();
             String distributeAgentKey = clusterCode + Constants.UNDERLINE + Constants.START_DISTRIBUTE_AGENT;

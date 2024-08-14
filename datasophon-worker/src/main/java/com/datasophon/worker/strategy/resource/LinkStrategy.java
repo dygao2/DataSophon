@@ -26,11 +26,16 @@ public class LinkStrategy extends ResourceStrategy {
         String realTarget = basePath + Constants.SLASH + target;
         File sourceFile = new File(source);
         File targetFile = new File(realTarget);
-        if (!targetFile.exists() && sourceFile.exists()) {
-            // 先创建文件夹
-            FileUtil.mkdir(targetFile.getParent());
-            ShellUtils.exceShell("ln -s " + source + " " + realTarget);
-            log.info("Create symbolic dir: {} to {}", source, realTarget);
+        FileUtil.mkdir(targetFile.getParent());
+        ShellUtils.exceShell("ln -s " + source + " " + realTarget);
+
+        if (!targetFile.exists()) {
+            if (sourceFile.exists()) {
+                log.info("Create existing symbolic dir:  {} to {}", source, realTarget);
+            } else {
+                log.warn("Create non-existent symbolic dir: {} to {}", source, realTarget);
+            }
         }
+
     }
 }

@@ -36,6 +36,5 @@ public class LinkStrategy extends ResourceStrategy {
                 log.warn("Create non-existent symbolic dir: {} to {}", source, realTarget);
             }
         }
-
     }
 }

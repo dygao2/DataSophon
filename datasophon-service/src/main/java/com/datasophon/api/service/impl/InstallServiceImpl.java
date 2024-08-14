@@ -48,6 +48,7 @@ import com.datasophon.dao.entity.ClusterHostDO;
 import com.datasophon.dao.entity.ClusterInfoEntity;
 import com.datasophon.dao.entity.InstallStepEntity;
 import com.datasophon.dao.mapper.InstallStepMapper;
+import com.datasophon.domain.host.enums.HostState;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sshd.client.session.ClientSession;
@@ -75,6 +76,7 @@ import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.crypto.SecureUtil;
+import cn.hutool.extra.spring.SpringUtil;
 
 @Service("installService")
 public class InstallServiceImpl implements InstallService {
@@ -426,17 +428,29 @@ public class InstallServiceImpl implements InstallService {
         if (StringUtils.isBlank(clusterHostIds)) {
             return Result.error(Status.SELECT_LEAST_ONE_HOST.getMsg());
         }
+        ClusterHostService clusterHostService =
+            SpringUtil.getBean(ClusterHostService.class);
         String[] clusterHostIdArray = clusterHostIds.split(Constants.COMMA);
         List<String> clusterHostIdList = Arrays.asList(clusterHostIdArray);
         List<ClusterHostDO> clusterHostList = hostService.getHostListByIds(clusterHostIdList);
         for (ClusterHostDO clusterHostDO : clusterHostList) {
             ClientSession session =
                     MinaUtils.openConnection(clusterHostDO.getHostname(), 22, Constants.ROOT);
-            MinaUtils.execCmdWithResult(session, "service datasophon-worker " + commandType);
+            String result = MinaUtils.execCmdWithResult(session, "service datasophon-worker " + commandType);
             logger.info("hostAgent command:{}", "service datasophon-worker " + commandType);
+            if (result != null && !result.equals("failed")) {
+                if (commandType.equals("stop")) {
+                    clusterHostDO.setHostState(HostState.OFFLINE);
+                } else if (commandType.equals("start")) {
+                    clusterHostDO.setHostState(HostState.RUNNING);
+                }
+            }
             if (ObjectUtil.isNotEmpty(session)) {
                 session.close();
             }
+        }
+        if (!clusterHostList.isEmpty()) {
+            clusterHostService.updateBatchById(clusterHostList);
         }
         return Result.success();
     }

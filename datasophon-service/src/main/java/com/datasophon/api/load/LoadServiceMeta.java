@@ -141,6 +141,27 @@ public class LoadServiceMeta implements ApplicationRunner {
                     }
                 }
             }
+            checkHadoopHomeVariable(frameCode,clusters);
+        }
+    }
+
+    /**
+     * 检查HADOOP_HOME变量，避免变量丢失
+     * @param frameCode
+     * @param clusters
+     */
+    private void checkHadoopHomeVariable(String frameCode,
+                                          List<ClusterInfoEntity> clusters) {
+        for (ClusterInfoEntity cluster : clusters) {
+            if (cluster.getClusterFrame().equals(frameCode)) {
+                Map<String, String> globalVariables = GlobalVariables.get(cluster.getId());
+                // load global variable, 加载 frame
+                boolean containsHadoopHome = globalVariables.containsKey("HADOOP_HOME");
+                if (!containsHadoopHome) {
+                    // 如果Map中包含"HADOOP_HOME"，则执行相关操作
+                    globalVariables.put("${HADOOP_HOME}",Constants.INSTALL_PATH + Constants.SLASH + "hadoop");
+                }
+            }
         }
     }
     

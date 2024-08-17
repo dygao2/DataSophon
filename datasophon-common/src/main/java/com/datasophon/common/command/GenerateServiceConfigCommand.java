@@ -40,7 +40,7 @@ public class GenerateServiceConfigCommand implements Serializable {
     
     private Integer myid;
     
-    Map<Generators, List<ServiceConfig>> cofigFileMap;
+    Map<Generators, List<ServiceConfig>> configFileMap;
     
     private String serviceRoleName;
     

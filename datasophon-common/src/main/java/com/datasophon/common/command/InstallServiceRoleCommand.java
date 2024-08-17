@@ -33,7 +33,7 @@ public class InstallServiceRoleCommand extends BaseCommand implements Serializab
     
     private static final long serialVersionUID = -8610024764701745463L;
     
-    private Map<Generators, List<ServiceConfig>> cofigFileMap;
+    private Map<Generators, List<ServiceConfig>> configFileMap;
     
     private Long deliveryId;
     

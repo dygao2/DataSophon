@@ -212,8 +212,9 @@ export default {
     },
     handlerClick(item,childIndex){
       console.log(item);
-      this.currentId = item.id  
-      this.getConfigVersion()
+      this.currentId = item.id;
+      this.getConfigVersion();
+      this.templateData = [];
     },
     handlearrayWithData(a) {
       let obj = {};

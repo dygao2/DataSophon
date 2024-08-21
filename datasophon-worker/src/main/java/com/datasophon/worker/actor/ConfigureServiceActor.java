@@ -38,7 +38,7 @@ public class ConfigureServiceActor extends UntypedActor {
             logger.info("start configure {}", command.getServiceName());
             ConfigureServiceHandler serviceHandler =
                     new ConfigureServiceHandler(command.getServiceName(), command.getServiceRoleName());
-            ExecResult startResult = serviceHandler.configure(command.getCofigFileMap(),
+            ExecResult startResult = serviceHandler.configure(command.getConfigFileMap(),
                     command.getDecompressPackageName(),
                     command.getClusterId(),
                     command.getMyid(),

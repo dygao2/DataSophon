@@ -70,7 +70,7 @@ public class ConfigureServiceHandler {
         logger = LoggerFactory.getLogger(loggerName);
     }
     
-    public ExecResult configure(Map<Generators, List<ServiceConfig>> cofigFileMap,
+    public ExecResult configure(Map<Generators, List<ServiceConfig>> configFileMap,
                                 String decompressPackageName,
                                 Integer clusterId,
                                 Integer myid,
@@ -88,8 +88,8 @@ public class ConfigureServiceHandler {
             paramMap.put("${user}", "root");
             paramMap.put("${myid}", String.valueOf(myid));
             logger.info("Start to configure service role {}", serviceRoleName);
-            for (Generators generators : cofigFileMap.keySet()) {
-                List<ServiceConfig> configs = cofigFileMap.get(generators);
+            for (Generators generators : configFileMap.keySet()) {
+                List<ServiceConfig> configs = configFileMap.get(generators);
                 String dataDir = "";
                 Iterator<ServiceConfig> iterator = configs.iterator();
                 ArrayList<ServiceConfig> customConfList = new ArrayList<>();

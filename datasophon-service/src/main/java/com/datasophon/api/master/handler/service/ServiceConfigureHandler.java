@@ -42,7 +42,7 @@ public class ServiceConfigureHandler extends ServiceHandler {
         GenerateServiceConfigCommand generateServiceConfigCommand = new GenerateServiceConfigCommand();
         generateServiceConfigCommand.setClusterId(serviceRoleInfo.getClusterId());
         generateServiceConfigCommand.setServiceName(serviceRoleInfo.getParentName());
-        generateServiceConfigCommand.setCofigFileMap(serviceRoleInfo.getConfigFileMap());
+        generateServiceConfigCommand.setConfigFileMap(serviceRoleInfo.getConfigFileMap());
         generateServiceConfigCommand.setDecompressPackageName(serviceRoleInfo.getDecompressPackageName());
         generateServiceConfigCommand.setRunAs(serviceRoleInfo.getRunAs());
         if ("zkserver".equalsIgnoreCase(serviceRoleInfo.getName())) {

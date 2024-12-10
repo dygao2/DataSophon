@@ -36,6 +36,8 @@ public final class Constants {
     public static final String HOST_MAP = "_host_map";
     public static final String COMMAND_HOST_ID = "command_host_id";
     public static final String HOST_MD5 = "_host_md5";
+    public static final String SSH_USER = PropertyUtils.getString("sshUser", Constants.ROOT);
+    public static final int SSH_PORT = PropertyUtils.getInt("sshPort", 22);
     public static final String ID_RSA = PropertyUtils.getString("id_rsa", "/.ssh/id_rsa");
     public static final String HOSTNAME = "hostname";
     

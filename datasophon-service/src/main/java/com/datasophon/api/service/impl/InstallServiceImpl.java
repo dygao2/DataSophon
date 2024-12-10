@@ -357,8 +357,8 @@ public class InstallServiceImpl implements InstallService {
                 hostInfo = map.get(hostname);
             } else if (Objects.nonNull(clusterHost)) {
                 hostInfo.setHostname(hostname);
-                hostInfo.setSshUser("root");
-                hostInfo.setSshPort(22);
+                hostInfo.setSshUser(Constants.SSH_USER);
+                hostInfo.setSshPort(Constants.SSH_PORT);
             }
             ActorRef hostActor =
                     ActorUtils.getLocalActor(

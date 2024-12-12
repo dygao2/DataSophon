@@ -282,6 +282,7 @@
       "name": "heapSize",
       "label": "ES堆内存大小",
       "description": "",
+      "configType": "map",
       "required": true,
       "minValue": 0,
       "maxValue": 256,

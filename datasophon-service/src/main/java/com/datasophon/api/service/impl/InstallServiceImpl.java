@@ -357,8 +357,8 @@ public class InstallServiceImpl implements InstallService {
                 hostInfo = map.get(hostname);
             } else if (Objects.nonNull(clusterHost)) {
                 hostInfo.setHostname(hostname);
-                hostInfo.setSshUser("root");
-                hostInfo.setSshPort(22);
+                hostInfo.setSshUser(Constants.SSH_USER);
+                hostInfo.setSshPort(Constants.SSH_PORT);
             }
             ActorRef hostActor =
                     ActorUtils.getLocalActor(
@@ -435,7 +435,7 @@ public class InstallServiceImpl implements InstallService {
         List<ClusterHostDO> clusterHostList = hostService.getHostListByIds(clusterHostIdList);
         for (ClusterHostDO clusterHostDO : clusterHostList) {
             ClientSession session =
-                    MinaUtils.openConnection(clusterHostDO.getHostname(), 22, Constants.ROOT);
+                    MinaUtils.openConnection(clusterHostDO.getHostname(), Constants.SSH_PORT, Constants.SSH_USER);
             String result = MinaUtils.execCmdWithResult(session, "service datasophon-worker " + commandType);
             logger.info("hostAgent command:{}", "service datasophon-worker " + commandType);
             if (result != null && !result.equals("failed")) {

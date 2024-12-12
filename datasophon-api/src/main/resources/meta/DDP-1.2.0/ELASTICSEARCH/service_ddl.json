@@ -116,13 +116,14 @@
           "http.cors.enabled",
           "http.cors.allow-origin",
           "path.data",
+          "path.logs",
           "custom.elasticsearch.yml"
         ]
       },
       {
         "filename": "jvm.options",
         "configFormat": "custom",
-        "outputDirectory": "",
+        "outputDirectory": "config/jvm.options.d",
         "templateName": "jvm.options.ftl",
         "includeParams": [
           "heapSize"
@@ -260,7 +261,19 @@
       "separator": ",",
       "required": true,
       "type": "multiple",
-      "value": ["/data/es"],
+      "value": ["/data/es/data"],
+      "configurableInWizard": true,
+      "hidden": false,
+      "defaultValue": ""
+    },
+    {
+      "name": "path.logs",
+      "label": "日志存储目录",
+      "description": "",
+      "configType": "path",
+      "required": true,
+      "type": "input",
+      "value": "/data/es/logs",
       "configurableInWizard": true,
       "hidden": false,
       "defaultValue": ""
@@ -269,12 +282,16 @@
       "name": "heapSize",
       "label": "ES堆内存大小",
       "description": "",
-      "required": false,
+      "configType": "map",
+      "required": true,
+      "minValue": 0,
+      "maxValue": 256,
       "type": "input",
       "value": "",
+      "unit": "GB",
       "configurableInWizard": true,
-      "hidden": true,
-      "defaultValue": "2g"
+      "hidden": false,
+      "defaultValue": "2"
     },
     {
       "name": "custom.elasticsearch.yml",

@@ -1,2 +1,2 @@
--Xms${heapSize}
--Xmx${heapSize}
+-Xms${heapSize}g
+-Xmx${heapSize}g
